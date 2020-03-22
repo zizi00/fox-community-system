@@ -1,14 +1,14 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
-import Home from "../views/Home.vue";
+// import Home from "../views/Home.vue";
+import Index from "../views/index.vue";
 
 Vue.use(VueRouter);
 
 const routes = [
   {
     path: "/",
-    name: "Home",
-    component: Home
+    redirect: '/index',
   },
   {
     path: "/login",
@@ -17,6 +17,12 @@ const routes = [
           component: () =>
           import ( /* webpackChunkName: "page" */ '@/views/Login/login'),
   },
+  { path: '/index',
+     name: 'index',
+    //  redirect: '/home',
+     component: Index,
+     children:[]
+  }
 ];
 
 const router = new VueRouter({
