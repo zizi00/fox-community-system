@@ -10,6 +10,13 @@ const routes = [
     name: "Home",
     component: Home
   },
+  {
+    path: "/login",
+    name: "Login",
+    meta: { title: '登录' },
+          component: () =>
+          import ( /* webpackChunkName: "page" */ '@/views/Login/login'),
+  },
 ];
 
 const router = new VueRouter({
