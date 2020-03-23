@@ -59,10 +59,12 @@ export default {
         }
         .right {
             width: calc(100% - 242px);
+            height: calc(100% - 80px);
+            overflow: auto;
             .right-container {
-                height: calc(100% - 80px);
+                height: 100%;
                 overflow: auto;
-                padding: 0 20px;
+                // padding: 0 20px;
             }
         }
     }

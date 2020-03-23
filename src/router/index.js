@@ -27,6 +27,16 @@ const routes = [
         component: () =>
         import ( /* webpackChunkName: "pages" */ '@/views/pages/Home'),
       },
+      { path: '/identifygirl', name: 'identifygirl',
+        meta: { title: '女认证中心' },
+        component: () =>
+        import ( /* webpackChunkName: "pages" */ '@/views/pages/identifygirl'),
+      },
+      { path: '/identifyboy', name: 'identifyboy',
+        meta: { title: '男认证中心' },
+        component: () =>
+        import ( /* webpackChunkName: "pages" */ '@/views/pages/identifyboy'),
+      },
      ]
   }
 ];

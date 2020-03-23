@@ -44,10 +44,10 @@
                     {
                         icon: "fa-check-square",
                         name: "认证中心",
-                        path: "fund",
+                        path: "identify",
                         children: [
-                            {path: "/customerlist", name: "女认证中心"},
-                            {path: "/agentlist", name: "男认证中心"}
+                            {path: "/identifygirl", name: "女认证中心"},
+                            {path: "/identifyboy", name: "男认证中心"}
                         ]
                     },
                     {
