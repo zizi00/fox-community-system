@@ -1,14 +1,22 @@
 <template>
     <div class="index">
         <HeadNav></HeadNav>
-        <div class="left-container">
-            <LeftMenu></LeftMenu>
+        <div class="main-wrapper">
+            <el-col :span="5" class="left">
+                <div class="left-container">
+                    <LeftMenu></LeftMenu>
+                </div>
+            </el-col>
+            <el-col :span="19" class="right">
+                <div class="right-container">
+                    <!-- 顶部标签卡 -->
+                    <!-- <Tags></Tags> -->
+                    <router-view></router-view>
+                </div>
+            </el-col>
         </div>
-        <div class="right-container">
-            <!-- 顶部标签卡 -->
-            <!-- <Tags></Tags> -->
-            <router-view></router-view>
-        </div>
+        
+        
     </div>
 </template>
 <script>
@@ -32,23 +40,32 @@ export default {
     width: 100%;
     height: 100%;
     overflow: hidden;
-    .left-container {
-        width: 242px;
-        height: calc(100% - 80px);
-        .el-menu-vertical-demo:not(.el-menu--collapse) {
-            width: 200px;
+    .main-wrapper {
+        width: 100%;
+        height: 100%;
+        .left {
             height: 100%;
+            .left-container {
+                width: 242px;
+                height: calc(100% - 80px);
+                .el-menu-vertical-demo:not(.el-menu--collapse) {
+                    width: 200px;
+                    height: 100%;
+                }
+            }
+        }
+        .el-col-5 {
+            width: 17.2%;
+        }
+        .right {
+            width: 82.8%;
+            .right-container {
+                height: calc(100% - 80px);
+                overflow: auto;
+                padding-left: 20px;
+            }
         }
     }
-    .right-container {
-        // position: relative;
-        // top: 0;
-        // left: 240px;
-        // width: calc(100% - 240px);
-        width: calc(100% - 120px);
-        height: calc(100% - 80px);
-        overflow: auto;
-        // padding: 20px;
-    }
+    
 }
 </style>

@@ -1,142 +1,146 @@
 <template>
-    <div class="left-menu">
-        <el-menu default-active="1-4-1" class="el-menu-vertical-demo" @open="handleOpen" @close="handleClose" :collapse="isCollapse">
-            <div v-for="(itemMenu,index) in menuList" :key = "index">
-                <div v-if="itemMenu.subMenuList">
-                     <el-submenu :index="itemMenu.index">
+    <el-row class="menu_page">
+        <el-col>
+            <el-menu mode="vertical" :default-active="$route.path" router class="el-menu-vertical-demo" :collapse="isCollapse">
+                <template v-for="item in items">
+                    <el-submenu v-if="item.children" :index="item.path" :key="item.path">
                         <template slot="title">
-                        <i :class="itemMenu.icon"></i>
-                        <span slot="title">{{itemMenu.title}}</span>
+                            <i :class="'fa fa-margin '+item.icon"></i>
+                            <span slot="title">{{item.name}}</span>
                         </template>
-                        <el-menu-item :index="itemSubMenu.subIndex" v-for="(itemSubMenu,index) in itemMenu.subMenuList" :key = "index">{{itemSubMenu.subTitle}}</el-menu-item>
+                        <router-link v-for="(citem,cindex) in item.children"
+                                     :to="citem.path" :key="cindex">
+                            <el-menu-item
+                                    :index='citem.path'>
+                                <span slot="title">{{citem.name}}</span>
+                            </el-menu-item>
+                        </router-link>
                     </el-submenu>
-                </div>
-                <div v-else>
-                    <el-menu-item :index="itemMenu.index">
-                        <i :class="itemMenu.icon"></i>
-                        <span slot="title">{{itemMenu.title}}</span>
-                    </el-menu-item>
-                </div>
-            </div>
-        </el-menu>
-    </div>
+                    <template v-if="!item.children">
+                        <router-link :to="item.path" :key="item.path" >
+                            <el-menu-item index="item.path">
+                                <i :class="'fa fa-margin '+item.icon"></i>
+                                <span slot="title">{{item.name}}</span>
+                            </el-menu-item>
+                        </router-link>
+                    </template>
+                </template>
+            </el-menu>
+        </el-col>
+    </el-row>
 </template>
 <script>
-export default {
-    name: "left-menu",
-    data () {
-        return {
-            isCollapse: false,
-            menuList: [
-                {
-                    title: "首页",
-                    icon: "el-icon-s-home",
-                    index: "1"
-                },
-                {
-                    title: "认证中心",
-                    icon: "el-icon-location",
-                    index: "2",
-                    subMenuList: [
-                        {
-                            subTitle: "女用户认证",
-                            subIndex: "2-1",
-                        },
-                        {
-                            subTitle: "男用户认证",
-                            subIndex: "2-2",
-                        }
-                    ]
-                },
-                {
-                    title: "用户管理",
-                    icon: "el-icon-user",
-                    index: "3",
-                    subMenuList: [
-                        {
-                            subTitle: "女用户管理",
-                            subIndex: "3-1",
-                        },
-                        {
-                            subTitle: "男用户管理",
-                            subIndex: "3-2",
-                        }
-                    ]
-                },
-                {
-                    title: "邀请码",
-                    icon: "el-icon-location",
-                    index: "4",
-                    subMenuList: [
-                        {
-                            subTitle: "邀请码管理",
-                            subIndex: "4-1",
-                        }
-                    ]
-                },
-                {
-                    title: "举报",
-                    icon: "el-icon-location",
-                    index: "5",
-                    subMenuList: [
-                        {
-                            subTitle: "举报",
-                            subIndex: "5-1",
-                        }
-                    ]
-                },
-                {
-                    title: "提现",
-                    icon: "el-icon-location",
-                    index: "6",
-                    subMenuList: [
-                        {
-                            subTitle: "用户提现",
-                            subIndex: "6-1",
-                        }
-                    ]
-                },
-                {
-                    title: "数据查询",
-                    icon: "el-icon-location",
-                    index: "7",
-                    subMenuList: [
-                        {
-                            subTitle: "资金流水",
-                            subIndex: "7-1",
-                        },
-                        {
-                            subTitle: "充值记录",
-                            subIndex: "7-2",
-                        }
-                    ]
-                },
-            ]
-        }
-    },
-    methods: {
-        handleOpen() {
-
+    export default {
+        name: "leftmenu",
+        data() {
+            return {
+                isCollapse: false,
+                items: [
+                    {
+                        icon: "fa-home",
+                        name: "首页",
+                        path: "/home",
+                    },
+                    {
+                        icon: "fa-check-square",
+                        name: "认证中心",
+                        path: "fund",
+                        children: [
+                            {path: "/customerlist", name: "女认证中心"},
+                            {path: "/agentlist", name: "男认证中心"}
+                        ]
+                    },
+                    {
+                        icon: "fa-user",
+                        name: "用户管理",
+                        path: "circle",
+                        children: [
+                          { path: "/servicelabel", name: "女用户管理" },
+                          { path: "/cityServiceList", name: "男用户管理" },
+                        ]
+                      },
+                    {
+                        icon: "fa-barcode",
+                        name: "邀请码",
+                        path: "advert",
+                        children: [
+                            {path: "/regionPrice", name: "邀请码管理"},
+                        ]
+                    },
+                    {
+                        icon: "fa-frown-o",
+                        name: "举报",
+                        path: "material",
+                        children: [
+                            {path: "/photoUpload", name: "举报管理"},
+                        ]
+                    },
+                    {
+                        icon: "fa-dollar",
+                        name: "提现",
+                        path: "complaint",
+                        children: [
+                            {path: "/complaintFeedback", name: "用户提现"},
+                        ]
+                    },
+                    {
+                        icon: "fa-line-chart",
+                        name: "数据查询",
+                        path: "system",
+                        children: [
+                            {path: "/versionSet", name: "资金流水"},
+                            {path: "/customerService", name: "充值记录"},
+                        ]
+                    }
+                ]
+            };
         },
-        handleClose() {
-
+        methods: {
         }
-    }
-}
+    };
 </script>
-<style lang="less" scoped>
-.left-menu {
-    height: 100%;
-    overflow: auto;
+<style scoped>
+    .menu_page {
+        height: 100%;
+        min-height: 100%;
+        overflow: auto;
+    }
+    .el-col-24 {
+        height: 100%;
+    }
+    .el-menu {
+        border-right: 1px solid rgba(0, 0, 0, 0.1);
+    }
+
+    .fa-margin {
+        margin-right: 5px;
+    }
+
     .el-menu-vertical-demo:not(.el-menu--collapse) {
-        // width: 100%;
+        width: 240px;
+        height: 100%;
+    }
+
+    .el-menu-vertical-demo {
+        width: 55px;
         height: 100%;
     }
     .el-menu-item {
         text-align: left;
     }
-    .el-submenu__title {
+    >>>.el-submenu__title {
         text-align: left;
     }
-}
+    .el-submenu .el-menu-item {
+        min-width: 240px;
+    }
+
+    .hiddenDropdown,
+    .hiddenDropname {
+        display: none;
+    }
+
+    a {
+        text-decoration: none;
+    }
 </style>

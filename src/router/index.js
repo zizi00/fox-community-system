@@ -15,13 +15,19 @@ const routes = [
     name: "Login",
     meta: { title: '登录' },
           component: () =>
-          import ( /* webpackChunkName: "page" */ '@/views/Login/login'),
+          import ( /* webpackChunkName: "login" */ '@/views/Login/login'),
   },
   { path: '/index',
      name: 'index',
     //  redirect: '/home',
      component: Index,
-     children:[]
+     children:[
+      { path: '/home', name: 'home',
+        meta: { title: '首页' },
+        component: () =>
+        import ( /* webpackChunkName: "pages" */ '@/views/pages/Home'),
+      },
+     ]
   }
 ];
 

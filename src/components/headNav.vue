@@ -21,7 +21,7 @@ export default {
     // box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.1);
     border-bottom: 1px solid rgba(0, 0, 0, 0.1);
     .left {
-        width: 240px;
+        width: 241px;
         height: 100%;
         border-right: 1px solid rgba(0, 0, 0, 0.1);
         // border-bottom: 1px solid rgba(0, 0, 0, 0.1);
