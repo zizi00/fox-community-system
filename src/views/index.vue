@@ -55,14 +55,14 @@ export default {
             }
         }
         .el-col-5 {
-            width: 17.2%;
+            width: 242px;
         }
         .right {
-            width: 82.8%;
+            width: calc(100% - 242px);
             .right-container {
                 height: calc(100% - 80px);
                 overflow: auto;
-                padding-left: 20px;
+                padding: 0 20px;
             }
         }
     }
