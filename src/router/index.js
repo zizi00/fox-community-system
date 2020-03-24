@@ -18,10 +18,10 @@ const routes = [
           import ( /* webpackChunkName: "login" */ '@/views/Login/login'),
   },
   { path: '/index',
-     name: 'index',
-    //  redirect: '/home',
-     component: Index,
-     children:[
+    name: 'index',
+    redirect: '/home',
+    component: Index,
+    children:[
       { path: '/home', name: 'home',
         meta: { title: '首页' },
         component: () =>
