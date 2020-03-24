@@ -86,6 +86,57 @@
                 </el-table-column>
             </el-table>
             </div>
+        <!-- 弹出弹窗 -->
+        <el-dialog
+            :visible.sync="detailDialog"
+            width="70%"
+            center
+            :before-close="handleClose">
+            <div class="detail-wrapper">
+                <div class="header">
+                    <div class="avatar">
+                        <el-image
+                            style="width: 70px; height: 70px; border-radius:50%"
+                            :src="url"
+                            fit="cover">
+                        </el-image>
+                    </div>
+                    <div class="info-wrapper">
+                        <p>叶真真</p>
+                        <div class="info">
+                            <div class="basic">
+                                <p><span>年龄：</span><span>25岁</span>|<span>身高：</span><span>160cm</span>|<span>体重：</span><span>40kg</span>|<span>胸围：</span><span>36c</span></p>
+                                <p><span>简介：</span><span>文艺，旅游，稳重，反正就是牛批。</span></p>
+                                <p><span>账号：</span><span>3454657558</span></p>
+                                <p><span>微信：</span><span>3454657558</span></p>
+                                <p><span>qq：</span><span>3454657558</span></p>
+                            </div>
+                            <div class="basic">
+                                <p><span>城市：</span><span>湖南长沙|</span><span>职业：</span><span>学生</span></p>
+                                <p><span>约会范围：</span><span>长沙 / 常德 / 岳阳</span></p>
+                                <p><span>约会条件：</span><span>温柔娴熟</span></p>
+                                <p><span>约会节目：</span><span>吃吃喝喝</span></p>
+                            </div>
+                            <div class="basic">
+                                <div>禁用</div>
+                                <p><span>钱包（狐币）</span><span>564464</span></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="photos-wrapper">
+                    <p class="title">他的相册</p>
+                    <div class="photos">
+                        <el-image
+                            style="width: 100px; height: 100px"
+                            :src="url"></el-image>
+                            <el-image
+                            style="width: 100px; height: 100px"
+                            :src="url"></el-image>
+                    </div>
+                </div>
+            </div>
+        </el-dialog>
     </div>
 </template>
 <script>
@@ -93,6 +144,8 @@ export default {
     name: "users-girl",
     data () {
         return {
+            detailDialog: true,
+            url: 'https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg',
             usersForm: {
                 keyword: "",
                 isIdentify: "",
@@ -111,6 +164,9 @@ export default {
         },
         onDeleteClassify () {
 
+        },
+        handleClose () {
+            this.detailDialog = false
         }
     }
 }
@@ -145,6 +201,24 @@ export default {
             color: #000000;
             
         }
+    }
+    .detail-wrapper {
+        .header {
+            width: 100%;
+            display: flex;
+            .avatar {
+                width: 70px;
+                margin-right: 20px;
+            }
+            .info-wrapper {
+                flex: 1;
+                padding-top: 10px;
+                .info {
+                    display: flex;
+                }
+            }
+        }
+        
     }
 }
 </style>

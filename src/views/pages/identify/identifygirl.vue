@@ -35,41 +35,88 @@
         <div class="table_container">
             <el-table :data="tableData" border style="width: 100%">
                 <el-table-column type="index" label="序号" align="center" width="100"></el-table-column>
-                <el-table-column prop="categoryName" label="账号" align="center"></el-table-column>
-                <el-table-column prop="status" label="昵称" align="center">
-                    <template slot-scope="scope">
+                <el-table-column prop="account" label="账号" align="center"></el-table-column>
+                <el-table-column prop="nickname" label="昵称" align="center">
+                    <!-- <template slot-scope="scope">
                         <span style="margin-left: 10px">{{statusMap[scope.row.status]}}</span>
-                    </template>
+                    </template> -->
                 </el-table-column>
-                <el-table-column prop="createAt" label="所在城市" align="center"></el-table-column>
-                <el-table-column prop="createAt" label="身份" align="center"></el-table-column>
-                <el-table-column prop="createAt" label="认证" align="center"></el-table-column>
-                <el-table-column prop="createAt" label="最近登录" align="center"></el-table-column>
+                <el-table-column prop="city" label="所在城市" align="center"></el-table-column>
+                <el-table-column prop="identify" label="身份" align="center"></el-table-column>
+                <el-table-column prop="identifystatus" label="认证" align="center"></el-table-column>
+                <el-table-column prop="login" label="最近登录" align="center"></el-table-column>
                 <el-table-column prop="createAt" label="注册时间" align="center"></el-table-column>
-                <el-table-column prop="createAt" label="认证码" align="center"></el-table-column>
+                <el-table-column prop="code" label="认证码" align="center"></el-table-column>
                 <el-table-column prop="operation" align="center" label="操作" fixed="right" width="300">
                 <template slot-scope="scope">
                     <el-button
                     type="text"
                     size="small"
                     plain
-                    @click="onEditClassify(scope.row,scope.$index)"
+                    @click="onChecked(scope.row,scope.$index)"
                     >查看</el-button>
                     <el-button
                     type="text"
                     size="small"
                     plain
-                    @click="onDeleteClassify(scope.row,scope.$index)"
+                    @click="onExamine(scope.row,scope.$index)"
                     >通过</el-button>
                     <el-button
                     type="text"
                     size="small"
                     plain
+                    @click="onFailed(scope.row,scope.$index)"
                     >驳回</el-button>
                 </template>
                 </el-table-column>
             </el-table>
             </div>
+        <!-- 弹出弹窗 -->
+        <el-dialog
+            title=""
+            :visible.sync="checkDialog"
+            width="50%"
+            center>
+            <p>海绵宝宝的验证码：<span>644747</span></p>
+            <div class="wrapper">
+                <el-image 
+                    style="width: 300px; height: 300px"
+                    :src="url" 
+                    :preview-src-list="srcList">
+                </el-image>
+                <video src=""></video>
+            </div>
+        </el-dialog>
+        <!-- 通过 -->
+        <el-dialog
+            title="审核确认"
+            :visible.sync="examineDialog"
+            width="30%"
+            :before-close="handleClose">
+            <span>确定要通过托尼-屎大颗的认证条件吗？</span>
+            <span slot="footer" class="dialog-footer">
+                <el-button @click="handleClose">取 消</el-button>
+                <el-button type="primary" @click="handleClose">确 定</el-button>
+            </span>
+        </el-dialog>
+        <!-- 驳回 -->
+        <el-dialog
+            title="审核确认"
+            :visible.sync="failedDialog"
+            width="30%"
+            :before-close="handleClose">
+            <span>确定拒绝通过托尼-屎大颗的认证条件吗？</span>
+            <el-input
+                type="textarea"
+                :rows="3"
+                placeholder="请输入内容"
+                v-model="failedMessage">
+            </el-input>
+            <span slot="footer" class="dialog-footer">
+                <el-button @click="handleClose">取 消</el-button>
+                <el-button type="primary" @click="handleClose">确 定</el-button>
+            </span>
+        </el-dialog>
     </div>
 </template>
 <script>
@@ -77,23 +124,51 @@ export default {
     name: "identify-girl",
     data () {
         return {
+            checkDialog: false,
+            examineDialog: false,
+            failedDialog: false,
+            failedMessage: "",
+            url: 'https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg',
+            srcList: [
+                'https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg',
+                // 'https://fuss10.elemecdn.com/8/27/f01c15bb73e1ef3793e64e6b7bbccjpeg.jpeg',
+            ],
             identifyForm: {
                 keyword: "",
                 isIdentify: "",
                 areaid: ""
             },
-            tableData: []
+            tableData: [
+                {
+                    account: "3546475",
+                    nickname: "zhansan",
+                    city: "longhua",
+                    identify: "student",
+                    identifystatus: "是",
+                    login: "2020/03/24",
+                    createAt: "2020/03/24",
+                    code: "hjkknnj"
+                }
+            ]
         }
     },
     methods: {
         searchData () {
 
         },
-        onEditClassify () {
-
+        onChecked () {
+            this.checkDialog = true
         },
-        onDeleteClassify () {
-
+        onExamine () {
+            this.examineDialog = true
+        },
+        onFailed () {
+            this.failedDialog = true
+        },
+        handleClose () {
+            this.checkDialog = false
+            this.examineDialog = false
+            this.failedDialog = false
         }
     }
 }
