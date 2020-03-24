@@ -53,34 +53,34 @@
                     {
                         icon: "fa-user",
                         name: "用户管理",
-                        path: "circle",
+                        path: "users",
                         children: [
-                          { path: "/servicelabel", name: "女用户管理" },
-                          { path: "/cityServiceList", name: "男用户管理" },
+                          { path: "/usersgirl", name: "女用户管理" },
+                          { path: "/usersboy", name: "男用户管理" },
                         ]
                       },
                     {
                         icon: "fa-barcode",
                         name: "邀请码",
-                        path: "advert",
+                        path: "invitecode",
                         children: [
-                            {path: "/regionPrice", name: "邀请码管理"},
+                            {path: "/invitecode", name: "邀请码管理"},
                         ]
                     },
                     {
                         icon: "fa-frown-o",
                         name: "举报",
-                        path: "material",
+                        path: "complaint",
                         children: [
-                            {path: "/photoUpload", name: "举报管理"},
+                            {path: "/complaint", name: "举报管理"},
                         ]
                     },
                     {
                         icon: "fa-dollar",
                         name: "提现",
-                        path: "complaint",
+                        path: "cashout",
                         children: [
-                            {path: "/complaintFeedback", name: "用户提现"},
+                            {path: "/cashout", name: "用户提现"},
                         ]
                     },
                     {

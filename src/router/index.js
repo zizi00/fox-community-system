@@ -30,12 +30,37 @@ const routes = [
       { path: '/identifygirl', name: 'identifygirl',
         meta: { title: '女认证中心' },
         component: () =>
-        import ( /* webpackChunkName: "pages" */ '@/views/pages/identifygirl'),
+        import ( /* webpackChunkName: "pages" */ '@/views/pages/identify/identifygirl'),
       },
       { path: '/identifyboy', name: 'identifyboy',
         meta: { title: '男认证中心' },
         component: () =>
-        import ( /* webpackChunkName: "pages" */ '@/views/pages/identifyboy'),
+        import ( /* webpackChunkName: "pages" */ '@/views/pages/identify/identifyboy'),
+      },
+      { path: '/usersgirl', name: 'usersgirl',
+        meta: { title: '女用户管理' },
+        component: () =>
+        import ( /* webpackChunkName: "pages" */ '@/views/pages/users/usersgirl'),
+      },
+      { path: '/usersboy', name: 'usersboy',
+        meta: { title: '男用户管理' },
+        component: () =>
+        import ( /* webpackChunkName: "pages" */ '@/views/pages/users/usersboy'),
+      },
+      { path: '/invitecode', name: 'invitecode',
+        meta: { title: '邀请码管理' },
+        component: () =>
+        import ( /* webpackChunkName: "pages" */ '@/views/pages/invitecode/invitecode'),
+      },
+      { path: '/complaint', name: 'complaint',
+        meta: { title: '举报管理' },
+        component: () =>
+        import ( /* webpackChunkName: "pages" */ '@/views/pages/complaint/complaint'),
+      },
+      { path: '/cashout', name: 'cashout',
+        meta: { title: '用户提现' },
+        component: () =>
+        import ( /* webpackChunkName: "pages" */ '@/views/pages/cashout/cashout'),
       },
      ]
   }
