@@ -62,6 +62,16 @@ const routes = [
         component: () =>
         import ( /* webpackChunkName: "pages" */ '@/views/pages/cashout/cashout'),
       },
+      { path: '/capitalflow', name: 'capitalflow',
+        meta: { title: '资金流水' },
+        component: () =>
+        import ( /* webpackChunkName: "pages" */ '@/views/pages/datacollect/capitalflow'),
+      },
+      { path: '/recharger', name: 'recharger',
+        meta: { title: '充值记录' },
+        component: () =>
+        import ( /* webpackChunkName: "pages" */ '@/views/pages/datacollect/recharger'),
+      },
      ]
   }
 ];

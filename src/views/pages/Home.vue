@@ -42,7 +42,13 @@
     </div>
     <div class="chart-wrapper">
       <div class="table">
-        <p class="title">平台收益表</p>
+        <div class="table-head">
+          <p class="title">平台收益表</p>
+          <div class="date">
+            <span>日期选择区间为7天</span>
+          </div>
+        </div>
+        
         <div class="statistic-table">
           <div class="left">
             <div class="statistic-item">
@@ -57,7 +63,7 @@
             </div>
           </div>
           <div class="right">
-            
+            <div ref="myChart" style="width: 800px;height:400px;"></div>
           </div>
         </div>
         
@@ -71,11 +77,59 @@
 
 export default {
   name: "Home",
+  created () {
+    this.$nextTick(() =>{
+      this.initdata ()
+    })
+  },
+  methods: {
+    initdata() {
+      let myChart = this.$echarts.init(this.$refs.myChart)
+      let option = {
+        color: 'rgb(85,152,253)',
+        title: {
+          text: '收益统计'
+        },
+        tooltip: {
+          trigger: 'axis',
+          axisPointer: {
+              type: 'cross',
+              label: {
+                  backgroundColor: '#6a7985'
+              }
+          },
+          backgroundColor: '#ffffff',
+          textStyle: {
+            color: '#000000'
+          }
+        },
+        xAxis: {
+            type: 'category',
+            boundaryGap: false,
+            data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+        },
+        yAxis: {
+            type: 'value'
+        },
+        series: [{
+            data: [820, 932, 901, 934, 1290, 1330, 1320],
+            type: 'line',
+            areaStyle: {
+              color: 'rgb(213,230,255)'
+            }
+        }]
+      };
+      // 使用刚指定的配置项和数据显示图表。
+        myChart.setOption(option);
+    }
+  }
 };
 </script>
 <style lang="less" scoped>
 .home {
   width: 100%;
+  box-sizing: border-box;
+  padding-right: 20px;
   padding-bottom: 20px;
   .statistic-wrapper{
     width: 100%;
@@ -125,14 +179,22 @@ export default {
       margin: 0 auto;
       width: 95%;
       border: 1px solid rgba(0, 0, 0, 0.1);
-      .title {
-        height: 50px;
+      .table-head {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
         padding-left: 20px;
-        line-height: 50px;
-        text-align: left;
+        padding-right: 10px;
+        height: 50px;
         background-color: #f5f5f5;
         border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+        .title {
+          // line-height: 50px;
+        }
+        .date {
+        }
       }
+      
       .statistic-table {
         display: flex;
         .left {
@@ -160,6 +222,8 @@ export default {
         }
         .right {
           flex: 1;
+          padding-top: 40px;
+          padding-left: 20px;
         }
       }
     }

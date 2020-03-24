@@ -86,10 +86,10 @@
                     {
                         icon: "fa-line-chart",
                         name: "数据查询",
-                        path: "system",
+                        path: "datacollet",
                         children: [
-                            {path: "/versionSet", name: "资金流水"},
-                            {path: "/customerService", name: "充值记录"},
+                            {path: "/capitalflow", name: "资金流水"},
+                            {path: "/recharger", name: "充值记录"},
                         ]
                     }
                 ]
