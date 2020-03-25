@@ -1,0 +1,18 @@
+body,h1,h2,h3,h4,h5,h6,p {
+    margin: 0;
+    padding: 0;
+}
+html,body{
+    height: 100%;
+    min-width: 1200px;
+}
+ul {
+    list-style:none;
+}
+.clearfix:after{/*伪元素是行内元素 正常浏览器清除浮动方法*/
+    content: "";
+    display: block;
+    height: 0;
+    clear:both;
+    visibility: hidden;
+}

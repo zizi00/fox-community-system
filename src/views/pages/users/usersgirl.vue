@@ -89,7 +89,7 @@
         <!-- 弹出弹窗 -->
         <el-dialog
             :visible.sync="detailDialog"
-            width="70%"
+            width="80%"
             center
             :before-close="handleClose">
             <div class="detail-wrapper">
@@ -102,23 +102,24 @@
                         </el-image>
                     </div>
                     <div class="info-wrapper">
-                        <p>叶真真</p>
+                        <p class="username">叶真真</p>
                         <div class="info">
-                            <div class="basic">
-                                <p><span>年龄：</span><span>25岁</span>|<span>身高：</span><span>160cm</span>|<span>体重：</span><span>40kg</span>|<span>胸围：</span><span>36c</span></p>
+                            <div class="basic first">
+                                <p><span>年龄：</span><span>25岁</span>&ensp; |&ensp; <span>身高：</span><span>160cm</span>&ensp; |&ensp; <span>体重：</span><span>40kg</span>&ensp; |&ensp; <span>胸围：</span><span>36c</span></p>
                                 <p><span>简介：</span><span>文艺，旅游，稳重，反正就是牛批。</span></p>
                                 <p><span>账号：</span><span>3454657558</span></p>
                                 <p><span>微信：</span><span>3454657558</span></p>
                                 <p><span>qq：</span><span>3454657558</span></p>
                             </div>
-                            <div class="basic">
-                                <p><span>城市：</span><span>湖南长沙|</span><span>职业：</span><span>学生</span></p>
+                            <div class="line"></div>
+                            <div class="basic second">
+                                <p><span>城市：</span><span>湖南长沙</span>&ensp;| &ensp; <span>职业：</span><span>学生</span></p>
                                 <p><span>约会范围：</span><span>长沙 / 常德 / 岳阳</span></p>
                                 <p><span>约会条件：</span><span>温柔娴熟</span></p>
                                 <p><span>约会节目：</span><span>吃吃喝喝</span></p>
                             </div>
-                            <div class="basic">
-                                <div>禁用</div>
+                            <div class="basic third">
+                                <div class="status">禁用</div>
                                 <p><span>钱包（狐币）</span><span>564464</span></p>
                             </div>
                         </div>
@@ -128,10 +129,8 @@
                     <p class="title">他的相册</p>
                     <div class="photos">
                         <el-image
-                            style="width: 100px; height: 100px"
                             :src="url"></el-image>
                             <el-image
-                            style="width: 100px; height: 100px"
                             :src="url"></el-image>
                     </div>
                 </div>
@@ -213,12 +212,65 @@ export default {
             .info-wrapper {
                 flex: 1;
                 padding-top: 10px;
+                .username {
+                    margin-bottom: 12px;
+                    font-size: 18px;
+                    font-weight: bold;
+                    color: rgba(0,0,0,0.8);
+                }
                 .info {
                     display: flex;
+                    .basic {
+                        p{
+                            margin-bottom: 8px;
+                        }
+                        
+                    }
+                    .first {
+                        width: 370px;
+                    }
+                    .second {
+                        width: 300px;
+                    }
+                    .third {
+                        width: 250px;
+                        text-align: right;
+                        .status {
+                            margin-left: 208px;
+                            margin-bottom: 8px;
+                            width: 40px;
+                            height: 20px;
+                            color: #ffffff;
+                            text-align: center;
+                            background-color: salmon;
+                            border-radius: 2px;
+                        }
+                    }
+                    .line {
+                        margin-right: 50px;
+                        height: 120px;
+                        border-right: 1px solid rgba(0,0,0,0.3);
+                    }
                 }
             }
         }
-        
+        .photos-wrapper {
+            margin-top: 20px;
+            .title {
+                font-size: 18px;
+                color: #409EFF;
+            }
+            .photos {
+                padding: 40px;
+                background-color: #000000;
+                .el-image {
+                    width: 200px;
+                    height: 200px;
+                    margin-right: 10px;
+                    object-fit: cover;
+                }
+            }
+        }
     }
 }
 </style>

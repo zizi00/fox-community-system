@@ -1,7 +1,7 @@
 <template>
     <div class="invite-code">
         <div class="search-wrapper">
-            <el-button type="primary" size="small" icon="search" @click="searchData(classifyForm)">添加邀请码</el-button>
+            <el-button type="primary" size="small" icon="search" @click="addCode()">添加邀请码</el-button>
         </div>
         <div class="table_container">
             <el-table :data="tableData" border style="width: 100%">
@@ -30,6 +30,29 @@
                 </el-table-column>
             </el-table>
             </div>
+        <el-dialog
+            title="添加邀请码"
+            :visible.sync="dialogVisible"
+            width="40%"
+            :before-close="handleClose">
+            <div class="content">
+                <el-form ref="form" :model="codeForm" label-width="80px">
+                    <el-form-item label="邀请码:">
+                        <div class="code">3535353553</div>
+                    </el-form-item>
+                    <el-form-item label="管理人">
+                        <el-input v-model="codeForm.name"></el-input>
+                    </el-form-item>
+                    <el-form-item label="联系电话">
+                        <el-input v-model="codeForm.phone"></el-input>
+                    </el-form-item>
+                </el-form>
+            </div>
+            <span slot="footer" class="dialog-footer">
+                <el-button @click="dialogVisible = false">取 消</el-button>
+                <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
+            </span>
+            </el-dialog>
     </div>
 </template>
 <script>
@@ -37,16 +60,21 @@ export default {
     name: "invite-code",
     data () {
         return {
-            usersForm: {
-                keyword: "",
-                isIdentify: "",
-                status: "",
-                areaid: ""
+            codeForm: {
+                name: "",
+                phone: ""
             },
-            tableData: []
+            tableData: [],
+            dialogVisible: false
         }
     },
     methods: {
+        addCode () {
+            this.dialogVisible = true
+        },
+        handleClose () {
+            this.dialogVisible = false
+        },
         onEditClassify () {
             
         }
@@ -82,6 +110,17 @@ export default {
         /deep/.el-table th>.cell {
             color: #000000;
             
+        }
+    }
+    .content {
+        .el-dialog__header {
+            text-align: left;
+        }
+        .el-form-item__content {
+            width: 300px;
+        }
+        .code {
+            text-align: left;
         }
     }
 }
