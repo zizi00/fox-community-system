@@ -60,15 +60,19 @@ export default {
 </script>
 <style lang="less" scoped>
 .login {
+    width: 100%;
     height: 100%;
+    display: flex;
+    align-items: center;
     .login-wrapper {
-        height: 100%;
-        display: flex;
-        align-items: center;
+        width: 100%;
+        height: 200px;
+        background-color: #409EFF;
         .login-form {
             margin: 0 auto;
+            margin-top: -102.5px;
             width: 370px;
-            height: 350px;
+            height: 410px;
             // border: 1px solid red;
             .box-card {
                 width: 100%;
@@ -81,7 +85,7 @@ export default {
                 }
                 .form-wrapper{
                     margin: 0 auto;
-                    margin-top: 40px;
+                    margin-top: 60px;
                     width: 300px;
                     .el-input{
                         font-size: 16px;
@@ -93,8 +97,9 @@ export default {
                         left: 7px;
                     }
                     .el-button--primary{
-                        margin-top: 10px;
+                        margin-top: 20px;
                         width: 100%;
+                        font-size: 18px;
                     }
                 }
             }
