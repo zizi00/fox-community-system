@@ -1,9 +1,15 @@
 <template>
 	<div class="tabs">
-		<el-tabs v-if="openTab.length" type="card" v-model="activeIndex" @tab-click='tabClick' @tab-remove='tabRemove' closable>
-			<el-tab-pane v-for="item in openTab" :key="item.route" :name="item.route" :label="item.name" >
-      </el-tab-pane>
-		</el-tabs>
+    <div class="isCollapse" @click="setCollapse">
+      <i class="fa fa-margin fa-reorder"></i>
+    </div>
+    <div class="tabs-wrapper">
+      <el-tabs v-if="openTab.length" type="card" v-model="activeIndex" @tab-click='tabClick' @tab-remove='tabRemove' closable>
+        <el-tab-pane v-for="item in openTab" :key="item.route" :name="item.route" :label="item.name" >
+        </el-tab-pane>
+      </el-tabs>
+    </div>
+		
 	</div>
 </template>
 <script>
@@ -39,6 +45,17 @@ export default {
           this.$router.push({path: '/'});
         }
       }
+    },
+    // 切换左边菜单是否伸展
+    setCollapse () {
+      //获取vuex的Collapse数据
+      let currentCollapse = this.$store.getters.collapse
+      if(!currentCollapse) {
+        //如果是false， 设置为true
+        this.$store.dispatch('setCollapse', true);
+      }else {
+        this.$store.dispatch('setCollapse', false);
+      }
     }
   },
   computed: {
@@ -58,3 +75,19 @@ export default {
   },
 }
 </script>
+<style lang="less" scoped>
+.tabs{
+  display: flex;
+  .isCollapse{
+    width: 40px;
+    height: 40px;
+    border-bottom: 1px solid #E4E7ED;
+    .fa-margin{
+      line-height: 40px;
+      font-size: 20px;
+    }
+  }
+}
+
+</style>
+

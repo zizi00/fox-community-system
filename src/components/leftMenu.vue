@@ -34,7 +34,7 @@
         name: "leftmenu",
         data() {
             return {
-                isCollapse: false,
+                // isCollapse: this.$store.getters.collapse,
                 items: [
                     {
                         icon: "fa-home",
@@ -94,6 +94,12 @@
                     }
                 ]
             };
+        },
+        computed: {
+            isCollapse: function () {
+                let ret = this.$store.getters.collapse
+                return ret
+            }
         },
         methods: {
         }

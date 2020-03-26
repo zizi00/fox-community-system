@@ -2,21 +2,15 @@
     <div class="index">
         <HeadNav></HeadNav>
         <div class="main-wrapper">
-            <el-col :span="5" class="left">
-                <div class="left-container">
-                    <LeftMenu></LeftMenu>
-                </div>
-            </el-col>
-            <el-col :span="19" class="right">
-                <div class="right-container">
-                    <!-- 顶部标签卡 -->
-                    <Tags></Tags>
-                    <router-view></router-view>
-                </div>
-            </el-col>
+            <div class="left-container">
+                <LeftMenu></LeftMenu>
+            </div>
+            <div class="right-container">
+                <!-- 顶部标签卡 -->
+                <Tags></Tags>
+                <router-view></router-view>
+            </div>
         </div>
-        
-        
     </div>
 </template>
 <script>
@@ -92,29 +86,20 @@ export default {
     .main-wrapper {
         width: 100%;
         height: 100%;
-        .left {
-            height: 100%;
-            .left-container {
-                width: 242px;
-                height: calc(100% - 80px);
-                .el-menu-vertical-demo:not(.el-menu--collapse) {
-                    width: 200px;
-                    height: 100%;
-                }
-            }
-        }
-        .el-col-5 {
-            width: 242px;
-        }
-        .right {
-            width: calc(100% - 242px);
+        display: flex;
+        .left-container {
+            // width: 260px;
             height: calc(100% - 80px);
-            overflow: auto;
-            .right-container {
+            .el-menu-vertical-demo:not(.el-menu--collapse) {
+                width: 200px;
                 height: 100%;
-                overflow: auto;
-                // padding: 0 20px;
             }
+        }
+        .right-container {
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            // padding: 0 20px;
         }
     }
     
