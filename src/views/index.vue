@@ -40,16 +40,13 @@ export default {
                     this.$store.dispatch('addOpenTab', {route: this.$route.path , name: this.$route.meta.title });
                     this.$store.dispatch('setActiveIndex', this.$route.path);
                 }
-            
             } else {
                 if(!currentList[0]) {
                     this.$store.dispatch('addOpenTab', {route: '/home', name: '首页'});
                     this.$store.dispatch('setActiveIndex', '/home');
                     // this.$router.push('/'); 
-                }   
-                    
+                }      
             }
-
         },
     watch:{
             '$route'(to){

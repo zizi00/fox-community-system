@@ -18,7 +18,7 @@
                     </el-submenu>
                     <template v-if="!item.children">
                         <router-link :to="item.path" :key="item.path" >
-                            <el-menu-item index="item.path">
+                            <el-menu-item :index="item.path">
                                 <i :class="'fa fa-margin '+item.icon"></i>
                                 <span slot="title">{{item.name}}</span>
                             </el-menu-item>
