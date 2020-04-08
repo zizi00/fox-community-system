@@ -25,6 +25,7 @@
     </div>
 </template>
 <script>
+import { login } from '@/api/login.js'
 let validUsername=(rule, value,callback)=>{
         if (!value){
             callback(new Error("用户账号不能为空"))
@@ -53,7 +54,10 @@ export default {
     },
     methods: {
         onSubmit() {
-
+            let params = this.loginform
+            login(params).then(res => {
+                console.log(res)
+            })
         }
     }
 }

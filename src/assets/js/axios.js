@@ -1,13 +1,17 @@
 // axios配置
 import axios from 'axios'
 // import router from '../../router/index'
-import { Toast } from 'vant'
+import { Message,Loading } from "element-ui";
 import store from '@/store/index'
 // import common from './common'
 
 // 创建axios实例
+// var instance = axios.create({
+//   timeout: 1000 * 10
+// })
 var instance = axios.create({
-  timeout: 1000 * 10
+  timeout: 1000 * 10,
+  baseURL: process.env.NODE_ENV === 'development' ? '/api' : ''
 })
 // 设置post请求头
 instance.defaults.headers.post['Content-Type'] = 'application/json'
@@ -16,12 +20,12 @@ instance.defaults.headers.post['Content-Type'] = 'application/json'
 instance.interceptors.request.use(
   config => {
     const token = localStorage.token
-    const fromType = '0'
+    // const fromType = '0'
     config.data = JSON.stringify(config.data)
     if (token) {
       config.headers.token = token
     }
-    config.headers.fromType = fromType
+    // config.headers.fromType = fromType
     return config
   },
   error => {
@@ -34,14 +38,14 @@ instance.interceptors.request.use(
 instance.interceptors.response.use(
   response => {
     if (response.data.code === -2) {
-      Toast({ message: '服务繁忙，请稍后再试!', type: 'fail' })
+      Message({ message: '服务繁忙，请稍后再试!', type: 'error',duration:5000})
     } else if (response.data.code === -1) {
-      Toast({ message: response.data.message, type: 'fail' })
+      Message({ message: response.data.message, type: 'error',duration:5000 })
     } else if (response.data.code === 0) {
     } else if (response.data.code === 1) {
-      Toast({ message: response.data.message, type: 'fail' })
+      Message({ message: response.data.message, type: 'error',duration:8000 })
     } else {
-      Toast({ message: response.data.message, type: 'danger' })
+      Message({ message: response.data.message, type: 'error',duration:3000 })
     }
     return response.data
   },
@@ -49,7 +53,7 @@ instance.interceptors.response.use(
     console.log(error.response)
     switch (error.response.status) {
       case 401:
-        Toast({ message: '登录已失效，请重新登录！', type: 'fail' })
+        Message({ message: '登录失效，请重新登录', type: 'error',duration:3000 })
         setTimeout(function () {
           // 清空登录信息
           // common.clearUserInfo()
@@ -69,10 +73,10 @@ instance.interceptors.response.use(
         // router.push({ name: '500' })
         break
       case 503:
-        Toast({ message: '服务器错误，请重新尝试操作！', type: 'fail' })
+        Message({ message: '服务器错误，请重新尝试操作！', type: 'fail' })
         break
       default:
-        Toast({ message: error, type: 'fail' })
+        Message({ message: error, type: 'fail' })
         return Promise.resolve(error.response)
     }
   }
