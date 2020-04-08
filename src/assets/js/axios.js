@@ -43,7 +43,7 @@ instance.interceptors.response.use(
       Message({ message: response.data.message, type: 'error',duration:5000 })
     } else if (response.data.code === 0) {
     } else if (response.data.code === 1) {
-      Message({ message: response.data.message, type: 'error',duration:8000 })
+      // Message({ message: response.data.message, type: 'error',duration:8000 })
     } else {
       Message({ message: response.data.message, type: 'error',duration:3000 })
     }

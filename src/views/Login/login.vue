@@ -4,7 +4,7 @@
             <div class="login-form">
                 <el-card class="box-card">
                     <p class="title">狐狸社区业务管理系统</p>
-                    <el-form ref="form" :model="loginform" class="form-wrapper" :rules="rules">
+                    <el-form ref="loginform" :model="loginform" class="form-wrapper" :rules="rules">
                         <el-form-item prop="username">
                             <el-input v-model="loginform.username" placeholder="请输入用户账号" clearable>
                                 <i slot="prefix" class="el-input__icon el-icon-s-custom"></i>
@@ -40,7 +40,6 @@ export default {
     name: "login",
     data () {
         return {
-            
             loginform:{},
             rules: {
                 username: [
@@ -54,10 +53,42 @@ export default {
     },
     methods: {
         onSubmit() {
-            let params = this.loginform
-            login(params).then(res => {
-                console.log(res)
+            
+            this.$refs.loginform.validate(valid => {
+                alert("11")
+                if(valid) {
+                    
+                    let params = this.loginform
+                    login(params).then(res => {
+                        if(res.code === 1) {
+                            let userInfo = JSON.parse(res.data)
+                            // 把token存到本地
+                            localStorage.setItem('token', userInfo.token)
+                            localStorage.setItem('userName', userInfo.user.nickname)
+                            console.log(userInfo)
+                            // 存储数据
+                            let user = {}
+                            user.nickname = userInfo.user.nickname
+                            this.$store.dispatch("setIsAutnenticated", !this.isEmpty(user));
+                            this.$store.dispatch("setUser", user);
+                            // 页面跳转
+                            this.$router.push("/index"); 
+                        }
+                    })
+                }else {
+                    console.log("error submit!!");
+                    // return false;
+                }
             })
+            
+        },
+        isEmpty(value) {
+            return (
+                value === undefined ||
+                value === null ||
+                (typeof value === "object" && Object.keys(value).length === 0) ||
+                (typeof value === "string" && value.trim().length === 0)
+            );
         }
     }
 }
