@@ -30,11 +30,13 @@ let validUsername=(rule, value,callback)=>{
         if (!value){
             callback(new Error("用户账号不能为空"))
         }
+        callback()
   };
 let validatePass = (rule, value, callback) => {
         if (!value) {
           callback(new Error("密码不能为空"));
         }
+        callback()
       };
 export default {
     name: "login",
@@ -53,11 +55,8 @@ export default {
     },
     methods: {
         onSubmit() {
-            
             this.$refs.loginform.validate(valid => {
-                alert("11")
                 if(valid) {
-                    
                     let params = this.loginform
                     login(params).then(res => {
                         if(res.code === 1) {
@@ -72,7 +71,7 @@ export default {
                             this.$store.dispatch("setIsAutnenticated", !this.isEmpty(user));
                             this.$store.dispatch("setUser", user);
                             // 页面跳转
-                            this.$router.push("/index"); 
+                            this.$router.push("/index");
                         }
                     })
                 }else {

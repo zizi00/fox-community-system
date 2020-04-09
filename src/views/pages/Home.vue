@@ -45,7 +45,22 @@
         <div class="table-head">
           <p class="title">平台收益表</p>
           <div class="date">
-            <span>日期选择区间为7天</span>
+            <p class="interval">默认当前一周</p>
+            <el-date-picker
+              v-model="startTime"
+              type="date"
+              value-format="yyyy-MM-dd"
+              :picker-options="pickerOptions"
+              placeholder="选择开始时间">
+            </el-date-picker>至
+            <el-date-picker
+              v-model="endTime"
+              type="date"
+              value-format="yyyy-MM-dd"
+              :picker-options="pickerOptions"
+              placeholder="选择结束时间">
+            </el-date-picker>
+            <el-button class="select" type="primary" size="small" @click="selectDateIncome">筛选</el-button>
           </div>
         </div>
         
@@ -74,16 +89,57 @@
 
 <script>
 // @ is an alias to /src
-
+import { getInCome } from '@/api/income.js'
+import { getDate } from '@/assets/js/validate.js'
 export default {
   name: "Home",
+  data() {
+    return {
+      startTime: "",
+      endTime: "",
+      pickerOptions: {
+        disabledDate(time) {
+          return time.getTime() > Date.now();
+        },
+      }
+    }
+  },
   created () {
     this.$nextTick(() =>{
       this.initdata ()
+      this.drawingCharts()
     })
   },
   methods: {
     initdata() {
+      let nowdate = new Date() 
+      var oneweekdate = new Date(nowdate-7*24*3600*1000)
+      this.endTime = getDate(nowdate)
+      this.startTime = getDate(oneweekdate)
+      let params = {
+        startDate: Date.parse(nowdate),
+        endDate: Date.parse(oneweekdate)
+      }
+      console.log(params)
+
+      // getInCome(params).then(res =>{
+      //   console.log(res)
+      // })
+      
+    },
+    // 根据时间区间显示图表数据
+    selectDateIncome() {
+      // 字符串转标准时间
+      let starttime = Date (this.startTime)
+      let endtime = Date (this.endtTime)
+      let params = {
+        startDate: Date.parse(starttime), // 标准时间转时间戳
+        endDate: Date.parse(endtime)
+      }
+      // 调接口
+    },
+    // 画图表
+    drawingCharts () {
       let myChart = this.$echarts.init(this.$refs.myChart)
       let option = {
         color: 'rgb(85,152,253)',
@@ -192,6 +248,16 @@ export default {
           // line-height: 50px;
         }
         .date {
+          display: flex;
+          align-items: center;
+          font-size: 16px;
+          color: rgba(0,0,0,0.5);
+          .interval {
+            margin-right: 5px;
+          }
+          .select {
+            margin-left: 5px
+          }
         }
       }
       

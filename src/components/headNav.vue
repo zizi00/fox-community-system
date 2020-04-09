@@ -4,13 +4,18 @@
             <p class="title">狐狸社区管理系统</p>
         </div>
         <div class="right">
-            <span class="title">当前用户:</span><span class="username">张三</span>
+            <span class="title">当前用户:</span><span class="username">{{user.nickname}}</span>
         </div>
     </div>
 </template>
 <script>
 export default {
     name: "head-nav",
+    computed:{
+    user(){
+      return this.$store.getters.user;
+    }
+  },
 }
 </script>
 <style lang="less" scoped>

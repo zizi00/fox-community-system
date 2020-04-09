@@ -139,11 +139,12 @@
     </div>
 </template>
 <script>
+import { getUserList } from '@/api/user.js'
 export default {
     name: "users-girl",
     data () {
         return {
-            detailDialog: true,
+            detailDialog: false,
             url: 'https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg',
             usersForm: {
                 keyword: "",
@@ -155,6 +156,14 @@ export default {
         }
     },
     methods: {
+        initData() {
+            let params = {
+                sex: '女'
+            }
+            getUserList(params).then(res =>{
+                console.log(res)
+            })
+        },
         searchData () {
 
         },
@@ -167,6 +176,9 @@ export default {
         handleClose () {
             this.detailDialog = false
         }
+    },
+    created () {
+        this.initData()
     }
 }
 </script>

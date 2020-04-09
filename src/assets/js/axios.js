@@ -60,7 +60,7 @@ instance.interceptors.response.use(
           // localStorage.removeItem('user_name')
           // localStorage.removeItem('region_info')
           // // 重定向到登录页面
-          // router.push({ name: 'login' })
+          router.push({ name: 'Login' })
         }, 500)
         break
       case 403:
