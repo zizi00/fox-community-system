@@ -6,29 +6,33 @@
                     <el-input v-model="rechargerForm.keyword" size="small"></el-input>
                 </el-form-item>
                 <el-form-item label="支付类型:">
-                    <el-select v-model="rechargerForm.kind" size="small">
-                        <!-- <el-option
-                        v-for="item in currentTopicList"
-                        :key="item.topicBoardId"
-                        :label="item.title"
-                        :value="item.topicBoardId">
-                        <span style="float: left">{{ item.title }}</span>
-                        </el-option> -->
+                    <el-select v-model="rechargerForm.payWay" placeholder="请选择" size="small" clearable>
+                        <el-option key="1"  label="微信" value="1"></el-option>
+                        <el-option key="2"  label="支付宝" value="2"></el-option>
+                        <el-option key="3"  label="钱包" value="3"></el-option>
                     </el-select>
                 </el-form-item>
                 <el-form-item label="支付状态:">
-                    <el-select v-model="rechargerForm.status" size="small">
-                        <!-- <el-option
-                        v-for="item in currentTopicList"
-                        :key="item.topicBoardId"
-                        :label="item.title"
-                        :value="item.topicBoardId">
-                        <span style="float: left">{{ item.title }}</span>
-                        </el-option> -->
+                    <el-select v-model="rechargerForm.rechargeType" placeholder="请选择" size="small" clearable>
+                        <el-option key="3"  label="会员充值" value="3"></el-option>
+                        <el-option key="4"  label="钱包充值" value="4"></el-option>
                     </el-select>
                 </el-form-item>
                 <el-form-item label="时间:">
-                    <el-input v-model="rechargerForm.time" size="small"></el-input>
+                    <el-date-picker
+                        v-model="rechargerForm.startDate"
+                        type="date"
+                        value-format="yyyy-MM-dd"
+                        :picker-options="pickerOptions"
+                        placeholder="选择开始时间">
+                    </el-date-picker>至
+                    <el-date-picker
+                        v-model="rechargerForm.endDate"
+                        type="date"
+                        value-format="yyyy-MM-dd"
+                        :picker-options="pickerOptions"
+                        placeholder="选择结束时间">
+                    </el-date-picker>
                 </el-form-item>
                 <el-form-item>
                 <el-button type="primary" size="small" icon="search" @click="searchData(classifyForm)">搜索</el-button>
@@ -54,20 +58,34 @@
     </div>
 </template>
 <script>
+import { getRechargeList } from '@/api/aggregate.js'
 export default {
     name: "recharger",
     data () {
         return {
             rechargerForm: {
-                keyword: "",
-                kind: "",
-                status: "",
-                time: ""
+                key: "",
+                pageNo: 1,
+                pageSize: 10,
+                startDate: "",
+                endDate: "",
+                payWay: "",
+                rechargeType: ""
             },
-            tableData: []
+            tableData: [],
+            pickerOptions: {
+                disabledDate(time) {
+                return time.getTime() > Date.now();
+                },
+            }
         }
     },
     methods: {
+        initData() {
+            getRechargeList(this.rechargerForm).then(res => {
+
+            })
+        },
         searchData () {
 
         },

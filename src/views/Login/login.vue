@@ -25,7 +25,7 @@
     </div>
 </template>
 <script>
-import { login } from '@/api/login.js'
+import { login } from '@/api/aggregate.js'
 let validUsername=(rule, value,callback)=>{
         if (!value){
             callback(new Error("用户账号不能为空"))

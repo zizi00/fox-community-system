@@ -3,30 +3,34 @@
         <div class="search-wrapper">
             <el-form :inline="true" ref="search_data" :model="complaintForm">
                 <el-form-item label="关键词:">
-                    <el-input v-model="complaintForm.keyword" size="small"></el-input>
+                    <el-input v-model="complaintForm.key" size="small"></el-input>
                 </el-form-item>
                 <el-form-item label="举报原因:">
-                    <el-select v-model="complaintForm.reason" size="small">
-                        <!-- <el-option
-                        v-for="item in currentTopicList"
-                        :key="item.topicBoardId"
-                        :label="item.title"
-                        :value="item.topicBoardId">
-                        <span style="float: left">{{ item.title }}</span>
-                        </el-option> -->
-                    </el-select>
+                    <el-input v-model="complaintForm.reportReason" size="small"></el-input>
                 </el-form-item>
                 <el-form-item label="时间:">
-                    <el-input v-model="complaintForm.time" size="small"></el-input>
+                    <el-date-picker
+                        v-model="complaintForm.startDate"
+                        type="date"
+                        value-format="yyyy-MM-dd"
+                        :picker-options="pickerOptions"
+                        placeholder="选择开始时间">
+                    </el-date-picker>至
+                    <el-date-picker
+                        v-model="complaintForm.endDate"
+                        type="date"
+                        value-format="yyyy-MM-dd"
+                        :picker-options="pickerOptions"
+                        placeholder="选择结束时间">
+                    </el-date-picker>
                 </el-form-item>
                 <el-form-item>
-                <el-button type="primary" size="small" icon="search" @click="searchData(classifyForm)">搜索</el-button>
+                <el-button type="primary" size="small" icon="search" @click="searchData()">搜索</el-button>
                 </el-form-item>
             </el-form>
         </div>
         <div class="table_container">
             <el-table :data="tableData" border style="width: 100%">
-                <el-table-column type="index" label="序号" align="center" width="100"></el-table-column>
                 <el-table-column prop="categoryName" label="反馈人账号" align="center"></el-table-column>
                 <el-table-column prop="status" label="举报原因" align="center">
                     <template slot-scope="scope">
@@ -39,26 +43,65 @@
                 <el-table-column prop="operation" align="center" label="操作" fixed="right" width="300">
                 </el-table-column>
             </el-table>
-            </div>
+            <el-row>
+                <el-col :span="24">
+                    <div class="pagination" v-if="total > 10">
+                        <el-pagination
+                        @current-change="handleCurrentChange"
+                        :current-page="currentPage"
+                        :page-size="10"
+                        background
+                        layout="total, prev, pager, next, jumper"
+                        :total="total">
+                        </el-pagination>
+                    </div>
+                </el-col>
+            </el-row>
+        </div>
     </div>
 </template>
 <script>
+import { getComplaintList } from '@/api/aggregate.js'
 export default {
     name: "complaint",
     data () {
         return {
             complaintForm: {
-                keyword: "",
-                reason: "",
-                time: ""
+                key: "",
+                reportReason: "",
+                pageNo: 1,
+                pageSize: 10,
+                startDate: "",
+                endDate: ""
             },
-            tableData: []
+            tableData: [],
+            total: 0, //分页
+            currentPage: 1,
+            pickerOptions: {
+                disabledDate(time) {
+                return time.getTime() > Date.now();
+                },
+            }
         }
     },
     methods: {
-        searchData () {
-
+        initData() {
+            getComplaintList(this.complaintForm).then(res => {
+                console.log(res)
+            })
         },
+        searchData () {
+            // 时间格式需要处理
+            this.initData()
+        },
+        // 分页
+        handleCurrentChange(val){
+            this.complaintForm.pageNo = val
+            this.initData()
+        },
+    },
+    created() {
+        this.initData()
     }
 }
 </script>

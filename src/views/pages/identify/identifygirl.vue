@@ -3,50 +3,47 @@
         <div class="search-wrapper">
             <el-form :inline="true" ref="search_data" :model="identifyForm">
                 <el-form-item label="关键词:">
-                    <el-input v-model="identifyForm.keyword" size="small"></el-input>
+                    <el-input v-model="identifyForm.searchText" size="small"></el-input>
                 </el-form-item>
                 <el-form-item label="认证:">
-                    <el-select v-model="identifyForm.isIdentify" size="small">
-                        <!-- <el-option
-                        v-for="item in currentTopicList"
-                        :key="item.topicBoardId"
-                        :label="item.title"
-                        :value="item.topicBoardId">
-                        <span style="float: left">{{ item.title }}</span>
-                        </el-option> -->
+                    <el-select v-model="identifyForm.authStatus" size="small">
+                        <el-option
+                        v-for="item in stateList"
+                        :key="item.id"
+                        :label="item.name"
+                        :value="item.id">
+                        <span style="float: left">{{ item.name }}</span>
+                        </el-option>
                     </el-select>
                 </el-form-item>
-                <el-form-item label="地区:">
-                    <el-select v-model="identifyForm.areaid" size="small">
-                        <!-- <el-option
-                        v-for="item in currentTopicList"
-                        :key="item.topicBoardId"
-                        :label="item.title"
-                        :value="item.topicBoardId">
-                        <span style="float: left">{{ item.title }}</span>
-                        </el-option> -->
-                    </el-select>
+                <el-form-item label="地区(城市):">
+                    <el-input v-model="identifyForm.city" size="small"></el-input>
                 </el-form-item>
                 <el-form-item>
-                <el-button type="primary" size="small" icon="search" @click="searchData(classifyForm)">搜索</el-button>
+                <el-button type="primary" size="small" icon="search" @click="searchData()">搜索</el-button>
                 </el-form-item>
             </el-form>
         </div>
         <div class="table_container">
             <el-table :data="tableData" border style="width: 100%">
                 <el-table-column type="index" label="序号" align="center" width="100"></el-table-column>
-                <el-table-column prop="account" label="账号" align="center"></el-table-column>
+                <el-table-column prop="phone" label="账号" align="center"></el-table-column>
                 <el-table-column prop="nickname" label="昵称" align="center">
-                    <!-- <template slot-scope="scope">
-                        <span style="margin-left: 10px">{{statusMap[scope.row.status]}}</span>
-                    </template> -->
                 </el-table-column>
                 <el-table-column prop="city" label="所在城市" align="center"></el-table-column>
-                <el-table-column prop="identify" label="身份" align="center"></el-table-column>
-                <el-table-column prop="identifystatus" label="认证" align="center"></el-table-column>
-                <el-table-column prop="login" label="最近登录" align="center"></el-table-column>
-                <el-table-column prop="createAt" label="注册时间" align="center"></el-table-column>
-                <el-table-column prop="code" label="认证码" align="center"></el-table-column>
+                <el-table-column prop="career" label="身份" align="center"></el-table-column>
+                <el-table-column prop="state" label="认证" align="center">
+                    <template slot-scope="scope">
+                        <span style="margin-left: 10px">{{stateMap[scope.row.state]}}</span>
+                    </template>
+                </el-table-column>
+                <el-table-column prop="updateTime" label="最近登录" align="center"></el-table-column>
+                <el-table-column prop="createTime" label="注册时间" align="center">
+                    <template slot-scope="scope">
+                        <span style="margin-left: 10px">{{ scope.row.createTime | parseTime }}</span>
+                    </template>
+                </el-table-column>
+                <el-table-column prop="inviteCode" label="认证码" align="center"></el-table-column>
                 <el-table-column prop="operation" align="center" label="操作" fixed="right" width="300">
                 <template slot-scope="scope">
                     <el-button
@@ -70,14 +67,29 @@
                 </template>
                 </el-table-column>
             </el-table>
-            </div>
+            <el-row>
+                <el-col :span="24">
+                    <div class="pagination" v-if="total > 10">
+                        <el-pagination
+                        @current-change="handleCurrentChange"
+                        :current-page="currentPage"
+                        :page-size="10"
+                        background
+                        layout="total, prev, pager, next, jumper"
+                        :total="total">
+                        </el-pagination>
+                    </div>
+                </el-col>
+            </el-row>
+        </div>
+
         <!-- 弹出弹窗 -->
         <el-dialog
             title=""
             :visible.sync="checkDialog"
             width="50%"
             center>
-            <p>海绵宝宝的验证码：<span>644747</span></p>
+            <p><span style="color:#409EFF;">{{userData.nickname}}</span>的验证码：<span style="color:#409EFF;">{{userData.inviteCode}}</span></p>
             <div class="wrapper">
                 <el-image 
                     style="width: 300px; height: 300px"
@@ -93,10 +105,10 @@
             :visible.sync="examineDialog"
             width="30%"
             :before-close="handleClose">
-            <span>确定要通过托尼-屎大颗的认证条件吗？</span>
+            <span>确定要通过</span><span style="color:#409EFF;">{{userData.nickname}}</span><span>的认证条件吗？</span>
             <span slot="footer" class="dialog-footer">
                 <el-button @click="handleClose">取 消</el-button>
-                <el-button type="primary" @click="handleClose">确 定</el-button>
+                <el-button type="primary" @click="onSubmitExamine">确 定</el-button>
             </span>
         </el-dialog>
         <!-- 驳回 -->
@@ -105,7 +117,7 @@
             :visible.sync="failedDialog"
             width="30%"
             :before-close="handleClose">
-            <span>确定拒绝通过托尼-屎大颗的认证条件吗？</span>
+            <span>确定拒绝通过</span><span style="color:#409EFF;">{{userData.nickname}}</span><span>的认证条件吗？</span>
             <el-input
                 type="textarea"
                 :rows="3"
@@ -114,12 +126,13 @@
             </el-input>
             <span slot="footer" class="dialog-footer">
                 <el-button @click="handleClose">取 消</el-button>
-                <el-button type="primary" @click="handleClose">确 定</el-button>
+                <el-button type="primary" @click="onSubmitFailed">确 定</el-button>
             </span>
         </el-dialog>
     </div>
 </template>
 <script>
+import { getAuthGirlsList } from '@/api/user.js'
 export default {
     name: "identify-girl",
     data () {
@@ -134,49 +147,112 @@ export default {
                 // 'https://fuss10.elemecdn.com/8/27/f01c15bb73e1ef3793e64e6b7bbccjpeg.jpeg',
             ],
             identifyForm: {
-                keyword: "",
-                isIdentify: "",
-                areaid: ""
+                searchText: "",
+                authStatus: "",
+                city: "",
+                page: 1,
+                pageSize: 10
             },
-            tableData: [
+            tableData: [], //表格数据
+            stateMap: {
+                1: "资料未完成",
+                2: "待认证",
+                3: "认证完成",
+                4: "认证失败",
+                5: "审核中",
+                10: "封号"
+            },
+            total: 0, //分页
+            currentPage: 1,
+            stateList: [
                 {
-                    account: "3546475",
-                    nickname: "zhansan",
-                    city: "longhua",
-                    identify: "student",
-                    identifystatus: "是",
-                    login: "2020/03/24",
-                    createAt: "2020/03/24",
-                    code: "hjkknnj"
+                    id: 1,
+                    name: "资料未完成"
+                },
+                {
+                    id: 2,
+                    name: "待认证"
+                },
+                {
+                    id: 3,
+                    name: "认证完成"
+                },
+                {
+                    id: 4,
+                    name: "认证失败"
+                },
+                {
+                    id: 5,
+                    name: "审核中"
+                },
+                {
+                    id: 10,
+                    name: "封号"
                 }
-            ]
+            ],
+            userData: []
         }
     },
     methods: {
+        initData() {
+            getAuthGirlsList(this.identifyForm).then(res => {
+                if(res.code === 1) {
+                    this.tableData = res.data
+                    if(res.data.length > 0) {
+                        this.total = res.data.length
+                        console.log(this.total)
+                    }
+                }
+            }).catch(err =>{
+                console.log(err)
+            })
+        },
         searchData () {
-
+            this.initData()
         },
-        onChecked () {
+        // 查看
+        onChecked (row) {
             this.checkDialog = true
+            this.userData = row
         },
-        onExamine () {
+        // 通过
+        onExamine (row) {
             this.examineDialog = true
+            this.userData = row
         },
-        onFailed () {
+        // 确定通过
+        onSubmitExamine() {
+            // 调用接口
+        },
+        // 驳回
+        onFailed (row) {
+            this.userData = row
             this.failedDialog = true
+        },
+        // 确认驳回
+        onSubmitFailed() {
+            // 调用接口
         },
         handleClose () {
             this.checkDialog = false
             this.examineDialog = false
             this.failedDialog = false
-        }
+        },
+        // 分页
+        handleCurrentChange(val){
+            this.identifyForm.page = val
+            getAuthGirlsList(this.identifyForm).then()
+        },
+    },
+    created() {
+        this.initData()
     }
 }
 </script>
 <style lang="less" scoped>
 .identify-girl {
     padding: 10px;
-    height: 100%;
+    min-height: calc(100% - 80px);
     background-color: #f0f2f6;
     .search-wrapper {
         height: 50px;
@@ -193,6 +269,7 @@ export default {
         margin-top: 20px;
         padding: 10px;
         background-color: #ffffff;
+        overflow-y: scroll;
         /deep/.el-table thead {
             background-color: #f9fafd;
         }
@@ -203,6 +280,13 @@ export default {
             color: #000000;
             
         }
+        .pagination{
+            text-align: right;
+            margin-top: 10px;
+        }
+    }
+    /deep/.el-textarea__inner {
+        margin-top: 10px;
     }
 }
 </style>

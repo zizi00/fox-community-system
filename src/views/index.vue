@@ -94,7 +94,7 @@ export default {
         }
         .right-container {
             width: 100%;
-            height: 100%;
+            height: calc(100% - 80px);
             overflow: auto;
             // padding: 0 20px;
         }
