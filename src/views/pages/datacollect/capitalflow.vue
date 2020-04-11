@@ -3,75 +3,147 @@
         <div class="search-wrapper">
             <el-form :inline="true" ref="search_data" :model="capitalFlowForm">
                 <el-form-item label="关键词:">
-                    <el-input v-model="capitalFlowForm.keyword" size="small"></el-input>
+                    <el-input v-model="capitalFlowForm.key" size="small"></el-input>
                 </el-form-item>
                 <el-form-item label="支付类型:">
-                    <el-select v-model="capitalFlowForm.kind" size="small">
-                        <!-- <el-option
-                        v-for="item in currentTopicList"
-                        :key="item.topicBoardId"
-                        :label="item.title"
-                        :value="item.topicBoardId">
-                        <span style="float: left">{{ item.title }}</span>
-                        </el-option> -->
+                    <el-select v-model="capitalFlowForm.payType" placeholder="请选择" size="small" clearable>
+                        <el-option key="1"  label="普通照片" value="1"></el-option>
+                        <el-option key="2"  label="红包照片" value="2"></el-option>
+                        <el-option key="3"  label="会员充值" value="3"></el-option>
+                        <el-option key="4"  label="钱包充值" value="4"></el-option>
+                        <el-option key="5"  label="付费广播" value="5"></el-option>
+                        <el-option key="6"  label="付费相册" value="6"></el-option>
+                        <el-option key="7"  label="查看QQ" value="7"></el-option>
+                        <el-option key="8"  label="查看微信" value="8"></el-option>
                     </el-select>
                 </el-form-item>
                 <el-form-item label="支付状态:">
-                    <el-select v-model="capitalFlowForm.status" size="small">
-                        <!-- <el-option
-                        v-for="item in currentTopicList"
-                        :key="item.topicBoardId"
-                        :label="item.title"
-                        :value="item.topicBoardId">
-                        <span style="float: left">{{ item.title }}</span>
-                        </el-option> -->
+                    <el-select v-model="capitalFlowForm.payStatus" placeholder="请选择" size="small" clearable>
+                        <el-option key="0"  label="未付" value="0"></el-option>
+                        <el-option key="1"  label="已支付" value="1"></el-option>
                     </el-select>
                 </el-form-item>
                 <el-form-item label="时间:">
-                    <el-input v-model="capitalFlowForm.time" size="small"></el-input>
+                    <el-date-picker
+                        v-model="capitalFlowForm.startDate"
+                        type="datetime"
+                        value-format="yyyy-MM-dd HH:mm:ss"
+                        :picker-options="pickerOptions"
+                        placeholder="选择开始时间">
+                    </el-date-picker>--
+                    <el-date-picker
+                        v-model="capitalFlowForm.endDate"
+                        type="datetime"
+                        value-format="yyyy-MM-dd HH:mm:ss"
+                        :picker-options="pickerOptions"
+                        placeholder="选择结束时间">
+                    </el-date-picker>
                 </el-form-item>
                 <el-form-item>
-                <el-button type="primary" size="small" icon="search" @click="searchData(classifyForm)">搜索</el-button>
+                <el-button type="primary" size="small" icon="search" @click="searchData()">搜索</el-button>
                 </el-form-item>
             </el-form>
         </div>
         <div class="table_container">
+            <div class="table-top"><span>会员充值:(元)</span><span>累计解锁相册:(元)</span><span>累计红包相册：85482.35 (元)</span><span>累计查看资料：85482.35 (元)</span><span>累计合计：85482.35 (元)</span></div>
             <el-table :data="tableData" border style="width: 100%">
-                <el-table-column type="index" label="序号" align="center" width="100"></el-table-column>
-                <el-table-column prop="createAt" label="订单号" align="center"></el-table-column>
-                <el-table-column prop="categoryName" label="账号" align="center"></el-table-column>
-                <el-table-column prop="status" label="昵称" align="center">
+                <el-table-column prop="orderNo" label="订单号" align="center"></el-table-column>
+                <el-table-column prop="account" label="账号" align="center"></el-table-column>
+                <el-table-column prop="userNickName" label="昵称" align="center"></el-table-column>
+                <el-table-column prop="payType" label="支付类型" align="center">
                     <template slot-scope="scope">
-                        <span style="margin-left: 10px">{{statusMap[scope.row.status]}}</span>
+                        <span style="margin-left: 10px">{{ payTypeMap[scope.row.payType] }}</span>
                     </template>
                 </el-table-column>
-                <el-table-column prop="createAt" label="支付类型" align="center"></el-table-column>
-                <el-table-column prop="createAt" label="支付金额（狐币）" align="center"></el-table-column>
-                <el-table-column prop="createAt" label="支付时间" align="center"></el-table-column>
-                <el-table-column prop="createAt" label="支付状态" align="center"></el-table-column>
-                <el-table-column prop="createAt" label="支付对象账号" align="center"></el-table-column>
+                <el-table-column prop="money" label="订单金额" align="center"></el-table-column>
+                <el-table-column prop="payMoney" label="支付金额（狐币）" align="center"></el-table-column>
+                <el-table-column prop="payTime" label="支付时间" align="center"></el-table-column>
+                <el-table-column prop="payStatus" label="支付状态" align="center">
+                    <template slot-scope="scope">
+                        <span style="margin-left: 10px">{{ payStatusMap[scope.row.payStatus] }}</span>
+                    </template>
+                </el-table-column>
+                <el-table-column prop="toAccount" label="支付对象账号" align="center"></el-table-column>
             </el-table>
-            </div>
+            <el-row class="table-bottom">
+                <span>会员充值：6523 (元)</span><span>解锁相册：1523 (元)</span><span>红包照片：852 (元)</span><span>查看资料：852 (元)</span><span>合计：2523 (元)</span>
+            </el-row>
+            <el-row>
+                <el-col :span="24">
+                    <div class="pagination" v-if="total > 10">
+                        <el-pagination
+                        @current-change="handleCurrentChange"
+                        :current-page="currentPage"
+                        :page-size="10"
+                        background
+                        layout="total, prev, pager, next, jumper"
+                        :total="total">
+                        </el-pagination>
+                    </div>
+                </el-col>
+            </el-row>
+        </div>
     </div>
 </template>
 <script>
+import { getCapitalflowList } from '@/api/aggregate.js'
 export default {
     name: "capital-flow",
     data () {
         return {
             capitalFlowForm: {
-                keyword: "",
-                kind: "",
-                status: "",
-                time: ""
+                key: "",
+                pageNo: 1,
+                pageSize: 10,
+                startDate: "",
+                endDate: "",
+                payStatus: "",
+                payType: ""
             },
-            tableData: []
+            tableData: [],
+            pickerOptions: {
+                disabledDate(time) {
+                return time.getTime() > Date.now();
+                },
+            },
+            total: 0, //分页
+            currentPage: 1,
+            payTypeMap: {
+                1: "普通照片",
+                2: "红包照片",
+                3: "会员充值",
+                4: "钱包充值",
+                5: "付费广播",
+                6: "付费相册",
+                7: "查看QQ",
+                8: "查看微信"
+            },
+            payStatusMap: {
+                0: "未支付",
+                1: "已支付",
+            }
         }
     },
     methods: {
-        searchData () {
-
+        initData() {
+            getCapitalflowList(this.capitalFlowForm).then(res => {
+                if(res.code === 1) {
+                    this.tableData = res.data.pageInfo.list
+                    this.total = res.data.pageInfo.total
+                }
+            })
         },
+        // 分页
+        handleCurrentChange(val) {
+            this.capitalFlowForm.pageNo = val
+            this.initData()
+        },
+        searchData () {
+            this.initData()
+        },
+    },
+    created() {
+        this.initData()
     }
 }
 </script>
@@ -81,20 +153,33 @@ export default {
     height: 100%;
     background-color: #f0f2f6;
     .search-wrapper {
-        height: 50px;
+        min-height: 50px;
         padding: 5px 0px;
         box-sizing: border-box;
         text-align: left;
         padding-left: 10px;
         background-color: #ffffff;
         .el-form--inline {
-            height: 40px;
+            min-height: 40px;
         }
     }
     .table_container {
         margin-top: 20px;
         padding: 10px;
         background-color: #ffffff;
+        .table-top {
+            color:#409EFF;
+            text-align: left;
+            margin-bottom: 10px;
+            span {
+                margin-right: 10px;
+            }
+        }
+        .table-bottom {
+            span {
+                margin-right: 12px;
+            }
+        }
         /deep/.el-table thead {
             background-color: #f9fafd;
         }
@@ -104,6 +189,10 @@ export default {
         /deep/.el-table th>.cell {
             color: #000000;
             
+        }
+        .pagination{
+            text-align: right;
+            margin-top: 10px;
         }
     }
 }

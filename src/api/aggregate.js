@@ -12,4 +12,16 @@ export function getComplaintList(params) {
 export function getRechargeList(params) {
     return axios.get('/admin/dataQuery/getRechargeRecordPageList?' + qs.stringify(params))
 }
+// 资金流水
+export function getCapitalflowList(params) {
+    return axios.get('/admin/dataQuery/getCapitalFlowPageList?' + qs.stringify(params))
+}
+// 获取提现列表
+export function getCashoutList(params) {
+    return axios.get('/admin/withDraw/getPageList?' + qs.stringify(params))
+}
+// 充值累计
+export function getRechargeOverview() {
+    return axios.get('/admin/dataQuery/getRechargeOverview')
+}
 

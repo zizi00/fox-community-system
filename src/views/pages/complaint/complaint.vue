@@ -15,7 +15,7 @@
                         value-format="yyyy-MM-dd"
                         :picker-options="pickerOptions"
                         placeholder="选择开始时间">
-                    </el-date-picker>至
+                    </el-date-picker> --
                     <el-date-picker
                         v-model="complaintForm.endDate"
                         type="date"
@@ -31,16 +31,13 @@
         </div>
         <div class="table_container">
             <el-table :data="tableData" border style="width: 100%">
-                <el-table-column prop="categoryName" label="反馈人账号" align="center"></el-table-column>
-                <el-table-column prop="status" label="举报原因" align="center">
+                <el-table-column prop="fromUser" label="反馈人账号" align="center"></el-table-column>
+                <el-table-column prop="remark" label="详细描述" align="center"></el-table-column>
+                <el-table-column prop="toUser" label="被举报人账号" align="center"></el-table-column>
+                <el-table-column prop="createTime" label="发布时间" align="center">
                     <template slot-scope="scope">
-                        <span style="margin-left: 10px">{{statusMap[scope.row.status]}}</span>
+                        <span style="margin-left: 10px">{{ scope.row.createTime | parseTime }}</span>
                     </template>
-                </el-table-column>
-                <el-table-column prop="createAt" label="详细描述" align="center"></el-table-column>
-                <el-table-column prop="createAt" label="被举报人账号" align="center"></el-table-column>
-                <el-table-column prop="createAt" label="发布时间" align="center"></el-table-column>
-                <el-table-column prop="operation" align="center" label="操作" fixed="right" width="300">
                 </el-table-column>
             </el-table>
             <el-row>
@@ -87,10 +84,14 @@ export default {
     methods: {
         initData() {
             getComplaintList(this.complaintForm).then(res => {
-                console.log(res)
+                if(res.code === 1) {
+                    this.tableData = res.data.list
+                    this.total = res.data.total
+                }
             })
         },
         searchData () {
+            console.log(typeof this.complaintForm.endDate)
             // 时间格式需要处理
             this.initData()
         },
