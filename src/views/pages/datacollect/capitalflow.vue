@@ -45,7 +45,7 @@
             </el-form>
         </div>
         <div class="table_container">
-            <div class="table-top"><span>会员充值:(元)</span><span>累计解锁相册:(元)</span><span>累计红包相册：85482.35 (元)</span><span>累计查看资料：85482.35 (元)</span><span>累计合计：85482.35 (元)</span></div>
+            <div class="table-top"><span>会员充值:(元)</span><span>累计解锁相册: {{capitalFlowTotal.unlockPhotoTotal}}(元)</span><span>累计红包相册：{{capitalFlowTotal.redPackagePhotoTotal}}(元)</span><span>累计查看资料：{{capitalFlowTotal.lookDataTotal}}(元)</span><span>累计合计：{{capitalFlowTotal.totals}}(元)</span></div>
             <el-table :data="tableData" border style="width: 100%">
                 <el-table-column prop="orderNo" label="订单号" align="center"></el-table-column>
                 <el-table-column prop="account" label="账号" align="center"></el-table-column>
@@ -66,7 +66,7 @@
                 <el-table-column prop="toAccount" label="支付对象账号" align="center"></el-table-column>
             </el-table>
             <el-row class="table-bottom">
-                <span>会员充值：6523 (元)</span><span>解锁相册：1523 (元)</span><span>红包照片：852 (元)</span><span>查看资料：852 (元)</span><span>合计：2523 (元)</span>
+                <span>会员充值：(元)</span><span>解锁相册：{{capitalFlow.unlockPhotoTotal}}(元)</span><span>红包照片：{{capitalFlow.redPackagePhotoTotal}}(元)</span><span>查看资料：{{capitalFlow.lookDataTotal}}(元)</span><span>合计：{{capitalFlow.totals}}(元)</span>
             </el-row>
             <el-row>
                 <el-col :span="24">
@@ -86,7 +86,7 @@
     </div>
 </template>
 <script>
-import { getCapitalflowList } from '@/api/aggregate.js'
+import { getCapitalflowList, getCapitalOverview } from '@/api/aggregate.js'
 export default {
     name: "capital-flow",
     data () {
@@ -121,7 +121,9 @@ export default {
             payStatusMap: {
                 0: "未支付",
                 1: "已支付",
-            }
+            },
+            capitalFlow: {},
+            capitalFlowTotal: {}
         }
     },
     methods: {
@@ -130,6 +132,10 @@ export default {
                 if(res.code === 1) {
                     this.tableData = res.data.pageInfo.list
                     this.total = res.data.pageInfo.total
+                    this.capitalFlow.unlockPhotoTotal = res.data.unlockPhotoTotal
+                    this.capitalFlow.redPackagePhotoTotal = res.data.redPackagePhotoTotal
+                    this.capitalFlow.lookDataTotal = res.data.lookDataTotal
+                    this.capitalFlow.totals = res.data.totals
                 }
             })
         },
@@ -138,12 +144,20 @@ export default {
             this.capitalFlowForm.pageNo = val
             this.initData()
         },
+        getCapitalData() {
+            getCapitalOverview().then(res =>{
+                if(res.code === 1) {
+                    this.capitalFlowTotal = res.data
+                }
+            })
+        },
         searchData () {
             this.initData()
         },
     },
     created() {
         this.initData()
+        this.getCapitalData()
     }
 }
 </script>
@@ -176,6 +190,8 @@ export default {
             }
         }
         .table-bottom {
+            margin-top: 10px;
+            text-align: left;
             span {
                 margin-right: 12px;
             }

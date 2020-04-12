@@ -30,7 +30,7 @@
                     </el-date-picker>
                 </el-form-item>
                 <el-form-item>
-                <el-button type="primary" size="small" icon="search" @click="searchData(classifyForm)">搜索</el-button>
+                <el-button type="primary" size="small" icon="search" @click="searchData()">搜索</el-button>
                 </el-form-item>
             </el-form>
         </div>
@@ -48,20 +48,14 @@
                         <span style="margin-left: 10px">{{ statusMap[scope.row.status] }}</span>
                     </template>
                 </el-table-column>
-                <el-table-column prop="operation" align="center" label="操作" fixed="right" width="300">
+                <el-table-column prop="operation" align="center" label="操作" fixed="right" width="150">
                 <template slot-scope="scope">
                     <el-button
                     type="text"
                     size="small"
                     plain
                     @click="onEditClassify(scope.row,scope.$index)"
-                    >驳回</el-button>
-                    <el-button
-                    type="text"
-                    size="small"
-                    plain
-                    @click="onDeleteClassify(scope.row,scope.$index)"
-                    >通过审核</el-button>
+                    >查看</el-button>
                 </template>
                 </el-table-column>
             </el-table>
@@ -105,7 +99,7 @@ export default {
             })
         },
         searchData () {
-
+            this.initData()
         },
         onEditClassify () {
 

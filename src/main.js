@@ -1,6 +1,7 @@
 import Vue from "vue";
 import App from "./App.vue";
 import router from "./router";
+import axios from "./assets/js/axios";
 import store from "./store";
 import ElementUI from "element-ui";
 import echarts from 'echarts'
@@ -12,6 +13,7 @@ Vue.config.productionTip = false;
 Object.keys(filters).forEach(key => {
   Vue.filter(key, filters[key])
 })
+Vue.prototype.$axios = axios;
 Vue.prototype.$echarts = echarts
 Vue.use(ElementUI);
 new Vue({

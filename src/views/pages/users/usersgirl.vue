@@ -45,24 +45,24 @@
         </div>
         <div class="table_container">
             <el-table :data="tableData" border style="width: 100%">
-                <el-table-column type="index" label="序号" align="center" width="100"></el-table-column>
-                <el-table-column prop="categoryName" label="账号" align="center"></el-table-column>
-                <el-table-column prop="status" label="昵称" align="center">
-                    <template slot-scope="scope">
+                <!-- <el-table-column type="index" label="序号" align="center" width="100"></el-table-column> -->
+                <el-table-column prop="phone" label="账号" align="center"></el-table-column>
+                <el-table-column prop="nickname" label="昵称" align="center">
+                    <!-- <template slot-scope="scope">
                         <span style="margin-left: 10px">{{statusMap[scope.row.status]}}</span>
-                    </template>
+                    </template> -->
                 </el-table-column>
-                <el-table-column prop="createAt" label="所在城市" align="center"></el-table-column>
-                <el-table-column prop="createAt" label="职业" align="center"></el-table-column>
-                <el-table-column prop="createAt" label="年龄" align="center"></el-table-column>
-                <el-table-column prop="createAt" label="QQ" align="center"></el-table-column>
-                <el-table-column prop="createAt" label="微信" align="center"></el-table-column>
-                <el-table-column prop="createAt" label="认证" align="center"></el-table-column>
+                <el-table-column prop="city" label="所在城市" align="center"></el-table-column>
+                <el-table-column prop="career" label="职业" align="center"></el-table-column>
+                <el-table-column prop="age" label="年龄" align="center"></el-table-column>
+                <el-table-column prop="qq" label="QQ" align="center"></el-table-column>
+                <el-table-column prop="wechat" label="微信" align="center"></el-table-column>
+                <el-table-column prop="isValid" label="认证" align="center"></el-table-column>
                 <el-table-column prop="createAt" label="钱包" align="center"></el-table-column>
                 <el-table-column prop="createAt" label="最近登录" align="center"></el-table-column>
-                <el-table-column prop="createAt" label="注册时间" align="center"></el-table-column>
-                <el-table-column prop="createAt" label="状态" align="center"></el-table-column>
-                <el-table-column prop="createAt" label="受邀请码" align="center"></el-table-column>
+                <el-table-column prop="createTime" label="注册时间" align="center"></el-table-column>
+                <el-table-column prop="state" label="状态" align="center"></el-table-column>
+                <el-table-column prop="inviteCode" label="受邀请码" align="center"></el-table-column>
                 <el-table-column prop="operation" align="center" label="操作" fixed="right" width="300">
                 <template slot-scope="scope">
                     <el-button
@@ -85,7 +85,21 @@
                 </template>
                 </el-table-column>
             </el-table>
-            </div>
+            <el-row>
+                <el-col :span="24">
+                    <div class="pagination" v-if="total > 10">
+                        <el-pagination
+                        @current-change="handleCurrentChange"
+                        :current-page="currentPage"
+                        :page-size="10"
+                        background
+                        layout="total, prev, pager, next, jumper"
+                        :total="total">
+                        </el-pagination>
+                    </div>
+                </el-col>
+            </el-row>
+        </div>
         <!-- 弹出弹窗 -->
         <el-dialog
             :visible.sync="detailDialog"
@@ -152,17 +166,28 @@ export default {
                 status: "",
                 areaid: ""
             },
-            tableData: []
+            tableData: [],
+            searchData: {
+                sex: '2', // 1==男，2==女
+                page: 1,
+                pageSize: 10
+            },
+            total: 0, //分页
+            currentPage: 1,
         }
     },
     methods: {
         initData() {
-            let params = {
-                sex: '女'
-            }
-            getUserList(params).then(res =>{
-                console.log(res)
+            getUserList(this.searchData).then(res =>{
+                if(res.code === 1) {
+                    this.tableData = res.data
+                    this.total = res.count
+                }
             })
+        },
+        handleCurrentChange(val) {
+            this.searchData.page = val
+            this.initData()
         },
         searchData () {
 
@@ -185,7 +210,8 @@ export default {
 <style lang="less" scoped>
 .users-girl {
     padding: 10px;
-    height: 100%;
+    // height: 100%;
+    min-height: calc(100% - 80px);
     background-color: #f0f2f6;
     .search-wrapper {
         height: 50px;

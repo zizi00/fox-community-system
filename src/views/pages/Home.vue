@@ -116,12 +116,24 @@ export default {
       var oneweekdate = new Date(nowdate-7*24*3600*1000)
       this.endTime = getDate(nowdate)
       this.startTime = getDate(oneweekdate)
+      let time1 = Date.parse(nowdate).toString()
+      let time2 = Date.parse(oneweekdate).toString()
+      // let params = {
+      //   startDate: Date.parse(nowdate),
+      //   endDate: Date.parse(oneweekdate)
+      // }
+      // let params = {
+      //   startDate: '2019-04-05 12:00:00',
+      //   endDate: "2019-11-10 12:00:00"
+      // }
       let params = {
-        startDate: Date.parse(nowdate),
-        endDate: Date.parse(oneweekdate)
+        startDate: 1555048015000,
+        endDate: 1586670415000
       }
       console.log(params)
-
+      this.$axios.get('/admin/statistics/getByDate?startDate=1555048015000&endDate=1586670415000').then(res => {
+        console.log(res)
+      })
       // getInCome(params).then(res =>{
       //   console.log(res)
       // })

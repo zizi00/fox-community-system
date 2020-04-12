@@ -24,4 +24,8 @@ export function getCashoutList(params) {
 export function getRechargeOverview() {
     return axios.get('/admin/dataQuery/getRechargeOverview')
 }
+export function getCapitalOverview() {
+    return axios.get('/admin/dataQuery/getCapitalOverview')
+}
+
 

@@ -2,6 +2,7 @@
 import axios from 'axios'
 // import router from '../../router/index'
 import { Message,Loading } from "element-ui";
+import router from "../../router/index";
 import store from '@/store/index'
 // import common from './common'
 
@@ -41,6 +42,10 @@ instance.interceptors.response.use(
       Message({ message: '服务繁忙，请稍后再试!', type: 'error',duration:5000})
     } else if (response.data.code === -1) {
       Message({ message: response.data.message, type: 'error',duration:5000 })
+      if(response.data.message === "token无效"){
+        //  重定向到登录页面
+        router.push({ name: 'Login' })
+      }
     } else if (response.data.code === 0) {
     } else if (response.data.code === 1) {
       // Message({ message: response.data.message, type: 'error',duration:8000 })
