@@ -62,7 +62,7 @@
         <el-dialog
             title="添加邀请码"
             :visible.sync="dialogVisible"
-            width="40%"
+            width="450px"
             :before-close="handleClose">
             <div class="content">
                 <el-form ref="form" :model="codeForm" label-width="80px" :rules="form_rules">
@@ -70,10 +70,10 @@
                         <div class="code"><span>{{codeForm.code}}</span><span style="margin-left:5px;color:#409EFF;cursor:pointer" @click="refreshCode">刷新</span></div>
                     </el-form-item>
                     <el-form-item prop="userName" label="管理人">
-                        <el-input v-model="codeForm.userName"></el-input>
+                        <el-input v-model="codeForm.userName" style="width: 250px;"></el-input>
                     </el-form-item>
                     <el-form-item prop="phone" label="联系电话">
-                        <el-input v-model="codeForm.phone"></el-input>
+                        <el-input v-model="codeForm.phone" style="width: 250px;"></el-input>
                     </el-form-item>
                     <el-form-item class="text_right">
                         <el-button @click="dialogVisible = false">取 消</el-button>
@@ -85,7 +85,17 @@
     </div>
 </template>
 <script>
-import { getInviteCodeList, getRefreshCodet, addInviteCode, updateInviteCodestate } from '@/api/invitecode.js'
+import { getInviteCodeList, getRefreshCodet, addInviteCode, updateInviteCodestate } from '@/api/invitecode.js';
+import { isvalidPhone } from '@/assets/js/validate.js';
+var validPhone=(rule, value,callback)=>{
+      if (!value){
+          callback(new Error('请输入电话号码'))
+      }else  if (!isvalidPhone(value)){
+        callback(new Error('请输入正确的11位手机号码'))
+      }else {
+          callback()
+      }
+  };
 export default {
     name: "invite-code",
     data () {
@@ -106,7 +116,7 @@ export default {
                     { required: true, message: "名称不能为空！", trigger: "blur" }
                 ],
                 phone: [
-                    {required: true, message: "手机号不能为空！", trigger: "blur"},
+                    {required: true, trigger: "blur", validator: validPhone},
                 ],
             },
             total: 0, //分页
@@ -196,7 +206,7 @@ export default {
     background-color: #f0f2f6;
     .search-wrapper {
         height: 50px;
-        padding: 5px 0px;
+        padding: 10px 0px;
         box-sizing: border-box;
         text-align: left;
         padding-left: 10px;
@@ -230,6 +240,7 @@ export default {
         }
         .el-form-item__content {
             width: 300px;
+            text-align: left;
         }
         .code {
             text-align: left;

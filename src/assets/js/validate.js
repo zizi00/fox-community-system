@@ -1,3 +1,9 @@
+
+// 手机号验证
+export function isvalidPhone(str) {
+  const reg = /^1[3|4|5|7|8|9][0-9]\d{8}$/
+  return reg.test(str)
+}
 /**
  * 邮箱
  * @param {*} s
