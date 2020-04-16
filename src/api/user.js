@@ -8,3 +8,7 @@ export function getUserList(params) {
 export function getAuthGirlsList(params) {
     return axios.get('/admin/userManage/getAuthGirlsInfo?' + qs.stringify(params))
 }
+// 获取用户详情
+export function getByUserId(params) {
+    return axios.get('/admin/userManage/getByUserId?' + qs.stringify(params))
+}

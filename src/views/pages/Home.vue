@@ -106,7 +106,7 @@ export default {
   created () {
     this.$nextTick(() =>{
       this.initdata ()
-      this.drawingCharts()
+      // this.drawingCharts()
     })
   },
   methods: {
@@ -119,10 +119,10 @@ export default {
         startDate: oneweekdate.getTime(),
         endDate: nowdate.getTime()
       }
-
       getInCome(params).then(res =>{
         if(res.code === 1) {
           this.chartData = res.data
+          this.drawingCharts()
         }
       })
       

@@ -53,19 +53,27 @@
                 <el-table-column prop="age" label="年龄" align="center"></el-table-column>
                 <el-table-column prop="qq" label="QQ" align="center"></el-table-column>
                 <el-table-column prop="wechat" label="微信" align="center"></el-table-column>
-                <el-table-column prop="isValid" label="认证" align="center"></el-table-column>
+                <el-table-column prop="state" label="认证" align="center">
+                    <template slot-scope="scope">
+                        <span style="margin-left: 10px">{{stateMap[scope.row.state]}}</span>
+                    </template>
+                </el-table-column>
                 <el-table-column prop="createAt" label="钱包" align="center"></el-table-column>
-                <el-table-column prop="createAt" label="最近登录" align="center"></el-table-column>
+                <el-table-column prop="updateTime" label="最近登录" align="center"></el-table-column>
                 <el-table-column prop="createTime" label="注册时间" align="center"></el-table-column>
-                <el-table-column prop="state" label="状态" align="center"></el-table-column>
+                <el-table-column prop="isValid" label="状态" align="center">
+                    <template slot-scope="scope">
+                        <span style="margin-left: 10px">{{isValidMap[scope.row.isValid]}}</span>
+                    </template>
+                </el-table-column>
                 <el-table-column prop="inviteCode" label="受邀请码" align="center"></el-table-column>
-                <el-table-column prop="operation" align="center" label="操作" fixed="right" width="300">
+                <el-table-column prop="operation" align="center" label="操作" fixed="right" width="200">
                 <template slot-scope="scope">
                     <el-button
                     type="text"
                     size="small"
                     plain
-                    @click="onEditClassify(scope.row,scope.$index)"
+                    @click="onDetail(scope.row.id)"
                     >详情</el-button>
                     <el-button
                     type="text"
@@ -112,21 +120,21 @@
                         </el-image>
                     </div>
                     <div class="info-wrapper">
-                        <p class="username">叶真真</p>
+                        <p class="username">{{detailData.nickname}}</p>
                         <div class="info">
                             <div class="basic first">
-                                <p><span>年龄：</span><span>25岁</span>&ensp; |&ensp; <span>身高：</span><span>160cm</span>&ensp; |&ensp; <span>体重：</span><span>40kg</span>&ensp; |&ensp; <span>胸围：</span><span>36c</span></p>
-                                <p><span>简介：</span><span>文艺，旅游，稳重，反正就是牛批。</span></p>
-                                <p><span>账号：</span><span>3454657558</span></p>
-                                <p><span>微信：</span><span>3454657558</span></p>
-                                <p><span>qq：</span><span>3454657558</span></p>
+                                <p><span>年龄：</span><span>{{detailData.age}}岁</span>&ensp; |&ensp; <span>身高：</span><span>{{detailData.height}}cm</span>&ensp; |&ensp; <span>体重：</span><span>{{detailData.weight}}kg</span>&ensp; |&ensp; <span>胸围：</span><span>{{detailData.bust}}c</span></p>
+                                <p><span>简介：</span><span>{{detailData.introduction}}</span></p>
+                                <p><span>账号：</span><span>{{detailData.phone}}</span></p>
+                                <p><span>微信：</span><span>{{detailData.wechat}}</span></p>
+                                <p><span>qq：</span><span>{{detailData.qq}}</span></p>
                             </div>
                             <div class="line"></div>
                             <div class="basic second">
-                                <p><span>城市：</span><span>湖南长沙</span>&ensp;| &ensp; <span>职业：</span><span>学生</span></p>
-                                <p><span>约会范围：</span><span>长沙 / 常德 / 岳阳</span></p>
-                                <p><span>约会条件：</span><span>温柔娴熟</span></p>
-                                <p><span>约会节目：</span><span>吃吃喝喝</span></p>
+                                <p><span>城市：</span><span>{{detailData.city}}</span>&ensp;| &ensp; <span>职业：</span><span>{{detailData.career}}</span></p>
+                                <p><span>约会范围：</span><span>{{detailData.datingRange}}</span></p>
+                                <p><span>约会条件：</span><span>{{detailData.datingProgram}}</span></p>
+                                <p><span>约会节目：</span><span>{{detailData.datingCondition}}</span></p>
                             </div>
                             <div class="basic third">
                                 <div class="status">禁用</div>
@@ -149,7 +157,7 @@
     </div>
 </template>
 <script>
-import { getUserList } from '@/api/user.js'
+import { getUserList, getByUserId } from '@/api/user.js'
 export default {
     name: "users-girl",
     data () {
@@ -174,11 +182,29 @@ export default {
             },
             total: 0, //分页
             currentPage: 1,
+            stateMap: {
+                1: "资料未完成",
+                2: "待认证",
+                3: "认证完成",
+                4: "认证失败",
+                5: "审核中",
+                10: "封号"
+            },
+            isValidMap:{
+                1: "有效",
+                0: "已禁用"
+            },
+            detailData: []
         }
     },
     methods: {
         initData() {
-            getUserList(this.searchData).then(res =>{
+            let params = {
+                sex: '2', // 1==男，2==女
+                page: 1,
+                pageSize: 10,
+            }
+            getUserList(params).then(res =>{
                 if(res.code === 1) {
                     this.tableData = res.data
                     this.total = res.count
@@ -192,8 +218,18 @@ export default {
         onSearch () {
 
         },
-        onEditClassify () {
-
+        // 查看详情
+        onDetail (id) {
+            this.detailDialog = true
+            let params = {
+                userId: id
+            }
+            getByUserId(params).then(res => {
+                if(res.code === 1) {
+                    this.detailData = res.data
+                    console.log(this.detailData)
+                }
+            })
         },
         onDeleteClassify () {
 
@@ -237,6 +273,10 @@ export default {
         /deep/.el-table th>.cell {
             color: #000000;
             
+        }
+        .pagination{
+            text-align: right;
+            margin-top: 10px;
         }
     }
     .detail-wrapper {
