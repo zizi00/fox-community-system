@@ -45,7 +45,7 @@
                     <div class="pagination" v-if="total > 10">
                         <el-pagination
                         @current-change="handleCurrentChange"
-                        :current-page="currentPage"
+                        :current-page.sync="currentPage"
                         :page-size="10"
                         background
                         layout="total, prev, pager, next, jumper"
@@ -91,6 +91,8 @@ export default {
             })
         },
         searchData () {
+            this.currentPage = 1
+            this.complaintForm.pageNo = 1
             console.log(typeof this.complaintForm.endDate)
             // 时间格式需要处理
             this.initData()

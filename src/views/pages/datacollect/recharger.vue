@@ -65,7 +65,7 @@
                     <div class="pagination" v-if="total > 10">
                         <el-pagination
                         @current-change="handleCurrentChange"
-                        :current-page="currentPage"
+                        :current-page.sync="currentPage"
                         :page-size="10"
                         background
                         layout="total, prev, pager, next, jumper"
@@ -137,6 +137,8 @@ export default {
             this.initData()
         },
         searchData () {
+            this.currentPage = 1
+            this.rechargerForm.pageNo = 1
             this.initData()
         },
     },
