@@ -39,7 +39,7 @@
                     </el-select>
                 </el-form-item>
                 <el-form-item>
-                <el-button type="primary" size="small" icon="search" @click="searchData(classifyForm)">搜索</el-button>
+                <el-button type="primary" size="small" icon="search" @click="onSearch()">搜索</el-button>
                 </el-form-item>
             </el-form>
         </div>
@@ -47,11 +47,7 @@
             <el-table :data="tableData" border style="width: 100%">
                 <!-- <el-table-column type="index" label="序号" align="center" width="100"></el-table-column> -->
                 <el-table-column prop="phone" label="账号" align="center"></el-table-column>
-                <el-table-column prop="nickname" label="昵称" align="center">
-                    <!-- <template slot-scope="scope">
-                        <span style="margin-left: 10px">{{statusMap[scope.row.status]}}</span>
-                    </template> -->
-                </el-table-column>
+                <el-table-column prop="nickname" label="昵称" align="center"></el-table-column>
                 <el-table-column prop="city" label="所在城市" align="center"></el-table-column>
                 <el-table-column prop="career" label="职业" align="center"></el-table-column>
                 <el-table-column prop="age" label="年龄" align="center"></el-table-column>
@@ -170,7 +166,11 @@ export default {
             searchData: {
                 sex: '2', // 1==男，2==女
                 page: 1,
-                pageSize: 10
+                pageSize: 10,
+                state: "",
+                key: "",
+                isValid: "",
+                city: ""
             },
             total: 0, //分页
             currentPage: 1,
@@ -189,7 +189,7 @@ export default {
             this.searchData.page = val
             this.initData()
         },
-        searchData () {
+        onSearch () {
 
         },
         onEditClassify () {

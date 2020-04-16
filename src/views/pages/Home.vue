@@ -47,18 +47,16 @@
           <div class="date">
             <p class="interval">默认当前一周</p>
             <el-date-picker
-              v-model="startTime"
-              type="date"
-              value-format="yyyy-MM-dd"
-              :picker-options="pickerOptions"
-              placeholder="选择开始时间">
-            </el-date-picker>至
+                v-model="startTime"
+                type="datetime"
+                :picker-options="pickerOptions"
+                placeholder="选择开始时间">
+            </el-date-picker>--
             <el-date-picker
-              v-model="endTime"
-              type="date"
-              value-format="yyyy-MM-dd"
-              :picker-options="pickerOptions"
-              placeholder="选择结束时间">
+                v-model="endTime"
+                type="datetime"
+                :picker-options="pickerOptions"
+                placeholder="选择结束时间">
             </el-date-picker>
             <el-button class="select" type="primary" size="small" @click="selectDateIncome">筛选</el-button>
           </div>
@@ -101,7 +99,8 @@ export default {
         disabledDate(time) {
           return time.getTime() > Date.now();
         },
-      }
+      },
+      chartData: []
     }
   },
   created () {
@@ -116,42 +115,45 @@ export default {
       var oneweekdate = new Date(nowdate-7*24*3600*1000)
       this.endTime = getDate(nowdate)
       this.startTime = getDate(oneweekdate)
-      let time1 = Date.parse(nowdate).toString()
-      let time2 = Date.parse(oneweekdate).toString()
-      // let params = {
-      //   startDate: Date.parse(nowdate),
-      //   endDate: Date.parse(oneweekdate)
-      // }
-      // let params = {
-      //   startDate: '2019-04-05 12:00:00',
-      //   endDate: "2019-11-10 12:00:00"
-      // }
       let params = {
-        startDate: 1555048015000,
-        endDate: 1586670415000
+        startDate: oneweekdate.getTime(),
+        endDate: nowdate.getTime()
       }
-      console.log(params)
-      this.$axios.get('/admin/statistics/getByDate?startDate=1555048015000&endDate=1586670415000').then(res => {
-        console.log(res)
+
+      getInCome(params).then(res =>{
+        if(res.code === 1) {
+          this.chartData = res.data
+        }
       })
-      // getInCome(params).then(res =>{
-      //   console.log(res)
-      // })
       
     },
     // 根据时间区间显示图表数据
     selectDateIncome() {
       // 字符串转标准时间
-      let starttime = Date (this.startTime)
-      let endtime = Date (this.endtTime)
+      let starttime = new Date (this.startTime)
+      let endtime = new Date (this.endTime)
       let params = {
-        startDate: Date.parse(starttime), // 标准时间转时间戳
-        endDate: Date.parse(endtime)
+        startDate: starttime.getTime(), // 标准时间转时间戳
+        endDate: endtime.getTime()
       }
       // 调接口
+      getInCome(params).then(res =>{
+        if(res.code === 1) {
+          this.chartData = res.data
+          this.drawingCharts()
+        }
+      })
     },
     // 画图表
     drawingCharts () {
+      var dateList = this.chartData.map(function (item) {
+        return item.date;
+      });
+      var valueList = this.chartData.map(function (item) {
+        return item.income;
+      });
+      console.log(dateList)
+      console.log(valueList)
       let myChart = this.$echarts.init(this.$refs.myChart)
       let option = {
         color: 'rgb(85,152,253)',
@@ -174,13 +176,13 @@ export default {
         xAxis: {
             type: 'category',
             boundaryGap: false,
-            data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+            data: dateList
         },
         yAxis: {
             type: 'value'
         },
         series: [{
-            data: [820, 932, 901, 934, 1290, 1330, 1320],
+            data: valueList,
             type: 'line',
             areaStyle: {
               color: 'rgb(213,230,255)'
