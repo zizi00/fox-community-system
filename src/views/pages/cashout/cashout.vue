@@ -54,16 +54,40 @@
                     type="text"
                     size="small"
                     plain
-                    @click="onCheck(scope.row.id)"
+                    @click="onCheck(scope.row.id,scope.row.name)"
                     >查看</el-button>
                 </template>
                 </el-table-column>
             </el-table>
             </div>
+            <el-dialog
+            title=""
+            :visible.sync="transferVisible"
+            width="500px"
+            :before-close="handleClose">
+            <span slot = "title">正在执行{{cachoutData.name}}的提现转账</span>
+            <div class="content">
+                <div class="transfer-item"><span>支付宝昵称:</span>&ensp; <span>{{cachoutData.aliNick}}</span></div>
+                <div class="transfer-item"><span>支付宝账号:</span>&ensp; <span>{{cachoutData.aliAccount}}</span></div>
+                <div class="transfer-item"><span>提现金额:&ensp; {{cachoutData.money}}</span><span style="margin: 0px 15px">|</span><span>冻结金额:{{cachoutData.freezeMoney}}</span><span style="margin: 0px 15px">|</span><span>账户余额:{{cachoutData.balance}}</span></div>
+                <div class="textarea">
+                    <el-input
+                        type="textarea"
+                        :rows="2"
+                        placeholder="请输入支付宝32位转账订单号；或输入驳回原因，默认原因“您的提现申请有误，请核实后重新申请。"
+                        v-model="transferMessage">
+                        </el-input>
+                </div>
+            </div>
+            <div slot="footer" class="submit">
+                <el-button class="disabled" type="primary" v-if="!this.transferMessage">确认转账</el-button>
+                <el-button type="primary" v-else @click="onSubmitTransfer(cachoutData.id)">确认转账</el-button>
+            </div>
+        </el-dialog>
     </div>
 </template>
 <script>
-import { getCashoutList } from '@/api/aggregate.js'
+import { getCashoutList, getUserWithdrawDetail, updateStatus } from '@/api/aggregate.js'
 export default {
     name: "cash-out",
     data () {
@@ -87,7 +111,11 @@ export default {
                 2: "审核通过",
                 3: "提现已驳回",
                 4: "提现成功",
-            }
+            },
+            cachoutData: {},
+            transferVisible: false, // 汇款弹窗
+            transferMessage: "",
+            refuseVisible: false // 驳回弹窗
         }
     },
     methods: {
@@ -101,9 +129,39 @@ export default {
         searchData () {
             this.initData()
         },
-        onCheck (id) {
-            // console.log(row)
+        onCheck (id,name) {
+            this.transferMessage = ""
+            this.transferVisible = true
+            let params = {
+                id: id
+            }
+            getUserWithdrawDetail(params).then(res =>{
+                if(res.code === 1) {
+                    this.cachoutData = res.data
+                    this.cachoutData.id = id
+                    this.cachoutData.name = name
+                    if(this.cachoutData.money === this.cachoutData.freezeMoney) {
+                        this.transferVisible = true
+                    } else {
+                        this.refuseVisible = true
+                    }
+                }
+            })
         },
+        //  确认转账
+        onSubmitTransfer(id) {
+            let params = {
+                id: id,
+                status: 4,
+                remark: this.transferMessage
+            }
+            updateStatus(params).then(res => {
+                console.log(res)
+            })
+        },
+        handleClose () {
+            this.transferVisible = false
+        }
     },
     created() {
         this.initData()
@@ -140,6 +198,39 @@ export default {
             color: #000000;
             
         }
+    }
+    /deep/.el-dialog {
+        text-align: left;
+        .el-dialog__header{
+            padding: 20px;
+            background-color: #FCFCFC;
+            border-bottom: 1px solid #f5f5f5;
+        }
+    }
+    .content {
+        .transfer-item {
+            margin-top: 10px;
+        }
+        .textarea {
+            margin-top: 20px;
+        }
+        
+        
+    }
+    .submit {
+        margin-top: 20px;
+        text-align: center;
+        .el-button {
+            padding: 10px 50px;
+        }
+        .disabled {
+            border: none;
+            background-color: gray;
+        }
+    }
+    /deep/.el-dialog__footer {
+        padding: 1px 20px 10px;
+        border-top: 1px solid #f5f5f5;
     }
 }
 </style>

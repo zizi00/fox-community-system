@@ -20,6 +20,14 @@ export function getCapitalflowList(params) {
 export function getCashoutList(params) {
     return axios.get('/admin/withDraw/getPageList?' + qs.stringify(params))
 }
+// 获取提现详情
+export function getUserWithdrawDetail(params) {
+    return axios.get('/admin/withDraw/getUserWithdrawDetail?' + qs.stringify(params))
+}
+// 确认汇款
+export function updateStatus(params) {
+    return axios.post('/admin/withDraw/updateStatus?' + qs.stringify(params))
+}
 // 充值累计
 export function getRechargeOverview() {
     return axios.get('/admin/dataQuery/getRechargeOverview')
