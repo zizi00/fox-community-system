@@ -3,41 +3,27 @@
         <div class="search-wrapper">
             <el-form :inline="true" ref="search_data" :model="usersForm">
                 <el-form-item label="关键词:">
-                    <el-input v-model="usersForm.keyword" size="small"></el-input>
+                    <el-input v-model="usersForm.key" size="small"></el-input>
                 </el-form-item>
                 <el-form-item label="认证:">
-                    <el-select v-model="usersForm.isIdentify" size="small">
-                        <!-- <el-option
-                        v-for="item in currentTopicList"
-                        :key="item.topicBoardId"
-                        :label="item.title"
-                        :value="item.topicBoardId">
-                        <span style="float: left">{{ item.title }}</span>
-                        </el-option> -->
+                    <el-select v-model="usersForm.state" placeholder="请选择" size="small" clearable>
+                        <el-option key="1"  label="资料未完成" value="1"></el-option>
+                        <el-option key="2"  label="待认证" value="2"></el-option>
+                        <el-option key="3"  label="认证完成" value="3"></el-option>
+                        <el-option key="4"  label="认证失败" value="4"></el-option>
+                        <el-option key="5"  label="审核中" value="5"></el-option>
+                        <el-option key="10"  label="封号" value="10"></el-option>
                     </el-select>
                 </el-form-item>
                 <el-form-item label="状态:">
-                    <el-select v-model="usersForm.status" size="small">
-                        <!-- <el-option
-                        v-for="item in currentTopicList"
-                        :key="item.topicBoardId"
-                        :label="item.title"
-                        :value="item.topicBoardId">
-                        <span style="float: left">{{ item.title }}</span>
-                        </el-option> -->
+                    <el-select v-model="usersForm.isValid" placeholder="请选择" size="small" clearable>
+                        <el-option key="1"  label="有效" value="1"></el-option>
+                        <el-option key="0"  label="已禁用" value="0"></el-option>
                     </el-select>
                 </el-form-item>
-                <el-form-item label="地区:">
-                    <el-select v-model="usersForm.areaid" size="small">
-                        <!-- <el-option
-                        v-for="item in currentTopicList"
-                        :key="item.topicBoardId"
-                        :label="item.title"
-                        :value="item.topicBoardId">
-                        <span style="float: left">{{ item.title }}</span>
-                        </el-option> -->
-                    </el-select>
-                </el-form-item>
+                <!-- <el-form-item label="地区:">
+                    <el-input v-model="usersForm.city" size="small"></el-input>
+                </el-form-item> -->
                 <el-form-item>
                 <el-button type="primary" size="small" icon="search" @click="onSearch()">搜索</el-button>
                 </el-form-item>
@@ -115,7 +101,7 @@
                     <div class="avatar">
                         <el-image
                             style="width: 70px; height: 70px; border-radius:50%"
-                            :src="url"
+                            :src="'http://oss-cn-beijing.aliyuncs.com' + detailData.picPath"
                             fit="cover">
                         </el-image>
                     </div>
@@ -165,13 +151,6 @@ export default {
             detailDialog: false,
             url: 'https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg',
             usersForm: {
-                keyword: "",
-                isIdentify: "",
-                status: "",
-                areaid: ""
-            },
-            tableData: [],
-            searchData: {
                 sex: '2', // 1==男，2==女
                 page: 1,
                 pageSize: 10,
@@ -180,6 +159,7 @@ export default {
                 isValid: "",
                 city: ""
             },
+            tableData: [],
             total: 0, //分页
             currentPage: 1,
             stateMap: {
@@ -199,12 +179,12 @@ export default {
     },
     methods: {
         initData() {
-            let params = {
-                sex: '2', // 1==男，2==女
-                page: 1,
-                pageSize: 10,
-            }
-            getUserList(params).then(res =>{
+            // let params = {
+            //     sex: '2', // 1==男，2==女
+            //     page: 1,
+            //     pageSize: 10,
+            // }
+            getUserList(this.usersForm).then(res =>{
                 if(res.code === 1) {
                     this.tableData = res.data
                     this.total = res.count
@@ -212,7 +192,7 @@ export default {
             })
         },
         handleCurrentChange(val) {
-            this.searchData.page = val
+            this.usersForm.page = val
             this.initData()
         },
         onSearch () {

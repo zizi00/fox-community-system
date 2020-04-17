@@ -7,10 +7,10 @@
                 </el-form-item>
                 <el-form-item label="状态:">
                     <el-select v-model="cashOutForm.status" placeholder="请选择" size="small" clearable>
-                        <el-option key="1"  label="待审核" value="1"></el-option>
+                        <el-option key="1"  label="等待汇款" value="1"></el-option>
                         <el-option key="2"  label="审核通过" value="2"></el-option>
-                        <el-option key="3"  label="审核拒绝" value="3"></el-option>
-                        <el-option key="4"  label="确认汇款" value="4"></el-option>
+                        <el-option key="3"  label="提现已驳回" value="3"></el-option>
+                        <el-option key="4"  label="提现成功" value="4"></el-option>
                     </el-select>
                 </el-form-item>
                 <el-form-item label="时间:">
@@ -54,7 +54,7 @@
                     type="text"
                     size="small"
                     plain
-                    @click="onEditClassify(scope.row,scope.$index)"
+                    @click="onCheck(scope.row.id)"
                     >查看</el-button>
                 </template>
                 </el-table-column>
@@ -83,10 +83,10 @@ export default {
                 },
             },
             statusMap: {
-                1: "待审核",
+                1: "等待汇款",
                 2: "审核通过",
-                3: "审核拒绝",
-                4: "确认汇款",
+                3: "提现已驳回",
+                4: "提现成功",
             }
         }
     },
@@ -101,12 +101,9 @@ export default {
         searchData () {
             this.initData()
         },
-        onEditClassify () {
-
+        onCheck (id) {
+            // console.log(row)
         },
-        onDeleteClassify () {
-
-        }
     },
     created() {
         this.initData()
