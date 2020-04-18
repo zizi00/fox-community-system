@@ -3,7 +3,7 @@
         <div class="search-wrapper">
             <el-form :inline="true" ref="search_data" :model="identifyForm">
                 <el-form-item label="关键词:">
-                    <el-input v-model="identifyForm.searchText" size="small"></el-input>
+                    <el-input v-model="identifyForm.searchText" size="small" placeholder="账号/昵称"></el-input>
                 </el-form-item>
                 <el-form-item label="认证:">
                     <el-select v-model="identifyForm.authStatus" size="small">
@@ -17,7 +17,7 @@
                     </el-select>
                 </el-form-item>
                 <el-form-item label="地区(城市):">
-                    <el-input v-model="identifyForm.city" size="small"></el-input>
+                    <el-input v-model="identifyForm.city" size="small" placeholder="请输入地区"></el-input>
                 </el-form-item>
                 <el-form-item>
                 <el-button type="primary" size="small" icon="search" @click="searchData()">搜索</el-button>
@@ -26,10 +26,9 @@
         </div>
         <div class="table_container">
             <el-table :data="tableData" border style="width: 100%">
-                <el-table-column type="index" label="序号" align="center" width="100"></el-table-column>
+                <!-- <el-table-column type="index" label="序号" align="center" width="100"></el-table-column> -->
                 <el-table-column prop="phone" label="账号" align="center"></el-table-column>
-                <el-table-column prop="nickname" label="昵称" align="center">
-                </el-table-column>
+                <el-table-column prop="nickname" label="昵称" align="center"></el-table-column>
                 <el-table-column prop="city" label="所在城市" align="center"></el-table-column>
                 <el-table-column prop="career" label="身份" align="center"></el-table-column>
                 <el-table-column prop="state" label="认证" align="center">
@@ -37,7 +36,11 @@
                         <span style="margin-left: 10px">{{stateMap[scope.row.state]}}</span>
                     </template>
                 </el-table-column>
-                <el-table-column prop="updateTime" label="最近登录" align="center"></el-table-column>
+                <el-table-column prop="updateTime" label="最近登录" align="center">
+                    <template slot-scope="scope">
+                        <span style="margin-left: 10px">{{ scope.row.updateTime | parseTime }}</span>
+                    </template>
+                </el-table-column>
                 <el-table-column prop="createTime" label="注册时间" align="center">
                     <template slot-scope="scope">
                         <span style="margin-left: 10px">{{ scope.row.createTime | parseTime }}</span>
@@ -198,10 +201,7 @@ export default {
             getAuthGirlsList(this.identifyForm).then(res => {
                 if(res.code === 1) {
                     this.tableData = res.data
-                    if(res.data.length > 0) {
-                        this.total = res.data.length
-                        console.log(this.total)
-                    }
+                    this.total = res.count
                 }
             }).catch(err =>{
                 console.log(err)

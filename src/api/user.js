@@ -12,3 +12,18 @@ export function getAuthGirlsList(params) {
 export function getByUserId(params) {
     return axios.get('/admin/userManage/getByUserId?' + qs.stringify(params))
 }
+// 禁用或者启用用户
+export function forbiddenUser(params) {
+    return axios.post('/admin/userManage/forbidden?' + qs.stringify(params))
+}
+// 获取条件日期新增用户数
+export function getTodayUser(params) {
+    return axios.get('/admin/userManage/getIncrementUserByDate?' + qs.stringify(params))
+}
+// 获取条件日期新增vip数
+export function getVip(params) {
+    return axios.get('/admin/userManage/getIncrementVipByDate?' + qs.stringify(params))
+}
+
+
+ 

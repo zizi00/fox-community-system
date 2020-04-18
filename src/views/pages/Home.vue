@@ -8,7 +8,7 @@
           </div>
           <div class="statistic-info">
             <p>今日新增男用户</p>
-            <p><span>100</span><span>个</span></p>
+            <p><span>{{maleUser}}</span><span>个</span></p>
           </div>
         </li>
         <li class="list-item">
@@ -17,7 +17,7 @@
           </div>
           <div class="statistic-info">
             <p>今日新增女用户</p>
-            <p><span>100</span><span>个</span></p>
+            <p><span>{{femaleUser}}</span><span>个</span></p>
           </div>
         </li>
         <li class="list-item">
@@ -26,7 +26,7 @@
           </div>
           <div class="statistic-info">
             <p>昨日VIP销量</p>
-            <p><span>100</span><span>元</span></p>
+            <p><span>{{vipCount}}</span><span>元</span></p>
           </div>
         </li>
         <li class="list-item">
@@ -88,6 +88,7 @@
 <script>
 // @ is an alias to /src
 import { getInCome } from '@/api/income.js'
+import { getTodayUser, getVip } from '@/api/user.js'
 import { getDate } from '@/assets/js/validate.js'
 export default {
   name: "Home",
@@ -100,7 +101,10 @@ export default {
           return time.getTime() > Date.now();
         },
       },
-      chartData: []
+      chartData: [],
+      maleUser: "",
+      femaleUser: "",
+      vipCount: ""
     }
   },
   created () {
@@ -125,7 +129,32 @@ export default {
           this.drawingCharts()
         }
       })
-      
+      let paramsMale = {
+        sex: "1",  // 1==男，2==女
+        date: nowdate.getTime()
+      }
+      getTodayUser(paramsMale).then(res=>{
+        if(res.code === 1){
+          this.maleUser = res.data
+        }
+      })
+      let paramsFemale = {
+        sex: "2",  // 1==男，2==女
+        date: nowdate.getTime()
+      }
+      getTodayUser(paramsFemale).then(res=>{
+        if(res.code === 1){
+          this.femaleUser = res.data
+        }
+      })
+      let paramsVip = {
+        date: nowdate.getTime()
+      }
+      getVip(paramsVip).then(res => {
+        if(res.code === 1) {
+          this.vipCount = res.data
+        }
+      })
     },
     // 根据时间区间显示图表数据
     selectDateIncome() {

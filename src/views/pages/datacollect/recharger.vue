@@ -3,24 +3,13 @@
         <div class="search-wrapper">
             <el-form :inline="true" ref="search_data" :model="rechargerForm">
                 <el-form-item label="关键词:">
-                    <el-input v-model="rechargerForm.key" size="small"></el-input>
+                    <el-input v-model="rechargerForm.key" size="small" placeholder="账号/昵称/流水号"></el-input>
                 </el-form-item>
-                <el-form-item label="支付类型:">
-                    <el-select v-model="rechargerForm.payType" placeholder="请选择" size="small" clearable>
-                        <el-option key="1"  label="普通照片" value="1"></el-option>
-                        <el-option key="2"  label="红包照片" value="2"></el-option>
-                        <el-option key="3"  label="会员充值" value="3"></el-option>
-                        <el-option key="4"  label="钱包充值" value="4"></el-option>
-                        <el-option key="5"  label="付费广播" value="5"></el-option>
-                        <el-option key="6"  label="付费相册" value="6"></el-option>
-                        <el-option key="7"  label="查看QQ" value="7"></el-option>
-                        <el-option key="8"  label="查看微信" value="8"></el-option>
-                    </el-select>
-                </el-form-item>
-                <el-form-item label="支付状态:">
-                    <el-select v-model="rechargerForm.payStatus" placeholder="请选择" size="small" clearable>
-                        <el-option key="0"  label="未支付" value="0"></el-option>
-                        <el-option key="1"  label="已支付" value="1"></el-option>
+                <el-form-item label="支付方式:">
+                    <el-select v-model="rechargerForm.payWay" placeholder="请选择" size="small" clearable>
+                        <el-option key="1"  label="微信" value="1"></el-option>
+                        <el-option key="2"  label="支付宝" value="2"></el-option>
+                        <el-option key="3"  label="钱包" value="3"></el-option>
                     </el-select>
                 </el-form-item>
                 <el-form-item label="时间:">
@@ -49,9 +38,9 @@
             <el-table :data="tableData" border style="width: 100%">
                 <el-table-column prop="account" label="账号" align="center"></el-table-column>
                 <el-table-column prop="userNickName" label="昵称" align="center"></el-table-column>
-                <el-table-column prop="payType" label="支付类型" align="center">
+                <el-table-column prop="payWay" label="支付方式" align="center">
                     <template slot-scope="scope">
-                        <span style="margin-left: 10px">{{ payTypeMap[scope.row.payType] }}</span>
+                        <span style="margin-left: 10px">{{ payWayMap[scope.row.payWay] }}</span>
                     </template>
                 </el-table-column>
                 <el-table-column prop="money" label="充值金额（元）" align="center"></el-table-column>
@@ -89,8 +78,7 @@ export default {
                 pageSize: 10,
                 startDate: "",
                 endDate: "",
-                payType: "",
-                payStatus: ""
+                payWay: "",
             },
             tableData: [],
             pickerOptions: {
@@ -100,15 +88,10 @@ export default {
             },
             total: 0, //分页
             currentPage: 1,
-            payTypeMap: {
-                1: "普通照片",
-                2: "红包照片",
-                3: "会员充值",
-                4: "钱包充值",
-                5: "付费广播",
-                6: "付费相册",
-                7: "查看QQ",
-                8: "查看微信"
+            payWayMap: {
+                1: "微信",
+                2: "支付宝",
+                3: "钱包",
             },
             rechargerTotal: 0,
             totals: 0
@@ -120,6 +103,7 @@ export default {
                 if(res.code === 1) {
                     this.tableData = res.data.pageInfo.list
                     this.total = res.data.pageInfo.total
+                    this.totals = res.data.totals
                 }
             })
         },
@@ -127,7 +111,7 @@ export default {
             getRechargeOverview().then(res => {
                 if(res.code === 1) {
                     this.rechargerTotal = res.data.rechargeTotal
-                    this.totals = res.data.totals
+                    // this.totals = res.data.totals
                 }
             })
         },

@@ -3,7 +3,7 @@
         <div class="search-wrapper">
             <el-form :inline="true" ref="search_data" :model="cashOutForm">
                 <el-form-item label="关键词:">
-                    <el-input v-model="cashOutForm.key" size="small"></el-input>
+                    <el-input v-model="cashOutForm.key" size="small" placeholder="账号/昵称"></el-input>
                 </el-form-item>
                 <el-form-item label="状态:">
                     <el-select v-model="cashOutForm.status" placeholder="请选择" size="small" clearable>
@@ -16,15 +16,15 @@
                 <el-form-item label="时间:">
                     <el-date-picker
                         v-model="cashOutForm.startDate"
-                        type="date"
-                        value-format="yyyy-MM-dd"
+                        type="datetime"
+                        value-format="yyyy-MM-dd HH:mm:ss"
                         :picker-options="pickerOptions"
                         placeholder="选择开始时间">
-                    </el-date-picker> -- 
+                    </el-date-picker>--
                     <el-date-picker
                         v-model="cashOutForm.endDate"
-                        type="date"
-                        value-format="yyyy-MM-dd"
+                        type="datetime"
+                        value-format="yyyy-MM-dd HH:mm:ss"
                         :picker-options="pickerOptions"
                         placeholder="选择结束时间">
                     </el-date-picker>
@@ -38,7 +38,11 @@
             <el-table :data="tableData" border style="width: 100%">
                 <el-table-column prop="account" label="账号" align="center"></el-table-column>
                 <el-table-column prop="name" label="昵称" align="center"></el-table-column>
-                <el-table-column prop="money" label="提现金额（元）" align="center"></el-table-column>
+                <el-table-column prop="money" label="提现金额（元）" align="center">
+                    <template slot-scope="scope">
+                        <span style="margin-left: 10px; color: #46a846">{{ scope.row.money }}</span>
+                    </template>
+                </el-table-column>
                 <el-table-column prop="aliAccount" label="支付宝账号" align="center"></el-table-column>
                 <el-table-column prop="aliNick" label="支付宝昵称" align="center"></el-table-column>
                 <el-table-column prop="createTime" label="申请时间" align="center"></el-table-column>
@@ -65,29 +69,88 @@
             :visible.sync="transferVisible"
             width="500px"
             :before-close="handleClose">
-            <span slot = "title">正在执行{{cachoutData.name}}的提现转账</span>
-            <div class="content">
-                <div class="transfer-item"><span>支付宝昵称:</span>&ensp; <span>{{cachoutData.aliNick}}</span></div>
-                <div class="transfer-item"><span>支付宝账号:</span>&ensp; <span>{{cachoutData.aliAccount}}</span></div>
-                <div class="transfer-item"><span>提现金额:&ensp; {{cachoutData.money}}</span><span style="margin: 0px 15px">|</span><span>冻结金额:{{cachoutData.freezeMoney}}</span><span style="margin: 0px 15px">|</span><span>账户余额:{{cachoutData.balance}}</span></div>
-                <div class="textarea">
-                    <el-input
-                        type="textarea"
-                        :rows="2"
-                        placeholder="请输入支付宝32位转账订单号；或输入驳回原因，默认原因“您的提现申请有误，请核实后重新申请。"
-                        v-model="transferMessage">
+                <span slot = "title">正在执行{{cachoutData.name}}的提现转账</span>
+                <div class="content">
+                    <div class="transfer-item"><span>支付宝昵称:</span>&ensp; <span>{{cachoutData.aliNick}}</span></div>
+                    <div class="transfer-item"><span>支付宝账号:</span>&ensp; <span>{{cachoutData.aliAccount}}</span></div>
+                    <div class="transfer-item"><span>提现金额:&ensp; </span><span style="color: #08c4a0">{{cachoutData.money}}</span><span style="margin: 0px 15px">|</span><span>冻结金额:&ensp; </span><span style="color: #08c4a0">{{cachoutData.freezeMoney}}</span><span style="margin: 0px 15px">|</span><span>账户余额:{{cachoutData.balance}}</span></div>
+                    <div class="textarea">
+                        <el-input
+                            type="textarea"
+                            :rows="2"
+                            placeholder="请输入支付宝32位转账订单号；或输入驳回原因，默认原因“您的提现申请有误，请核实后重新申请。"
+                            v-model="transferMessage">
                         </el-input>
+                    </div>
                 </div>
-            </div>
-            <div slot="footer" class="submit">
-                <el-button class="disabled" type="primary" v-if="!this.transferMessage">确认转账</el-button>
-                <el-button type="primary" v-else @click="onSubmitTransfer(cachoutData.id)">确认转账</el-button>
-            </div>
-        </el-dialog>
+                <div slot="footer" class="submit">
+                    <el-button class="disabled" type="primary" v-if="!this.transferMessage">确认已转账</el-button>
+                    <el-button type="primary" v-else @click="onSubmitTransfer(cachoutData.id)">确认已转账</el-button>
+
+                </div>
+            </el-dialog>
+            <el-dialog
+            title=""
+            :visible.sync="refuseVisible"
+            width="500px"
+            :before-close="refuseClose">
+                <span slot = "title">正在执行{{cachoutData.name}}的提现转账</span>
+                <div class="content">
+                    <div class="transfer-item"><span>支付宝昵称:</span>&ensp; <span>{{cachoutData.aliNick}}</span></div>
+                    <div class="transfer-item"><span>支付宝账号:</span>&ensp; <span>{{cachoutData.aliAccount}}</span></div>
+                    <div class="transfer-item"><span>提现金额:&ensp; </span><span style="color: #ff0000">{{cachoutData.money}}</span><span style="margin: 0px 15px">|</span><span>冻结金额:&ensp; </span><span style="color: #ff0000">{{cachoutData.freezeMoney}}</span><span style="margin: 0px 15px">|</span><span>账户余额:{{cachoutData.balance}}</span></div>
+                    <p class="refuse-tip">系统判定该用户为恶意操作，请驳回TA的提现申请</p>
+                    <div class="refuse-textarea">
+                        <el-input
+                            type="textarea"
+                            :rows="2"
+                            placeholder='请输入驳回原因，默认原因“您的提现申请有误，请核实后重新申请。”'
+                            v-model="refuseMessage">
+                        </el-input>
+                    </div>
+                </div>
+                <div slot="footer" class="submit">
+                    <el-button type="primary" class="refuse-btn" @click="onSubmitRefuse(cachoutData.id)">提现已驳回</el-button>
+                </div>
+            </el-dialog>
+            <!-- 提现成功查看 -->
+            <el-dialog
+            title=""
+            :visible.sync="successVisible"
+            width="500px"
+            :before-close="successClose">
+                <span slot = "title">正在执行{{cachoutData.name}}的提现转账</span>
+                <div class="content">
+                    <div class="transfer-item"><span>支付宝昵称:</span>&ensp; <span>{{cachoutData.aliNick}}</span></div>
+                    <div class="transfer-item"><span>支付宝账号:</span>&ensp; <span>{{cachoutData.aliAccount}}</span></div>
+                    <div class="transfer-item"><span>提现金额:&ensp; </span><span style="color: #08c4a0">{{cachoutData.money}}</span><span style="margin: 0px 15px">|</span><span>冻结金额:&ensp; </span><span style="color: #08c4a0">{{cachoutData.freezeMoney}}</span><span style="margin: 0px 15px">|</span><span>账户余额:{{cachoutData.balance}}</span></div>
+                    <p class="remark"><span>支付宝转账订单号：</span><span>{{cachoutData.remark}}</span></p>
+                </div>
+                <div slot="footer" class="submit">
+                    <p type="primary" class="success">提现成功</p>
+                </div>
+            </el-dialog>
+            <!-- 提现驳回查看 -->
+            <el-dialog
+            title=""
+            :visible.sync="failedVisible"
+            width="500px"
+            :before-close="failedClose">
+                <span slot = "title">正在执行{{cachoutData.name}}的提现转账</span>
+                <div class="content">
+                    <div class="transfer-item"><span>支付宝昵称:</span>&ensp; <span>{{cachoutData.aliNick}}</span></div>
+                    <div class="transfer-item"><span>支付宝账号:</span>&ensp; <span>{{cachoutData.aliAccount}}</span></div>
+                    <div class="transfer-item"><span>提现金额:&ensp; </span><span style="color: #ff0000">{{cachoutData.money}}</span><span style="margin: 0px 15px">|</span><span>冻结金额:&ensp; </span><span style="color: #ff0000">{{cachoutData.freezeMoney}}</span><span style="margin: 0px 15px">|</span><span>账户余额:{{cachoutData.balance}}</span></div>
+                    <p class="remark"><span>驳回原因：</span><span>{{cachoutData.remark}}</span></p>
+                </div>
+                <div slot="footer" class="submit">
+                    <p type="primary" class="failed">提现已驳回</p>
+                </div>
+            </el-dialog>
     </div>
 </template>
 <script>
-import { getCashoutList, getUserWithdrawDetail, updateStatus } from '@/api/aggregate.js'
+import { getCashoutList, getUserWithdrawDetail, updateStatus,reject } from '@/api/aggregate.js'
 export default {
     name: "cash-out",
     data () {
@@ -115,7 +178,10 @@ export default {
             cachoutData: {},
             transferVisible: false, // 汇款弹窗
             transferMessage: "",
-            refuseVisible: false // 驳回弹窗
+            refuseVisible: false, // 驳回弹窗
+            refuseMessage: "",
+            successVisible: false, // 提现成功查看
+            failedVisible: false // 提现驳回查看
         }
     },
     methods: {
@@ -131,7 +197,7 @@ export default {
         },
         onCheck (id,name) {
             this.transferMessage = ""
-            this.transferVisible = true
+            this.refuseMessage = ""
             let params = {
                 id: id
             }
@@ -140,11 +206,23 @@ export default {
                     this.cachoutData = res.data
                     this.cachoutData.id = id
                     this.cachoutData.name = name
-                    if(this.cachoutData.money === this.cachoutData.freezeMoney) {
-                        this.transferVisible = true
-                    } else {
+                    if(res.data.status === 1) {
+                        if(this.cachoutData.money === this.cachoutData.freezeMoney) {
+                            this.transferVisible = true
+                        } else {
+                            this.refuseVisible = true
+                        }
+                    }else if (res.data.status === 3) {
+                        //提现已驳回
+                        this.failedVisible = true
+                    }else if (res.data.status === 4) {
+                        // 提现成功
+                        this.successVisible = true
+                    }else {
                         this.refuseVisible = true
                     }
+                    
+                    
                 }
             })
         },
@@ -156,11 +234,33 @@ export default {
                 remark: this.transferMessage
             }
             updateStatus(params).then(res => {
+                if(res.code === 1) {
+                    this.transferVisible = false
+                    this.initData()
+                }
+            })
+        },
+        // 提现驳回
+        onSubmitRefuse(id) {
+            let params ={
+                id: id,
+                remark: this.refuseMessage
+            }
+            reject(params).then(res => {
                 console.log(res)
             })
         },
         handleClose () {
             this.transferVisible = false
+        },
+        refuseClose () {
+            this.refuseVisible = false
+        },
+        successClose () {
+            this.successVisible = false
+        },
+        failedClose () {
+            this.failedVisible = false
         }
     },
     created() {
@@ -211,10 +311,20 @@ export default {
         .transfer-item {
             margin-top: 10px;
         }
+        .refuse-tip {
+            margin-top: 10px;
+            color: #ff0000;
+        }
         .textarea {
             margin-top: 20px;
         }
-        
+        .refuse-textarea {
+            margin-top: 10px;
+        }
+        .remark {
+            margin-top: 10px;
+            color: #000000;
+        }
         
     }
     .submit {
@@ -227,9 +337,16 @@ export default {
             border: none;
             background-color: gray;
         }
+        .refuse-btn {
+            border: none;
+            background-color: #ff0000;
+        }
+        .failed {
+            color: #ff0000;
+        }
     }
     /deep/.el-dialog__footer {
-        padding: 1px 20px 10px;
+        padding: 1px 20px 20px;
         border-top: 1px solid #f5f5f5;
     }
 }

@@ -3,10 +3,10 @@
         <div class="search-wrapper">
             <el-form :inline="true" ref="search_data" :model="complaintForm">
                 <el-form-item label="关键词:">
-                    <el-input v-model="complaintForm.key" size="small"></el-input>
+                    <el-input v-model="complaintForm.key" size="small" placeholder="反馈人账号/被举报人账号"></el-input>
                 </el-form-item>
                 <el-form-item label="举报原因:">
-                    <el-input v-model="complaintForm.reportReason" size="small"></el-input>
+                    <el-input v-model="complaintForm.reportReason" size="small" placeholder="请输入举报原因"></el-input>
                 </el-form-item>
                 <el-form-item label="时间:">
                     <el-date-picker

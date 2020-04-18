@@ -3,7 +3,7 @@
         <div class="search-wrapper">
             <el-form :inline="true" ref="search_data" :model="capitalFlowForm">
                 <el-form-item label="关键词:">
-                    <el-input v-model="capitalFlowForm.key" size="small"></el-input>
+                    <el-input v-model="capitalFlowForm.key" size="small" placeholder="账号/昵称/订单号/支付对象"></el-input>
                 </el-form-item>
                 <el-form-item label="支付类型:">
                     <el-select v-model="capitalFlowForm.payType" placeholder="请选择" size="small" clearable>
@@ -19,7 +19,7 @@
                 </el-form-item>
                 <el-form-item label="支付状态:">
                     <el-select v-model="capitalFlowForm.payStatus" placeholder="请选择" size="small" clearable>
-                        <el-option key="0"  label="未付" value="0"></el-option>
+                        <el-option key="0"  label="未支付" value="0"></el-option>
                         <el-option key="1"  label="已支付" value="1"></el-option>
                     </el-select>
                 </el-form-item>
@@ -45,7 +45,7 @@
             </el-form>
         </div>
         <div class="table_container">
-            <div class="table-top"><span>会员充值:(元)</span><span>累计解锁相册: {{capitalFlowTotal.unlockPhotoTotal}}(元)</span><span>累计红包相册：{{capitalFlowTotal.redPackagePhotoTotal}}(元)</span><span>累计查看资料：{{capitalFlowTotal.lookDataTotal}}(元)</span><span>累计合计：{{capitalFlowTotal.totals}}(元)</span></div>
+            <div class="table-top"><span>会员充值:{{capitalFlowTotal.vipRechargeTotal}}(元)</span><span>累计解锁相册: {{capitalFlowTotal.unlockPhotoTotal}}(元)</span><span>累计红包相册：{{capitalFlowTotal.redPackagePhotoTotal}}(元)</span><span>累计查看资料：{{capitalFlowTotal.lookDataTotal}}(元)</span><span>累计合计：{{capitalFlowTotal.totals}}(元)</span></div>
             <el-table :data="tableData" border style="width: 100%">
                 <el-table-column prop="orderNo" label="订单号" align="center"></el-table-column>
                 <el-table-column prop="account" label="账号" align="center"></el-table-column>
@@ -66,7 +66,7 @@
                 <el-table-column prop="toAccount" label="支付对象账号" align="center"></el-table-column>
             </el-table>
             <el-row class="table-bottom">
-                <span>会员充值：(元)</span><span>解锁相册：{{capitalFlow.unlockPhotoTotal}}(元)</span><span>红包照片：{{capitalFlow.redPackagePhotoTotal}}(元)</span><span>查看资料：{{capitalFlow.lookDataTotal}}(元)</span><span>合计：{{capitalFlow.totals}}(元)</span>
+                <span>会员充值：{{capitalFlow.vipRechargeTotal}}(元)</span><span>解锁相册：{{capitalFlow.unlockPhotoTotal}}(元)</span><span>红包照片：{{capitalFlow.redPackagePhotoTotal}}(元)</span><span>查看资料：{{capitalFlow.lookDataTotal}}(元)</span><span>合计：{{capitalFlow.totals}}(元)</span>
             </el-row>
             <el-row>
                 <el-col :span="24">
@@ -136,6 +136,7 @@ export default {
                     this.capitalFlow.redPackagePhotoTotal = res.data.redPackagePhotoTotal
                     this.capitalFlow.lookDataTotal = res.data.lookDataTotal
                     this.capitalFlow.totals = res.data.totals
+                    this.capitalFlow.vipRechargeTotal = res.data.vipRechargeTotal
                 }
             })
         },

@@ -28,6 +28,10 @@ export function getUserWithdrawDetail(params) {
 export function updateStatus(params) {
     return axios.post('/admin/withDraw/updateStatus?' + qs.stringify(params))
 }
+// 提现驳回
+export function reject(params) {
+    return axios.post('/admin/withDraw/reject?' + qs.stringify(params))
+}
 // 充值累计
 export function getRechargeOverview() {
     return axios.get('/admin/dataQuery/getRechargeOverview')

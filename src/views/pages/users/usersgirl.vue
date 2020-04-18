@@ -3,7 +3,7 @@
         <div class="search-wrapper">
             <el-form :inline="true" ref="search_data" :model="usersForm">
                 <el-form-item label="关键词:">
-                    <el-input v-model="usersForm.key" size="small"></el-input>
+                    <el-input v-model="usersForm.key" size="small" placeholder="账号/昵称/手机号/QQ/微信/邀请码"></el-input>
                 </el-form-item>
                 <el-form-item label="认证:">
                     <el-select v-model="usersForm.state" placeholder="请选择" size="small" clearable>
@@ -21,9 +21,9 @@
                         <el-option key="0"  label="已禁用" value="0"></el-option>
                     </el-select>
                 </el-form-item>
-                <!-- <el-form-item label="地区:">
-                    <el-input v-model="usersForm.city" size="small"></el-input>
-                </el-form-item> -->
+                <el-form-item label="地区:">
+                    <el-input v-model="usersForm.city" size="small" placeholder="请输入地区"></el-input>
+                </el-form-item>
                 <el-form-item>
                 <el-button type="primary" size="small" icon="search" @click="onSearch()">搜索</el-button>
                 </el-form-item>
@@ -44,7 +44,7 @@
                         <span style="margin-left: 10px">{{stateMap[scope.row.state]}}</span>
                     </template>
                 </el-table-column>
-                <el-table-column prop="createAt" label="钱包" align="center"></el-table-column>
+                <el-table-column prop="money" label="钱包" align="center"></el-table-column>
                 <el-table-column prop="updateTime" label="最近登录" align="center"></el-table-column>
                 <el-table-column prop="createTime" label="注册时间" align="center"></el-table-column>
                 <el-table-column prop="isValid" label="状态" align="center">
@@ -59,7 +59,7 @@
                     type="text"
                     size="small"
                     plain
-                    @click="onDetail(scope.row.id)"
+                    @click="onDetail(scope.row.id,scope.row.money,scope.row.isValid)"
                     >详情</el-button>
                     <el-button
                     type="text"
@@ -68,10 +68,19 @@
                     @click="onDeleteClassify(scope.row,scope.$index)"
                     >流水</el-button>
                     <el-button
+                    v-if="scope.row.isValid == 1"
                     type="text"
                     size="small"
                     plain
+                    @click="onChangeValid(scope.row.id,0)"
                     >禁用</el-button>
+                    <el-button
+                    v-if="scope.row.isValid == 0"
+                    type="text"
+                    size="small"
+                    plain
+                    @click="onChangeValid(scope.row.id,1)"
+                    >启用</el-button>
                 </template>
                 </el-table-column>
             </el-table>
@@ -80,7 +89,7 @@
                     <div class="pagination" v-if="total > 10">
                         <el-pagination
                         @current-change="handleCurrentChange"
-                        :current-page="currentPage"
+                        :current-page.sync="currentPage"
                         :page-size="10"
                         background
                         layout="total, prev, pager, next, jumper"
@@ -93,7 +102,7 @@
         <!-- 弹出弹窗 -->
         <el-dialog
             :visible.sync="detailDialog"
-            width="80%"
+            width="1200px"
             center
             :before-close="handleClose">
             <div class="detail-wrapper">
@@ -101,7 +110,7 @@
                     <div class="avatar">
                         <el-image
                             style="width: 70px; height: 70px; border-radius:50%"
-                            :src="'http://oss-cn-beijing.aliyuncs.com' + detailData.picPath"
+                            :src="'http://foxcommunity.oss-cn-beijing.aliyuncs.com' + detailData.picPath"
                             fit="cover">
                         </el-image>
                     </div>
@@ -109,7 +118,7 @@
                         <p class="username">{{detailData.nickname}}</p>
                         <div class="info">
                             <div class="basic first">
-                                <p><span>年龄：</span><span>{{detailData.age}}岁</span>&ensp; |&ensp; <span>身高：</span><span>{{detailData.height}}cm</span>&ensp; |&ensp; <span>体重：</span><span>{{detailData.weight}}kg</span>&ensp; |&ensp; <span>胸围：</span><span>{{detailData.bust}}c</span></p>
+                                <p><span>年龄：</span><span>{{detailData.age}}岁</span>&ensp; |&ensp; <span>身高：</span><span>{{detailData.height}}</span>&ensp; |&ensp; <span>体重：</span><span>{{detailData.weight}}</span>&ensp; |&ensp; <span>胸围：</span><span>{{detailData.bust}}</span></p>
                                 <p><span>简介：</span><span>{{detailData.introduction}}</span></p>
                                 <p><span>账号：</span><span>{{detailData.phone}}</span></p>
                                 <p><span>微信：</span><span>{{detailData.wechat}}</span></p>
@@ -123,14 +132,14 @@
                                 <p><span>约会节目：</span><span>{{detailData.datingCondition}}</span></p>
                             </div>
                             <div class="basic third">
-                                <div class="status">禁用</div>
-                                <p><span>钱包（狐币）</span><span>564464</span></p>
+                                <div class="status">{{isValidMap[detailData.isValid]}}</div>
+                                <p><span>钱包（狐币）</span><span>{{detailData.money}}</span></p>
                             </div>
                         </div>
                     </div>
                 </div>
                 <div class="photos-wrapper">
-                    <p class="title">他的相册</p>
+                    <p class="title">她的相册</p>
                     <div class="photos">
                         <el-image
                             :src="url"></el-image>
@@ -143,7 +152,7 @@
     </div>
 </template>
 <script>
-import { getUserList, getByUserId } from '@/api/user.js'
+import { getUserList, getByUserId,forbiddenUser } from '@/api/user.js'
 export default {
     name: "users-girl",
     data () {
@@ -179,11 +188,6 @@ export default {
     },
     methods: {
         initData() {
-            // let params = {
-            //     sex: '2', // 1==男，2==女
-            //     page: 1,
-            //     pageSize: 10,
-            // }
             getUserList(this.usersForm).then(res =>{
                 if(res.code === 1) {
                     this.tableData = res.data
@@ -196,10 +200,13 @@ export default {
             this.initData()
         },
         onSearch () {
+            this.currentPage = 1
+            this.usersForm.page = 1
+            this.initData()
 
         },
         // 查看详情
-        onDetail (id) {
+        onDetail (id,money,isValid) {
             this.detailDialog = true
             let params = {
                 userId: id
@@ -207,12 +214,25 @@ export default {
             getByUserId(params).then(res => {
                 if(res.code === 1) {
                     this.detailData = res.data
-                    console.log(this.detailData)
+                    this.detailData.money = money
+                    this.detailData.isValid = isValid
                 }
             })
         },
         onDeleteClassify () {
 
+        },
+        // 禁用或启用
+        onChangeValid(userid, num) {
+            let params = {
+                id: userid,
+                isValid : num
+            }
+            forbiddenUser(params).then(res => {
+                if(res.code === 1) {
+                    this.initData()
+                }
+            }) 
         },
         handleClose () {
             this.detailDialog = false
@@ -296,7 +316,7 @@ export default {
                         .status {
                             margin-left: 208px;
                             margin-bottom: 8px;
-                            width: 40px;
+                            min-width: 40px;
                             height: 20px;
                             color: #ffffff;
                             text-align: center;
