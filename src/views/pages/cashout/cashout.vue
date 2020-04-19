@@ -100,7 +100,7 @@
                 <div slot="footer" class="submit">
                     <el-button class="disabled" type="primary" v-if="!this.transferMessage">确认已转账</el-button>
                     <el-button type="primary" v-else @click="onSubmitTransfer(cachoutData.id,cachoutData.name)">确认已转账</el-button>
-
+                    <span class="refuse-button" @click="changeDialog">驳回</span>
                 </div>
             </el-dialog>
             <el-dialog
@@ -291,6 +291,11 @@ export default {
 
             })
         },
+        // 转账弹窗转成驳回弹窗
+        changeDialog() {
+            this.transferVisible = false
+            this.refuseVisible = true
+        },
         handleClose () {
             this.transferVisible = false
         },
@@ -375,6 +380,7 @@ export default {
     .submit {
         margin-top: 20px;
         text-align: center;
+        position: relative;
         .el-button {
             padding: 10px 50px;
         }
@@ -388,6 +394,13 @@ export default {
         }
         .failed {
             color: #ff0000;
+        }
+        .refuse-button {
+            position: absolute;
+            top: 5px;
+            right: 0;
+            color: red;
+            cursor: pointer;
         }
     }
     /deep/.el-dialog__footer {
