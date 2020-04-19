@@ -141,10 +141,7 @@
                 <div class="photos-wrapper">
                     <p class="title">他的相册</p>
                     <div class="photos">
-                        <el-image
-                            :src="url"></el-image>
-                            <el-image
-                            :src="url"></el-image>
+                        <el-image :src="'http://foxcommunity.oss-cn-beijing.aliyuncs.com' + item.files.filePath" v-for="(item,index) in detailData.images" :key = "index" :preview-src-list="photoList"></el-image>
                     </div>
                 </div>
             </div>
@@ -158,7 +155,6 @@ export default {
     data () {
         return {
             detailDialog: false,
-            url: 'https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg',
             usersForm: {
                 sex: '1', // 1==男，2==女
                 page: 1,
@@ -183,7 +179,8 @@ export default {
                 1: "有效",
                 0: "已禁用"
             },
-            detailData: []
+            detailData: [],
+            photoList: []
         }
     },
     methods: {
@@ -207,6 +204,7 @@ export default {
         },
         // 查看详情
         onDetail (id,money,isValid) {
+            this.photoList = []
             this.detailDialog = true
             let params = {
                 userId: id
@@ -216,6 +214,11 @@ export default {
                     this.detailData = res.data
                     this.detailData.money = money
                     this.detailData.isValid = isValid
+                    if(res.data.images.length>0) {
+                        for(let i = 0; i<res.data.images.length; i++) {
+                            this.photoList.push('http://foxcommunity.oss-cn-beijing.aliyuncs.com' +res.data.images[i].files.filePath)
+                        }
+                    }
                 }
             })
         },

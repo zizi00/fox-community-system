@@ -123,6 +123,15 @@ export default {
         searchData () {
             this.currentPage = 1
             this.rechargerForm.pageNo = 1
+            let start = new Date(this.rechargerForm.startDate).getTime()
+            let end = new Date(this.rechargerForm.endDate).getTime()
+            if(start>end) {
+                this.$message({
+                type: "warning",
+                message: "开始时间不能大于结束时间"
+                });
+                return false
+            }
             this.initData()
         },
     },

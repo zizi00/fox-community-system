@@ -11,15 +11,15 @@
                 <el-form-item label="时间:">
                     <el-date-picker
                         v-model="complaintForm.startDate"
-                        type="date"
-                        value-format="yyyy-MM-dd"
+                        type="datetime"
+                        value-format="yyyy-MM-dd HH:mm:ss"
                         :picker-options="pickerOptions"
                         placeholder="选择开始时间">
                     </el-date-picker> --
                     <el-date-picker
                         v-model="complaintForm.endDate"
-                        type="date"
-                        value-format="yyyy-MM-dd"
+                        type="datetime"
+                        value-format="yyyy-MM-dd HH:mm:ss"
                         :picker-options="pickerOptions"
                         placeholder="选择结束时间">
                     </el-date-picker>
@@ -36,7 +36,7 @@
                 <el-table-column prop="toUser" label="被举报人账号" align="center"></el-table-column>
                 <el-table-column prop="createTime" label="发布时间" align="center">
                     <template slot-scope="scope">
-                        <span style="margin-left: 10px">{{ scope.row.createTime | parseTime }}</span>
+                        <span style="margin-left: 10px">{{ scope.row.createTime}}</span>
                     </template>
                 </el-table-column>
             </el-table>
@@ -93,7 +93,15 @@ export default {
         searchData () {
             this.currentPage = 1
             this.complaintForm.pageNo = 1
-            console.log(typeof this.complaintForm.endDate)
+            let start = new Date(this.complaintForm.startDate).getTime()
+            let end = new Date(this.complaintForm.endDate).getTime()
+            if(start>end) {
+                this.$message({
+                type: "warning",
+                message: "开始时间不能大于结束时间"
+                });
+                return false
+            }
             // 时间格式需要处理
             this.initData()
         },
@@ -137,6 +145,10 @@ export default {
         /deep/.el-table th>.cell {
             color: #000000;
             
+        }
+        .pagination{
+            text-align: right;
+            margin-top: 10px;
         }
     }
 }

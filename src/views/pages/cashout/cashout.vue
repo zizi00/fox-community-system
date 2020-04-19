@@ -20,7 +20,7 @@
                         value-format="yyyy-MM-dd HH:mm:ss"
                         :picker-options="pickerOptions"
                         placeholder="选择开始时间">
-                    </el-date-picker>--
+                    </el-date-picker> --
                     <el-date-picker
                         v-model="cashOutForm.endDate"
                         type="datetime"
@@ -63,6 +63,20 @@
                 </template>
                 </el-table-column>
             </el-table>
+            <el-row>
+                <el-col :span="24">
+                    <div class="pagination" v-if="total > 10">
+                        <el-pagination
+                        @current-change="handleCurrentChange"
+                        :current-page.sync="currentPage"
+                        :page-size="10"
+                        background
+                        layout="total, prev, pager, next, jumper"
+                        :total="total">
+                        </el-pagination>
+                    </div>
+                </el-col>
+            </el-row>
             </div>
             <el-dialog
             title=""
@@ -181,7 +195,9 @@ export default {
             refuseVisible: false, // 驳回弹窗
             refuseMessage: "",
             successVisible: false, // 提现成功查看
-            failedVisible: false // 提现驳回查看
+            failedVisible: false, // 提现驳回查看
+            total: 0, //分页
+            currentPage: 1,
         }
     },
     methods: {
@@ -189,10 +205,22 @@ export default {
             getCashoutList(this.cashOutForm).then(res => {
                 if(res.code === 1) {
                     this.tableData = res.data.list
+                    this.total = res.data.total
                 }
             })
         },
         searchData () {
+            this.currentPage = 1
+            this.cashOutForm.pageNo = 1
+            let start = new Date(this.cashOutForm.startDate).getTime()
+            let end = new Date(this.cashOutForm.endDate).getTime()
+            if(start>end) {
+                this.$message({
+                type: "warning",
+                message: "开始时间不能大于结束时间"
+                });
+                return false
+            }
             this.initData()
         },
         onCheck (id,name) {
@@ -297,6 +325,10 @@ export default {
         /deep/.el-table th>.cell {
             color: #000000;
             
+        }
+        .pagination{
+            text-align: right;
+            margin-top: 10px;
         }
     }
     /deep/.el-dialog {

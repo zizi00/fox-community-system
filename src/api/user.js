@@ -24,6 +24,10 @@ export function getTodayUser(params) {
 export function getVip(params) {
     return axios.get('/admin/userManage/getIncrementVipByDate?' + qs.stringify(params))
 }
+// 审核女用户
+export function auditUser(params) {
+    return axios.post('/admin/userManage/auditUser?' + qs.stringify(params))
+}
 
 
  

@@ -155,6 +155,15 @@ export default {
         searchData () {
             this.currentPage = 1
             this.capitalFlowForm.pageNo = 1
+            let start = new Date(this.capitalFlowForm.startDate).getTime()
+            let end = new Date(this.capitalFlowForm.endDate).getTime()
+            if(start>end) {
+                this.$message({
+                type: "warning",
+                message: "开始时间不能大于结束时间"
+                });
+                return false
+            }
             this.initData()
         },
     },

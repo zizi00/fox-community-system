@@ -90,7 +90,7 @@
         <el-dialog
             title=""
             :visible.sync="checkDialog"
-            width="50%"
+            width="450px"
             center>
             <p><span style="color:#409EFF;">{{userData.nickname}}</span>的验证码：<span style="color:#409EFF;">{{userData.inviteCode}}</span></p>
             <div class="wrapper">
@@ -106,19 +106,19 @@
         <el-dialog
             title="审核确认"
             :visible.sync="examineDialog"
-            width="30%"
+            width="450px"
             :before-close="handleClose">
             <span>确定要通过</span><span style="color:#409EFF;">{{userData.nickname}}</span><span>的认证条件吗？</span>
             <span slot="footer" class="dialog-footer">
                 <el-button @click="handleClose">取 消</el-button>
-                <el-button type="primary" @click="onSubmitExamine">确 定</el-button>
+                <el-button type="primary" @click="onSubmitExamine(userData.id)">确 定</el-button>
             </span>
         </el-dialog>
         <!-- 驳回 -->
         <el-dialog
             title="审核确认"
             :visible.sync="failedDialog"
-            width="30%"
+            width="450px"
             :before-close="handleClose">
             <span>确定拒绝通过</span><span style="color:#409EFF;">{{userData.nickname}}</span><span>的认证条件吗？</span>
             <el-input
@@ -129,13 +129,13 @@
             </el-input>
             <span slot="footer" class="dialog-footer">
                 <el-button @click="handleClose">取 消</el-button>
-                <el-button type="primary" @click="onSubmitFailed">确 定</el-button>
+                <el-button type="primary" @click="onSubmitFailed(userData.id)">确 定</el-button>
             </span>
         </el-dialog>
     </div>
 </template>
 <script>
-import { getAuthGirlsList } from '@/api/user.js'
+import { getAuthGirlsList, auditUser } from '@/api/user.js'
 export default {
     name: "identify-girl",
     data () {
@@ -214,6 +214,7 @@ export default {
         onChecked (row) {
             this.checkDialog = true
             this.userData = row
+            console.log(this.userData)
         },
         // 通过
         onExamine (row) {
@@ -221,17 +222,39 @@ export default {
             this.userData = row
         },
         // 确定通过
-        onSubmitExamine() {
+        onSubmitExamine(id) {
             // 调用接口
+            let params = {
+                id: id,
+                state: 3
+            }
+            auditUser(params).then(res => {
+                if(res.code === 1) {
+                    this.examineDialog = false
+                    this.initData()
+                }
+            })
         },
+
         // 驳回
         onFailed (row) {
             this.userData = row
             this.failedDialog = true
         },
         // 确认驳回
-        onSubmitFailed() {
+        onSubmitFailed(id) {
             // 调用接口
+            let params = {
+                id: id,
+                state: 4,
+                remark: this.failedMessage
+            }
+            auditUser(params).then(res => {
+                if(res.code === 1) {
+                    this.failedDialog = false
+                    this.initData()
+                }
+            })
         },
         handleClose () {
             this.checkDialog = false
@@ -284,6 +307,19 @@ export default {
             text-align: right;
             margin-top: 10px;
         }
+    }
+    /deep/.el-dialog__header {
+        text-align: left;
+        background-color: #fcfcfc;
+        border-bottom: 1px solid #f5f5f5;
+    }
+    /deep/.el-dialog__body {
+        padding: 50px 20px;
+        text-align: left;
+    }
+    /deep/.el-dialog__footer {
+        padding: 15px 20px;
+        border-top: 1px solid #f5f5f5;
     }
     /deep/.el-textarea__inner {
         margin-top: 10px;

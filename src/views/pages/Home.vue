@@ -35,7 +35,7 @@
           </div>
           <div class="statistic-info">
             <p>昨日平台收益</p>
-            <p><span>100</span><span>元</span></p>
+            <p><span>{{incomeCount? incomeCount: 0}}</span><span>元</span></p>
           </div>
         </li>
       </ul>
@@ -76,7 +76,8 @@
             </div>
           </div>
           <div class="right">
-            <div ref="myChart" style="width: 800px;height:400px;"></div>
+            <div ref="myChart" v-if="!incomeDataNull" style="width: 800px;height:400px;"></div>
+            <div v-if="incomeDataNull" style="margin-top: 150px;">没有收益数据</div>
           </div>
         </div>
         
@@ -104,7 +105,9 @@ export default {
       chartData: [],
       maleUser: "",
       femaleUser: "",
-      vipCount: ""
+      vipCount: "",
+      incomeCount: "",
+      incomeDataNull: false
     }
   },
   created () {
@@ -126,7 +129,11 @@ export default {
       getInCome(params).then(res =>{
         if(res.code === 1) {
           this.chartData = res.data
-          this.drawingCharts()
+          if(this.chartData.length>0) {
+            this.drawingCharts()
+          }else {
+            this.incomeDataNull = true
+          }
         }
       })
       let paramsMale = {
@@ -147,12 +154,23 @@ export default {
           this.femaleUser = res.data
         }
       })
+      let vipDate = new Date(nowdate-24*3600*1000)
       let paramsVip = {
-        date: nowdate.getTime()
+        date: vipDate.getTime()
       }
       getVip(paramsVip).then(res => {
         if(res.code === 1) {
           this.vipCount = res.data
+        }
+      })
+      let inconmeDate = new Date(nowdate-24*3600*1000)
+      let paramsIncome = {
+        startDate: inconmeDate.getTime(),
+        endDate: nowdate.getTime()
+      }
+      getInCome(paramsIncome).then(res =>{
+        if(res.code === 1) {
+          this.incomeCount = res.data.income
         }
       })
     },
@@ -165,11 +183,22 @@ export default {
         startDate: starttime.getTime(), // 标准时间转时间戳
         endDate: endtime.getTime()
       }
+      if(params.endDate-params.startDate>691200000){
+        this.$message({
+                type: "warning",
+                message: "查询时间间隔不能大于一周"
+                });
+                return false
+      }
       // 调接口
       getInCome(params).then(res =>{
         if(res.code === 1) {
           this.chartData = res.data
-          this.drawingCharts()
+          if(this.chartData.length>0) {
+            this.drawingCharts()
+          }else {
+            this.incomeDataNull = true
+          }
         }
       })
     },
@@ -187,7 +216,7 @@ export default {
       let option = {
         color: 'rgb(85,152,253)',
         title: {
-          text: '收益统计'
+          text: '一周收益统计'
         },
         tooltip: {
           trigger: 'axis',

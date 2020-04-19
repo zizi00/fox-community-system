@@ -132,7 +132,7 @@
                                 <p><span>约会节目：</span><span>{{detailData.datingCondition}}</span></p>
                             </div>
                             <div class="basic third">
-                                <div class="status">{{isValidMap[detailData.isValid]}}</div>
+                                <div class="status" :class="detailData.isValid == 0? 'y-status':'g-status'">{{isValidMap[detailData.isValid]}}</div>
                                 <p><span>钱包（狐币）</span><span>{{detailData.money}}</span></p>
                             </div>
                         </div>
@@ -141,10 +141,7 @@
                 <div class="photos-wrapper">
                     <p class="title">她的相册</p>
                     <div class="photos">
-                        <el-image
-                            :src="url"></el-image>
-                            <el-image
-                            :src="url"></el-image>
+                        <el-image :src="'http://foxcommunity.oss-cn-beijing.aliyuncs.com' + item.files.filePath" v-for="(item,index) in detailData.images" :key = "index" :preview-src-list="photoList"></el-image>
                     </div>
                 </div>
             </div>
@@ -158,7 +155,6 @@ export default {
     data () {
         return {
             detailDialog: false,
-            url: 'https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg',
             usersForm: {
                 sex: '2', // 1==男，2==女
                 page: 1,
@@ -183,7 +179,8 @@ export default {
                 1: "有效",
                 0: "已禁用"
             },
-            detailData: []
+            detailData: [],
+            photoList: []
         }
     },
     methods: {
@@ -207,6 +204,7 @@ export default {
         },
         // 查看详情
         onDetail (id,money,isValid) {
+            this.photoList = []
             this.detailDialog = true
             let params = {
                 userId: id
@@ -216,6 +214,11 @@ export default {
                     this.detailData = res.data
                     this.detailData.money = money
                     this.detailData.isValid = isValid
+                    if(res.data.images.length>0) {
+                        for(let i = 0; i<res.data.images.length; i++) {
+                            this.photoList.push('http://foxcommunity.oss-cn-beijing.aliyuncs.com' +res.data.images[i].files.filePath)
+                        }
+                    }
                 }
             })
         },
@@ -246,7 +249,6 @@ export default {
 <style lang="less" scoped>
 .users-girl {
     padding: 10px;
-    // height: 100%;
     min-height: calc(100% - 80px);
     background-color: #f0f2f6;
     .search-wrapper {
@@ -320,8 +322,13 @@ export default {
                             height: 20px;
                             color: #ffffff;
                             text-align: center;
-                            background-color: salmon;
                             border-radius: 2px;
+                        }
+                        .y-status {
+                            background-color: salmon;
+                        }
+                        .g-status {
+                            background-color: #08c4a0;
                         }
                     }
                     .line {

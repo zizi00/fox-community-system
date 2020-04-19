@@ -5,6 +5,18 @@
         </div>
         <div class="right">
             <span class="title">当前用户:</span><span class="username">{{user.nickname}}</span>
+            <span class='username'>
+                <el-dropdown
+                        trigger="click"
+                        @command='setDialogInfo'>
+                    <span class="el-dropdown-link">
+                        <i class="el-icon-caret-bottom el-icon--right"></i>
+                    </span>
+                    <el-dropdown-menu slot="dropdown">
+                        <el-dropdown-item  command='logout'>退出</el-dropdown-item>
+                    </el-dropdown-menu>
+                </el-dropdown>
+            </span>
         </div>
     </div>
 </template>
@@ -12,10 +24,28 @@
 export default {
     name: "head-nav",
     computed:{
-    user(){
-      return this.$store.getters.user;
+        user(){
+            return this.$store.getters.user;
+        }
+    },
+    methods: {
+        setDialogInfo(cmditem) {
+            if (!cmditem) {
+                this.$message("菜单选项缺少command属性");
+                return;
+            }else {
+                this.logout();
+            } 
+        },
+        logout() {
+            // 清除token
+            localStorage.removeItem("token");
+            localStorage.removeItem("userName");
+            this.$store.dispatch("clearCurrentState");
+            // 页面跳转
+            this.$router.push("/login");
+        }
     }
-  },
 }
 </script>
 <style lang="less" scoped>
