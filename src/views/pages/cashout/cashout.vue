@@ -99,7 +99,7 @@
                 </div>
                 <div slot="footer" class="submit">
                     <el-button class="disabled" type="primary" v-if="!this.transferMessage">确认已转账</el-button>
-                    <el-button type="primary" v-else @click="onSubmitTransfer(cachoutData.id)">确认已转账</el-button>
+                    <el-button type="primary" v-else @click="onSubmitTransfer(cachoutData.id,cachoutData.name)">确认已转账</el-button>
 
                 </div>
             </el-dialog>
@@ -124,7 +124,7 @@
                     </div>
                 </div>
                 <div slot="footer" class="submit">
-                    <el-button type="primary" class="refuse-btn" @click="onSubmitRefuse(cachoutData.id)">提现已驳回</el-button>
+                    <el-button type="primary" class="refuse-btn" @click="onSubmitRefuse(cachoutData.id,cachoutData.name)">提现已驳回</el-button>
                 </div>
             </el-dialog>
             <!-- 提现成功查看 -->
@@ -255,7 +255,7 @@ export default {
             })
         },
         //  确认转账
-        onSubmitTransfer(id) {
+        onSubmitTransfer(id,nickname) {
             let params = {
                 id: id,
                 status: 4,
@@ -264,18 +264,31 @@ export default {
             updateStatus(params).then(res => {
                 if(res.code === 1) {
                     this.transferVisible = false
+                    this.$notify({
+                        title: '操作成功',
+                        message: nickname +'提现转账成功',
+                        type: 'success'
+                        });
                     this.initData()
                 }
             })
         },
         // 提现驳回
-        onSubmitRefuse(id) {
+        onSubmitRefuse(id,nickname) {
             let params ={
                 id: id,
                 remark: this.refuseMessage
             }
             reject(params).then(res => {
-                console.log(res)
+                // console.log(res)
+                this.refuseVisible = false
+                this.$notify({
+                    title: '操作成功',
+                    message: '已驳回' + nickname +'的提现申请',
+                    type: 'warning'
+                    });
+                this.initData()
+
             })
         },
         handleClose () {

@@ -53,7 +53,15 @@ export default {
             }
         }
     },
+    created() {
+        this.initData()
+    },
     methods: {
+        initData() {
+            //清空标签页数据
+            this.$store.state.openTab = [];
+            this.$store.state.activeIndex = '';
+        },
         onSubmit() {
             this.$refs.loginform.validate(valid => {
                 if(valid) {
@@ -122,7 +130,7 @@ export default {
                     margin-top: 60px;
                     width: 300px;
                     .el-input{
-                        font-size: 16px;
+                        font-size: 15px;
                     }
                     .el-input--prefix .el-input__inner{
                         padding-left: 34px;

@@ -95,11 +95,12 @@
             <p><span style="color:#409EFF;">{{userData.nickname}}</span>的验证码：<span style="color:#409EFF;">{{userData.inviteCode}}</span></p>
             <div class="wrapper">
                 <el-image 
+                    v-if="isImage"
                     style="width: 300px; height: 300px"
-                    :src="url" 
+                    :src="'http://foxcommunity.oss-cn-beijing.aliyuncs.com/' + userData.picPath"
                     :preview-src-list="srcList">
                 </el-image>
-                <video src=""></video>
+                <video v-if="isVideo" :src="'http://foxcommunity.oss-cn-beijing.aliyuncs.com/' + userData.picPath"></video>
             </div>
         </el-dialog>
         <!-- 通过 -->
@@ -111,7 +112,7 @@
             <span>确定要通过</span><span style="color:#409EFF;">{{userData.nickname}}</span><span>的认证条件吗？</span>
             <span slot="footer" class="dialog-footer">
                 <el-button @click="handleClose">取 消</el-button>
-                <el-button type="primary" @click="onSubmitExamine(userData.id)">确 定</el-button>
+                <el-button type="primary" @click="onSubmitExamine(userData.id,userData.nickname)">确 定</el-button>
             </span>
         </el-dialog>
         <!-- 驳回 -->
@@ -129,7 +130,7 @@
             </el-input>
             <span slot="footer" class="dialog-footer">
                 <el-button @click="handleClose">取 消</el-button>
-                <el-button type="primary" @click="onSubmitFailed(userData.id)">确 定</el-button>
+                <el-button type="primary" @click="onSubmitFailed(userData.id,userData.nickname)">确 定</el-button>
             </span>
         </el-dialog>
     </div>
@@ -144,10 +145,7 @@ export default {
             examineDialog: false,
             failedDialog: false,
             failedMessage: "",
-            url: 'https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg',
             srcList: [
-                'https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg',
-                // 'https://fuss10.elemecdn.com/8/27/f01c15bb73e1ef3793e64e6b7bbccjpeg.jpeg',
             ],
             identifyForm: {
                 searchText: "",
@@ -193,7 +191,9 @@ export default {
                     name: "封号"
                 }
             ],
-            userData: []
+            userData: [],
+            isVideo: false,
+            isImage: false
         }
     },
     methods: {
@@ -212,8 +212,18 @@ export default {
         },
         // 查看
         onChecked (row) {
+            this.isVideo = false
+            this.isImage = false
             this.checkDialog = true
             this.userData = row
+            if(row.picPath) {
+                if(row.picPath.indexOf('mp4')>0 || row.picPath.indexOf('MP4')>0 ) {
+                    this.isVideo = true
+                }else {
+                    this.isImage = true
+                    this.srcList.push('http://foxcommunity.oss-cn-beijing.aliyuncs.com/'+row.picPath)
+                }
+            }
             console.log(this.userData)
         },
         // 通过
@@ -222,7 +232,7 @@ export default {
             this.userData = row
         },
         // 确定通过
-        onSubmitExamine(id) {
+        onSubmitExamine(id,nickname) {
             // 调用接口
             let params = {
                 id: id,
@@ -231,6 +241,11 @@ export default {
             auditUser(params).then(res => {
                 if(res.code === 1) {
                     this.examineDialog = false
+                    this.$notify({
+                        title: '操作成功',
+                        message: '已通过'+ nickname +'的认证',
+                        type: 'success'
+                        });
                     this.initData()
                 }
             })
@@ -242,7 +257,7 @@ export default {
             this.failedDialog = true
         },
         // 确认驳回
-        onSubmitFailed(id) {
+        onSubmitFailed(id,nickname) {
             // 调用接口
             let params = {
                 id: id,
@@ -252,6 +267,11 @@ export default {
             auditUser(params).then(res => {
                 if(res.code === 1) {
                     this.failedDialog = false
+                    this.$notify({
+                        title: '操作成功',
+                        message: '已驳回'+ nickname +'的认证',
+                        type: 'warning'
+                        });
                     this.initData()
                 }
             })

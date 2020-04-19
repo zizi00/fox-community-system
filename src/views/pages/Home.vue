@@ -47,6 +47,12 @@
           <div class="date">
             <p class="interval">默认当前一周</p>
             <el-date-picker
+              v-model="weekValue"
+              type="week"
+              format="yyyy 第 WW 周"
+              placeholder="选择周">
+            </el-date-picker>
+            <!-- <el-date-picker
                 v-model="startTime"
                 type="datetime"
                 :picker-options="pickerOptions"
@@ -57,7 +63,7 @@
                 type="datetime"
                 :picker-options="pickerOptions"
                 placeholder="选择结束时间">
-            </el-date-picker>
+            </el-date-picker> -->
             <el-button class="select" type="primary" size="small" @click="selectDateIncome">筛选</el-button>
           </div>
         </div>
@@ -97,17 +103,13 @@ export default {
     return {
       startTime: "",
       endTime: "",
-      pickerOptions: {
-        disabledDate(time) {
-          return time.getTime() > Date.now();
-        },
-      },
       chartData: [],
       maleUser: "",
       femaleUser: "",
       vipCount: "",
       incomeCount: "",
-      incomeDataNull: false
+      incomeDataNull: false,
+      weekValue: ""
     }
   },
   created () {
@@ -118,13 +120,51 @@ export default {
   },
   methods: {
     initdata() {
-      let nowdate = new Date() 
-      var oneweekdate = new Date(nowdate-7*24*3600*1000)
-      this.endTime = getDate(nowdate)
-      this.startTime = getDate(oneweekdate)
-      let params = {
-        startDate: oneweekdate.getTime(),
-        endDate: nowdate.getTime()
+      let nowdate = new Date()
+      this.weekValue = nowdate
+      console.log(nowdate.getDay())
+      let params = {}
+      if(nowdate.getDay() === 0) {
+        params = {
+          startDate: nowdate.getTime(),
+          endDate: nowdate.getTime() + 6*24*3600*1000
+        }
+      }
+      if(nowdate.getDay() === 1) {
+        params = {
+          startDate: nowdate.getTime() - 24*3600*1000,
+          endDate: nowdate.getTime() + 5*24*3600*1000
+        }
+      }
+      if(nowdate.getDay() === 2) {
+        params = {
+          startDate: nowdate.getTime() - 2*24*3600*1000,
+          endDate: nowdate.getTime() + 4*24*3600*1000
+        }
+      }
+      if(nowdate.getDay() === 3) {
+        params = {
+          startDate: nowdate.getTime() - 3*24*3600*1000,
+          endDate: nowdate.getTime() + 3*24*3600*1000
+        }
+      }
+      if(nowdate.getDay() === 4) {
+        params = {
+          startDate: nowdate.getTime() - 4*24*3600*1000,
+          endDate: nowdate.getTime() + 2*24*3600*1000
+        }
+      }
+      if(nowdate.getDay() === 5) {
+        params = {
+          startDate: nowdate.getTime() - 5*24*3600*1000,
+          endDate: nowdate.getTime() + 24*3600*1000
+        }
+      }
+      if(nowdate.getDay() === 6) {
+        params = {
+          startDate: nowdate.getTime() - 6*24*3600*1000,
+          endDate: nowdate.getTime()
+        }
       }
       getInCome(params).then(res =>{
         if(res.code === 1) {
@@ -174,23 +214,18 @@ export default {
         }
       })
     },
+    // 获取本月本周收益
+
     // 根据时间区间显示图表数据
     selectDateIncome() {
-      // 字符串转标准时间
-      let starttime = new Date (this.startTime)
-      let endtime = new Date (this.endTime)
+      // 查询一周的收益
+      let starttime = this.weekValue.getTime() - 24*3600*1000
+      let endtime = this.weekValue.getTime() + 5*24*3600*1000
       let params = {
-        startDate: starttime.getTime(), // 标准时间转时间戳
-        endDate: endtime.getTime()
+        startDate: starttime,
+        endDate: endtime
       }
-      if(params.endDate-params.startDate>691200000){
-        this.$message({
-                type: "warning",
-                message: "查询时间间隔不能大于一周"
-                });
-                return false
-      }
-      // 调接口
+      // // 调接口
       getInCome(params).then(res =>{
         if(res.code === 1) {
           this.chartData = res.data

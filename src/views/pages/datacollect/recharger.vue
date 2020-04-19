@@ -45,7 +45,11 @@
                 </el-table-column>
                 <el-table-column prop="money" label="充值金额（元）" align="center"></el-table-column>
                 <el-table-column prop="payTime" label="付款时间" align="center"></el-table-column>
-                <el-table-column prop="createAt" label="支付方式" align="center"></el-table-column>
+                <el-table-column prop="payType" label="充值类型" align="center">
+                    <template slot-scope="scope">
+                        <span style="margin-left: 10px">{{ payTypeMap[scope.row.payType] }}</span>
+                    </template>
+                </el-table-column>
                 <el-table-column prop="tradeNo" label="流水号" align="center"></el-table-column>
             </el-table>
             <el-row>
@@ -92,6 +96,16 @@ export default {
                 1: "微信",
                 2: "支付宝",
                 3: "钱包",
+            },
+            payTypeMap: {
+                1: "普通照片",
+                2: "红包照片",
+                3: "会员充值",
+                4: "钱包充值",
+                5: "付费广播",
+                6: "付费相册",
+                7: "查看QQ",
+                8: "查看微信"
             },
             rechargerTotal: 0,
             totals: 0
