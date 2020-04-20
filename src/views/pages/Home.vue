@@ -73,12 +73,12 @@
             <div class="statistic-item">
               <p class="statistic-title">本月收益总额</p>
               <p class="statistic-num">100000</p>
-              <p class="statistic-ratio"><span>10%</span><span class="gray">同比上月</span></p>
+              <p class="statistic-ratio"><img class="rate-icon" src="../../assets/images/up.png" alt=""><span class="rate">10%</span><span class="gray">同比上月</span></p>
             </div>
             <div class="statistic-item">
               <p class="statistic-title">本周收益总额</p>
               <p class="statistic-num">50000</p>
-              <p class="statistic-ratio"><span>10%</span><span class="gray">同比上周</span></p>
+              <p class="statistic-ratio"><img class="rate-icon" src="../../assets/images/down.png" alt=""><span class="rate">10%</span><span class="gray">同比上周</span></p>
             </div>
           </div>
           <div class="right">
@@ -385,7 +385,24 @@ export default {
               font-size: 30px;
             }
             .statistic-ratio {
+              .rate-icon {
+                display: inline-block;
+                vertical-align: middle;
+                margin-right: 4px;
+              }
+              .rate {
+                display: inline-block;
+                vertical-align: middle;
+              }
+              .green {
+                color: #08c4a0;
+              }
+              .orange {
+                color: salmon;
+              }
               .gray {
+                display: inline-block;
+                vertical-align: middle;
                 font-size: 14px;
                 color: #cdcdcd;
               }
