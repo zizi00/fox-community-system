@@ -72,13 +72,13 @@
           <div class="left">
             <div class="statistic-item">
               <p class="statistic-title">本月收益总额</p>
-              <p class="statistic-num">100000</p>
-              <p class="statistic-ratio"><img class="rate-icon" src="../../assets/images/up.png" alt=""><span class="rate">10%</span><span class="gray">同比上月</span></p>
+              <p class="statistic-num">{{incomeData.monthIncome}}元</p>
+              <p class="statistic-ratio"><img v-if="incomeData.monthRate>=0" class="rate-icon" src="../../assets/images/up.png" alt=""><img v-else class="rate-icon" src="../../assets/images/down.png" alt=""><span class="rate">{{this.incomeData.monthRate*100}}%</span><span class="gray">同比上月</span></p>
             </div>
             <div class="statistic-item">
               <p class="statistic-title">本周收益总额</p>
-              <p class="statistic-num">50000</p>
-              <p class="statistic-ratio"><img class="rate-icon" src="../../assets/images/down.png" alt=""><span class="rate">10%</span><span class="gray">同比上周</span></p>
+              <p class="statistic-num">{{incomeData.weekIncome}}元</p>
+              <p class="statistic-ratio"><img v-if="incomeData.weekRate>=0" class="rate-icon" src="../../assets/images/up.png" alt=""><img v-else class="rate-icon" src="../../assets/images/down.png" alt=""><span class="rate">{{this.incomeData.weekRate*100}}%</span><span class="gray">同比上周</span></p>
             </div>
           </div>
           <div class="right">
@@ -94,7 +94,7 @@
 
 <script>
 // @ is an alias to /src
-import { getInCome } from '@/api/income.js'
+import { getInCome, getByDateWithMonth } from '@/api/income.js'
 import { getTodayUser, getVip } from '@/api/user.js'
 import { getDate } from '@/assets/js/validate.js'
 export default {
@@ -109,20 +109,18 @@ export default {
       vipCount: "",
       incomeCount: "",
       incomeDataNull: false,
-      weekValue: ""
+      weekValue: "",
+      incomeData: {}
     }
   },
   created () {
-    this.$nextTick(() =>{
-      this.initdata ()
-      // this.drawingCharts()
-    })
+    this.initdata()
+    this.getDateWithMonth()
   },
   methods: {
     initdata() {
       let nowdate = new Date()
       this.weekValue = nowdate
-      console.log(nowdate.getDay())
       let params = {}
       if(nowdate.getDay() === 0) {
         params = {
@@ -215,7 +213,19 @@ export default {
       })
     },
     // 获取本月本周收益
-
+    getDateWithMonth () {
+      getByDateWithMonth().then(res =>{
+        if(res.code === 1) {
+          this.incomeData = res.data
+          if(res.data.monthIncome === 0 && res.data.monthRate === 1){
+            this.incomeData.monthRate = 0
+          }
+          if(res.data.weekIncome === 0 && res.data.weekRate === 1) {
+            this.incomeData.weekRate = 0
+          }
+        }
+      })
+    },
     // 根据时间区间显示图表数据
     selectDateIncome() {
       // 查询一周的收益

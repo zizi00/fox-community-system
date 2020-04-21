@@ -61,12 +61,12 @@
                     plain
                     @click="onDetail(scope.row.id,scope.row.money,scope.row.isValid)"
                     >详情</el-button>
-                    <el-button
+                    <!-- <el-button
                     type="text"
                     size="small"
                     plain
                     @click="onDeleteClassify(scope.row,scope.$index)"
-                    >流水</el-button>
+                    >流水</el-button> -->
                     <el-button
                     v-if="scope.row.isValid == 1"
                     type="text"

@@ -4,3 +4,8 @@ import qs from 'qs'
 export function getInCome(params) {
     return axios.get('/admin/statistics/getByDate?' + qs.stringify(params))
 }
+// 获取本月本周收益
+export function getByDateWithMonth() {
+    return axios.get('/admin/statistics/getByDateWithMonth')
+}
+
