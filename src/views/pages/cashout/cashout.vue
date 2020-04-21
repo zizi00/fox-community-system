@@ -247,7 +247,7 @@ export default {
                         // 提现成功
                         this.successVisible = true
                     }else {
-                        this.refuseVisible = true
+                        // this.refuseVisible = true
                     }
                     
                     
