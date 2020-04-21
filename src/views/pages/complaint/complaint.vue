@@ -118,6 +118,7 @@ export default {
 </script>
 <style lang="less" scoped>
 .complaint {
+    margin-top: 57px;
     padding: 10px;
     height: 100%;
     background-color: #f0f2f6;

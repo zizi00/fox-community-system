@@ -290,6 +290,7 @@ export default {
 </script>
 <style lang="less" scoped>
 .home {
+  margin-top: 57px;
   width: 100%;
   box-sizing: border-box;
   padding-right: 20px;

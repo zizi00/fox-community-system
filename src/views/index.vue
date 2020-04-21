@@ -99,13 +99,13 @@ export default {
             height: calc(100% - 80px);
             overflow: auto;
             // padding: 0 20px;
-            // .tags-wrapper {
-            //     width: 100%;
-            //     position: fixed;
-            //     top: 81px;
-            //     background-color: #ffffff;
-            //     z-index: 999;
-            // }
+            .tags-wrapper {
+                width: 100%;
+                position: fixed;
+                margin-top: 0px;
+                background-color: #ffffff;
+                z-index: 999;
+            }
         }
     }
     

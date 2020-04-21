@@ -201,6 +201,7 @@ export default {
 </script>
 <style lang="less" scoped>
 .invite-code {
+    margin-top: 57px;
     padding: 10px;
     min-height: calc(100% - 80px);
     background-color: #f0f2f6;

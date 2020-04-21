@@ -157,6 +157,7 @@ export default {
 </script>
 <style lang="less" scoped>
 .recharger {
+    margin-top: 57px;
     padding: 10px;
     height: 100%;
     background-color: #f0f2f6;

@@ -175,6 +175,7 @@ export default {
 </script>
 <style lang="less" scoped>
 .capital-flow {
+    margin-top: 57px;
     padding: 10px;
     min-height: 100%;
     // height: 100%;
