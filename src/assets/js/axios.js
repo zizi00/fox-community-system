@@ -12,7 +12,8 @@ import store from '@/store/index'
 // })
 var instance = axios.create({
   timeout: 1000 * 10,
-  baseURL: process.env.NODE_ENV === 'development' ? '/api' : ''
+  // baseURL: process.env.NODE_ENV === 'development' ? '/api' : ''
+  baseURL: process.env.NODE_ENV === 'development' ? '/api' : 'http://103.45.120.154'
 })
 // 设置post请求头
 instance.defaults.headers.post['Content-Type'] = 'application/json'

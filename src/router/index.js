@@ -1,7 +1,7 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
 import Index from "../views/index.vue";
-
+import Nofind from "../views/errorPage/404.vue";
 Vue.use(VueRouter);
 
 const routes = [
@@ -15,6 +15,15 @@ const routes = [
     meta: { title: '登录' },
           component: () =>
           import ( /* webpackChunkName: "login" */ '@/views/Login/login'),
+  },
+  { path: '*',
+     name: '/404',
+     component: Nofind,
+     meta: {
+      keepAlive: true,
+      isTab: false,
+      isAuth: false
+      }
   },
   { path: '/index',
     name: 'index',
@@ -76,8 +85,9 @@ VueRouter.prototype.push = function push (location) {
 }
 const router = new VueRouter({
   mode: "history",
-  base: process.env.BASE_URL,
+  base: '/fox/',
   routes
+  // base: process.env.BASE_URL + '/fox',
 });
 
 export default router;
