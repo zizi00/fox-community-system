@@ -85,9 +85,10 @@ VueRouter.prototype.push = function push (location) {
 }
 const router = new VueRouter({
   mode: "history",
-  base: '/fox/',
+  base: process.env.BASE_URL,
+  // base: '/fox/',
   routes
-  // base: process.env.BASE_URL + '/fox',
+  
 });
 
 export default router;

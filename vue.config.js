@@ -2,7 +2,7 @@ const path = require('path')
 const debug = process.env.NODE_ENV !== 'production'
 
 module.exports = {
-    publicPath: '/fox/', // 根域上下文目录
+    publicPath: '/', // 根域上下文目录
     outputDir: 'dist', // 构建输出目录
     indexPath: "index.html",
     //assetsDir: 'assets', // 静态资源目录 (js, css, img, fonts)
