@@ -50,6 +50,11 @@ const routes = [
         component: () =>
         import ( /* webpackChunkName: "pages" */ '@/views/pages/users/usersboy'),
       },
+      { path: '/usersupdate', name: 'usersupdate',
+        meta: { title: '女用户列表' },
+        component: () =>
+        import ( /* webpackChunkName: "pages" */ '@/views/pages/users/usersupdate'),
+      },
       { path: '/invitecode', name: 'invitecode',
         meta: { title: '邀请码管理' },
         component: () =>
@@ -74,6 +79,21 @@ const routes = [
         meta: { title: '充值记录' },
         component: () =>
         import ( /* webpackChunkName: "pages" */ '@/views/pages/datacollect/recharger'),
+      },
+      { path: '/article', name: 'article',
+        meta: { title: '内容列表' },
+        component: () =>
+        import ( /* webpackChunkName: "pages" */ '@/views/pages/article/article'),
+      },
+      { path: '/profitSet', name: 'profitSet',
+        meta: { title: '基础设置' },
+        component: () =>
+        import ( /* webpackChunkName: "pages" */ '@/views/pages/profit/profitSet'),
+      },
+      { path: '/profitRecord', name: 'profitRecord',
+        meta: { title: '分销记录' },
+        component: () =>
+        import ( /* webpackChunkName: "pages" */ '@/views/pages/profit/profitRecord'),
       },
      ]
   }

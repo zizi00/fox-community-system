@@ -67,6 +67,23 @@
                         ]
                     },
                     {
+                        icon: "fa-sticky-note",
+                        name: "内容管理",
+                        path: "article",
+                        children: [
+                            {path: "/article", name: "内容列表"},
+                        ]
+                    },
+                    {
+                        icon: "fa-money",
+                        name: "分销中心",
+                        path: "profit",
+                        children: [
+                            {path: "/profitSet", name: "基础设置"},
+                            {path: "/profitRecord", name: "分销记录"},
+                        ]
+                    },
+                    {
                         icon: "fa-frown-o",
                         name: "举报",
                         path: "complaint",
