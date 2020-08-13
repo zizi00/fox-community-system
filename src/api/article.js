@@ -14,3 +14,8 @@ export function addDynamic (params) {
 export function uploadPhoto (params) {
   return uploadFile.post('/fox/admin/files/upload',params)
 }
+
+// 审核动态
+export function updateAudit (params) {
+  return axios.post('/fox/admin/dynamic/audit?'+ qs.stringify(params))
+}

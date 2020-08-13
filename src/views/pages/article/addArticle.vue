@@ -53,15 +53,15 @@
             required: true, message: '标题不能为空', trigger: 'blur'
           }"
         >
-          <el-input v-model="domain.title" style="width: 500px"></el-input>
+          <el-input v-model="domain.title" style="width: 500px" placeholder="请输入标题"></el-input>
         </el-form-item>
         <el-form-item
           class="content"
           label="备注"
         >
-          <el-input type="textarea" :rows="5" placeholder="请输入内容" v-model="domain.content" style="width: 500px;"></el-input>
+          <el-input type="textarea" :rows="2" placeholder="请输入内容" v-model="domain.content" style="width: 500px;"></el-input>
         </el-form-item>
-        <el-form-item class="upload-item">
+        <el-form-item class="upload-item" label="图片">
           <div class="hide-div" @click="recordIndex(index)">
             <el-upload
               action=""
@@ -72,12 +72,13 @@
             </el-upload>
           </div>
         </el-form-item>
-        <el-button @click.prevent="removeDomain(index)">删除</el-button>
+        <el-button @click.prevent="removeDomain(index)" class="delete" type="danger">删除本条数据</el-button>
+        <div class="line"></div>
       </div>
       
-      <el-form-item>
-        <el-button type="primary" @click="submitForm('dynamicForm')">提交</el-button>
-        <el-button @click="addDomain">新增</el-button>
+      <el-form-item class="submit">
+        <el-button type="primary" @click="submitForm('dynamicForm')">提交全部</el-button>
+        <el-button @click="addDomain">新增数据</el-button>
       </el-form-item>
     </el-form>
   </div>
@@ -214,10 +215,19 @@ export default {
       .content {
         display: block;
       }
-      .content {
-        .hide-div {
-          
-        }
+      .delete {
+        display: block;
+        margin-left: 98px;
+        margin-top: 5px;
+        margin-bottom: 10px;
+      }
+      .line {
+        border-bottom: 1px solid #cccccc;
+        margin-bottom: 10px;
+      }
+      .submit {
+        margin-left: 98px;
+        margin-top: 20px;
       }
     }
 }
