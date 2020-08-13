@@ -133,19 +133,19 @@
     </div>
 </template>
 <script>
-import { getUserList, getByUserId,forbiddenUser } from '@/api/user.js'
+import { getDynamic } from '@/api/article.js'
 export default {
     name: "article",
     data () {
         return {
-            articleDialog: true,
+            articleDialog: false,
             articleForm: {
                 page: 1,
                 pageSize: 10,
                 state: "",
-                key: "",
+                title: "",
                 city: "",
-                startDate: "",
+                beginDate: "",
                 endDate: ""
             },
             tableData: [],
@@ -159,17 +159,21 @@ export default {
                 5: "审核中",
                 10: "封号"
             },
-            isValidMap:{
-                1: "有效",
-                0: "已禁用"
-            },
             detailData: [],
-            photoList: []
+            photoList: [],
+            pickerOptions: {
+                disabledDate(time) {
+                return time.getTime() > Date.now();
+                },
+            },
         }
     },
     methods: {
         initData() {
-            getUserList(this.usersForm).then(res =>{
+          // let param = {
+          //   dynamicPageReq: this.articleForm
+          // }
+            getDynamic(this.articleForm).then(res =>{
                 if(res.code === 1) {
                     this.tableData = res.data
                     this.total = res.count
@@ -222,7 +226,7 @@ export default {
             }) 
         },
         addArticle() {
-            this.articleDialog = true
+            this.$router.push({name: 'addArticle'})
         },
         handleClose () {
             this.articleDialog = false

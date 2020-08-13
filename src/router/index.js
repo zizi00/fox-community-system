@@ -85,6 +85,11 @@ const routes = [
         component: () =>
         import ( /* webpackChunkName: "pages" */ '@/views/pages/article/article'),
       },
+      { path: '/addArticle', name: 'addArticle',
+        meta: { title: '添加内容' },
+        component: () =>
+        import ( /* webpackChunkName: "pages" */ '@/views/pages/article/addArticle'),
+      },
       { path: '/profitSet', name: 'profitSet',
         meta: { title: '基础设置' },
         component: () =>
@@ -94,7 +99,7 @@ const routes = [
         meta: { title: '分销记录' },
         component: () =>
         import ( /* webpackChunkName: "pages" */ '@/views/pages/profit/profitRecord'),
-      },
+      }
      ]
   }
 ];

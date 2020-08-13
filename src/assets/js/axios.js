@@ -15,9 +15,26 @@ var instance = axios.create({
   // baseURL: process.env.NODE_ENV === 'development' ? '/api' : ''
   baseURL: process.env.NODE_ENV === 'development' ? '/api' : ''
 })
+export const uploadFile = axios.create({
+  timeout: 1000 * 10,
+  baseURL: process.env.NODE_ENV === 'development' ? '/api' : ''
+})
+uploadFile.interceptors.request.use(
+  config => {
+    const token = localStorage.token
+    if (token) {
+      config.headers.token = token
+    }
+    return config
+  },
+  error => {
+    Toast({ type: 'fail', message: error })
+    return Promise.reject(error)
+  }
+)
 // 设置post请求头
 instance.defaults.headers.post['Content-Type'] = 'application/json'
-
+uploadFile.defaults.headers.post['Content-Type'] = 'multipart/form-data'
 // http request 拦截器
 instance.interceptors.request.use(
   config => {
