@@ -41,7 +41,11 @@
         <div class="table_container">
             <el-table :data="tableData" border style="width: 100%">
                 <!-- <el-table-column type="index" label="序号" align="center" width="100"></el-table-column> -->
-                <el-table-column prop="phone" label="头像" align="center"></el-table-column>
+                <el-table-column prop="pic" label="头像" align="center">
+                  <template slot-scope="scope">
+                    <img style="width:50px;height:50px" :src="'http://foxcommunity.oss-cn-beijing.aliyuncs.com/'+scope.row.pic" alt="图片错误">
+                  </template>
+                </el-table-column>
                 <el-table-column prop="nickname" label="用户昵称" align="center"></el-table-column>
                 <el-table-column prop="title" label="标题" align="center"></el-table-column>
                 <el-table-column prop="address" label="地址" align="center"></el-table-column>

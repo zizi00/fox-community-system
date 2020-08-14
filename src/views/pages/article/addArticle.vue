@@ -72,13 +72,16 @@
             </el-upload>
           </div>
         </el-form-item>
+        <el-form-item label="" class="checkbox">
+          <el-checkbox v-model="domain.syncUser">同步到女用户表</el-checkbox>
+        </el-form-item>
         <el-button @click.prevent="removeDomain(index)" class="delete" type="danger">删除本条数据</el-button>
         <div class="line"></div>
       </div>
       
       <el-form-item class="submit">
         <el-button type="primary" @click="submitForm('dynamicForm')">提交全部</el-button>
-        <el-button @click="addDomain">新增数据</el-button>
+        <el-button @click="addDomain" v-if="dynamicForm.domains.length<10">新增数据</el-button>
       </el-form-item>
     </el-form>
   </div>
@@ -104,6 +107,7 @@ export default {
             title: '',
             content: '',
             imagesJson: [],
+            syncUser: false
           }
         ]
       },
@@ -138,6 +142,11 @@ export default {
                 this.dynamicForm.domains[i].imagesJson = JSON.stringify(arr)
               }else {
                 this.dynamicForm.domains[i].imagesJson = ""
+              }
+              if(this.dynamicForm.domains[i].syncUser) {
+                this.dynamicForm.domains[i].syncUser = 1
+              }else {
+                this.dynamicForm.domains[i].syncUser = 0
               }
               this.dynamicForm.domains[i].county = this.dynamicForm.domains[i].city[2]
               this.dynamicForm.domains[i].city = this.dynamicForm.domains[i].city[1]
@@ -174,6 +183,7 @@ export default {
         title: '',
         content: '',
         imagesJson: [],
+        syncUser: false
       })
     },
     removeDomain (index) {
@@ -214,6 +224,10 @@ export default {
       text-align: left;
       .content {
         display: block;
+      }
+      .checkbox {
+        display: block;
+        margin-left: 98px;
       }
       .delete {
         display: block;
