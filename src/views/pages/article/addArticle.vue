@@ -80,7 +80,7 @@
       </div>
       
       <el-form-item class="submit">
-        <el-button type="primary" @click="submitForm('dynamicForm')">提交全部</el-button>
+        <el-button type="primary" :disabled="btnDisabled" @click="submitForm('dynamicForm')">提交全部</el-button>
         <el-button @click="addDomain" v-if="dynamicForm.domains.length<10">新增数据</el-button>
       </el-form-item>
     </el-form>
@@ -114,13 +114,15 @@ export default {
       imgFileList:[],
       domainIndex: 0,
       options: [],
-      isSuccess: false
+      isSuccess: false,
+      btnDisabled: false
     }
   },
   methods: {
     submitForm (formName) {
       this.$refs[formName].validate((valid) =>{
          if (valid) {
+           this.btnDisabled = true
            for(let i=0;i<this.dynamicForm.domains.length;i++) {
               let arr = []
               for(let j=0;j<this.imgFileList.length;j++) {
@@ -153,12 +155,15 @@ export default {
               addDynamic(this.dynamicForm.domains[i]).then((res) =>{
                 if(res.data.code === 1) {
                   this.isSuccess = true
+                }else {
+                  this.btnDisabled = false
                 }
                   
               })
               // let data = await addDynamic (this.dynamicForm.domains[i])
             } 
             if(this.isSuccess) {
+              this.btnDisabled = false
               this.$notify({
                 title: '提示',
                 message: '内容添加成功'
