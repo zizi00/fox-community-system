@@ -56,6 +56,7 @@
                         children: [
                           { path: "/usersgirl", name: "女用户管理" },
                           { path: "/usersboy", name: "男用户管理" },
+                          { path: "/usersupdate", name: "女用户同步" },
                         ]
                       },
                     {

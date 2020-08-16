@@ -51,7 +51,7 @@ const routes = [
         import ( /* webpackChunkName: "pages" */ '@/views/pages/users/usersboy'),
       },
       { path: '/usersupdate', name: 'usersupdate',
-        meta: { title: '女用户列表' },
+        meta: { title: '女用户同步' },
         component: () =>
         import ( /* webpackChunkName: "pages" */ '@/views/pages/users/usersupdate'),
       },

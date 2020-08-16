@@ -4,72 +4,90 @@
       <p>基础设置</p>
     </div>
     <div class="main">
-      <el-form ref="form" :model="form" label-width="80px">
-        <el-form-item label="一级分佣">
-          <el-input v-model="form.first"></el-input>
+      <div v-for="(item,index) in profitSet" :key="index">
+        <div class="item-set">
+          <span>{{item.name}}</span>
+          <el-input v-model="item.divide" :disabled="item.disabled"></el-input>
           <span>%</span>
-        </el-form-item>
-        <el-form-item label="二级分佣">
-          <el-input v-model="form.second"></el-input>
-          <span>%</span>
-        </el-form-item>
-        <el-form-item label="三级分佣">
-          <el-input v-model="form.third"></el-input>
-          <span>%</span>
-        </el-form-item>
-        <el-form-item label="四级分佣">
-          <el-input v-model="form.forth"></el-input>
-          <span>%</span>
-        </el-form-item>
-        <el-form-item label="五级分佣">
-          <el-input v-model="form.fifth"></el-input>
-          <span>%</span>
-        </el-form-item>
-        <el-form-item label="六级分佣">
-          <el-input v-model="form.sixth"></el-input>
-          <span>%</span>
-        </el-form-item>
-        <el-form-item label="七级分佣">
-          <el-input v-model="form.seventh"></el-input>
-          <span>%</span>
-        </el-form-item>
-        <el-form-item label="八级分佣">
-          <el-input v-model="form.eighth"></el-input>
-          <span>%</span>
-        </el-form-item>
-        <el-form-item>
-          <el-button type="primary" @click="onSubmit">设置</el-button>
-        </el-form-item>
-      </el-form>
+          <el-button type="primary" size="small" class="setBtn" v-if="item.btnType==0" @click="changeType(index)">编辑</el-button>
+          <el-button type="primary" size="small" class="setBtn" v-else @click="onSubmit(index)">提交</el-button>
+        </div>
+       </div>
     </div>
   </div>
 </template>
 <script>
+import { getConfigList, configUpdate } from '@/api/profit.js'
 export default {
   name: "profit-set",
   data() {
       return {
-        form: {
-          first: '',
-          second: '',
-          third: '',
-          forth: '',
-          fifth: '',
-          sixth: '',
-          seventh: '',
-          eighth: ''
-        }
+          profitSet: []
       }
     },
   methods: {
-    onSubmit () {
-      
+    initData() {
+      let param = {
+        type: 2 // 分佣
+      }
+      getConfigList(param).then(res =>{
+        if(res.code === 1) {
+          // console.log(res.data)
+          let profitData = res.data
+          for(let i=0;i<profitData.length;i++) {
+            this.profitSet.push({
+              name: profitData[i].name,
+              grade: profitData[i].grade,
+              divide: profitData[i].divide,
+              btnType: 0,
+              disabled: true
+            })
+          }
+        }
+      })
+    },
+    changeType(index) {
+      let data = this.profitSet
+      for(let i=0;i<data.length;i++) {
+        if(i==index) {
+          data[i].disabled = false
+          data[i].btnType = 1
+        }
+      }
+    },
+    onSubmit (index) {
+      let params = {}
+      let data = this.profitSet
+      for(let i=0;i<data.length;i++) {
+        if(i==index) {
+          params.grade = data[i].grade
+          params.divide = data[i].divide
+        }
+      }
+    configUpdate(params).then(res=>{
+        if(res.code === 1) {
+          this.$message('设置成功');
+          setTimeout(()=>{
+            this.$router.go(0)
+          },500)
+        }else {
+        }
+        let data = this.profitSet
+        for(let i=0;i<data.length;i++) {
+          this.profitSet[i].disabled=true
+          this.profitSet[i].btnType = 0
+        }
+      })
     }
+  },
+  created() {
+    this.initData()
   }
 }
 </script>
 <style lang="less" scoped>
 .profit-set {
+  margin-top: 57px;
   padding: 10px;
   min-height: calc(100% - 80px);
   background-color: #f0f2f6;
@@ -83,20 +101,29 @@ export default {
     margin-top: 10px;
     padding: 10px 0;
     background-color: #ffffff;
-    /deep/.el-form {
-      width: 400px;
+    .item-set {
+      text-align: left;
+      margin: 18px 0px;
       /deep/.el-input {
         display: inline-block;
+        vertical-align: middle;
         vertical-align: top;
-        width: 91%;
+        width: 20%;
       }
       span {
+        display: inline-block;
+        vertical-align: middle;
         margin-left: 10px;
+        margin-right: 10px;
+        padding-top: 10px;
       }
-      .el-form-item__content {
-        text-align: left;
+      .setBtn {
+        display: inline-block;
+        vertical-align: sub;
+        margin-left: 20px;
       }
     }
+    
   }
 }
 </style>

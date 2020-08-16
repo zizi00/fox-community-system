@@ -3,10 +3,10 @@
         <div class="search-wrapper">
             <el-form :inline="true" ref="search_data" :model="recordForm">
                 <el-form-item label="关键词:">
-                    <el-input v-model="articleForm.key" size="small" placeholder="标题/用户昵称搜索"></el-input>
+                    <el-input v-model="recordForm.keyWorld" size="small" placeholder="账号/昵称/订单号"></el-input>
                 </el-form-item>
                 <el-form-item label="代理等级:">
-                    <el-select v-model="articleForm.state" placeholder="请选择" size="small" clearable>
+                    <el-select v-model="recordForm.agencyGradeId" placeholder="请选择" size="small" clearable>
                         <!-- <el-option key="1"  label="资料未完成" value="1"></el-option>
                         <el-option key="2"  label="待认证" value="2"></el-option>
                         <el-option key="3"  label="认证完成" value="3"></el-option>
@@ -16,7 +16,7 @@
                     </el-select>
                 </el-form-item>
                 <el-form-item label="分佣级别:">
-                    <el-select v-model="usersForm.isValid" placeholder="请选择" size="small" clearable>
+                    <el-select v-model="recordForm.divideGradeId" placeholder="请选择" size="small" clearable>
                         <el-option key="1"  label="有效" value="1"></el-option>
                         <el-option key="0"  label="已禁用" value="0"></el-option>
                     </el-select>
@@ -24,14 +24,14 @@
                 <el-form-item>
                     <el-form-item label="时间:">
                     <el-date-picker
-                        v-model="articleForm.startDate"
+                        v-model="recordForm.beginDate"
                         type="datetime"
                         value-format="yyyy-MM-dd HH:mm:ss"
                         :picker-options="pickerOptions"
                         placeholder="选择开始时间">
                     </el-date-picker> --
                     <el-date-picker
-                        v-model="articleForm.endDate"
+                        v-model="recordForm.endDate"
                         type="datetime"
                         value-format="yyyy-MM-dd HH:mm:ss"
                         :picker-options="pickerOptions"
@@ -46,18 +46,18 @@
             <el-table :data="tableData" border style="width: 100%">
                 <!-- <el-table-column type="index" label="序号" align="center" width="100"></el-table-column> -->
                 <el-table-column prop="nickname" label="昵称" align="center"></el-table-column>
-                <el-table-column prop="city" label="账号" align="center"></el-table-column>
-                <el-table-column prop="career" label="支付金额" align="center"></el-table-column>
-                <el-table-column prop="age" label="佣金" align="center"></el-table-column>
-                <el-table-column prop="qq" label="订单号" align="center"></el-table-column>
-                <el-table-column prop="wechat" label="代理昵称" align="center"></el-table-column>
-                <el-table-column prop="state" label="代理等级" align="center">
+                <el-table-column prop="agencyPhone" label="账号" align="center"></el-table-column>
+                <el-table-column prop="payMoney" label="支付金额(元)" align="center"></el-table-column>
+                <el-table-column prop="divideMoney" label="佣金(元)" align="center"></el-table-column>
+                <el-table-column prop="orderNo" label="订单号" align="center"></el-table-column>
+                <el-table-column prop="agencyNickname" label="代理昵称" align="center"></el-table-column>
+                <el-table-column prop="agencyGradeName" label="代理等级" align="center"></el-table-column>
+                <el-table-column prop="divideGradeName" label="分佣级别" align="center"></el-table-column>
+                <el-table-column prop="creatDate" label="时间" align="center">
                     <template slot-scope="scope">
-                        <span style="margin-left: 10px">{{stateMap[scope.row.state]}}</span>
+                        <span style="margin-left: 10px">{{scope.row.creatDate | parseTime}}</span>
                     </template>
                 </el-table-column>
-                <el-table-column prop="wechat" label="分佣级别" align="center"></el-table-column>
-                <el-table-column prop="createTime" label="时间" align="center"></el-table-column>
             </el-table>
             <el-row>
                 <el-col :span="24">
@@ -77,7 +77,7 @@
     </div>
 </template>
 <script>
-import { getUserList, getByUserId,forbiddenUser } from '@/api/user.js'
+import { getAgencyList } from '@/api/profit.js'
 export default {
     name: "profit-record",
     data () {
@@ -85,9 +85,9 @@ export default {
             recordForm: {
                 page: 1,
                 pageSize: 10,
-                state: "",
-                key: "",
-                city: "",
+                keyWorld: "",
+                agencyGradeId: "",
+                divideGradeId: "",
                 startDate: "",
                 endDate: ""
             },
@@ -106,13 +106,16 @@ export default {
                 1: "有效",
                 0: "已禁用"
             },
-            detailData: [],
-            photoList: []
+            pickerOptions: {
+                disabledDate(time) {
+                return time.getTime() > Date.now();
+                },
+            },
         }
     },
     methods: {
         initData() {
-            getUserList(this.usersForm).then(res =>{
+            getAgencyList(this.recordForm).then(res =>{
                 if(res.code === 1) {
                     this.tableData = res.data
                     this.total = res.count
@@ -120,49 +123,15 @@ export default {
             })
         },
         handleCurrentChange(val) {
-            this.usersForm.page = val
+            this.recordForm.page = val
             this.initData()
         },
         onSearch () {
             this.currentPage = 1
-            this.usersForm.page = 1
+            this.recordForm.page = 1
             this.initData()
 
         },
-        // 查看详情
-        onDetail (id,money,isValid) {
-            this.photoList = []
-            let params = {
-                userId: id
-            }
-            getByUserId(params).then(res => {
-                if(res.code === 1) {
-                    this.detailData = res.data
-                    this.detailData.money = money
-                    this.detailData.isValid = isValid
-                    if(res.data.images.length>0) {
-                        for(let i = 0; i<res.data.images.length; i++) {
-                            this.photoList.push('http://foxcommunity.oss-cn-beijing.aliyuncs.com' +res.data.images[i].files.filePath)
-                        }
-                    }
-                }
-            })
-        },
-        onDeleteClassify () {
-
-        },
-        // 禁用或启用
-        onChangeValid(userid, num) {
-            let params = {
-                id: userid,
-                isValid : num
-            }
-            forbiddenUser(params).then(res => {
-                if(res.code === 1) {
-                    this.initData()
-                }
-            }) 
-        }
     },
     created () {
         this.initData()
