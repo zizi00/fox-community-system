@@ -13,14 +13,12 @@
                         v-model="complaintForm.startDate"
                         type="datetime"
                         value-format="yyyy-MM-dd HH:mm:ss"
-                        :picker-options="pickerOptions"
                         placeholder="选择开始时间">
                     </el-date-picker> --
                     <el-date-picker
                         v-model="complaintForm.endDate"
                         type="datetime"
                         value-format="yyyy-MM-dd HH:mm:ss"
-                        :picker-options="pickerOptions"
                         placeholder="选择结束时间">
                     </el-date-picker>
                 </el-form-item>
@@ -74,11 +72,6 @@ export default {
             tableData: [],
             total: 0, //分页
             currentPage: 1,
-            pickerOptions: {
-                disabledDate(time) {
-                return time.getTime() > Date.now();
-                },
-            }
         }
     },
     methods: {

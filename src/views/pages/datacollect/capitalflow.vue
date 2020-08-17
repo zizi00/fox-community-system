@@ -28,14 +28,12 @@
                         v-model="capitalFlowForm.startDate"
                         type="datetime"
                         value-format="yyyy-MM-dd HH:mm:ss"
-                        :picker-options="pickerOptions"
                         placeholder="选择开始时间">
                     </el-date-picker>--
                     <el-date-picker
                         v-model="capitalFlowForm.endDate"
                         type="datetime"
                         value-format="yyyy-MM-dd HH:mm:ss"
-                        :picker-options="pickerOptions"
                         placeholder="选择结束时间">
                     </el-date-picker>
                 </el-form-item>
@@ -101,11 +99,6 @@ export default {
                 payType: ""
             },
             tableData: [],
-            pickerOptions: {
-                disabledDate(time) {
-                return time.getTime() > Date.now();
-                },
-            },
             total: 0, //分页
             currentPage: 1,
             payTypeMap: {

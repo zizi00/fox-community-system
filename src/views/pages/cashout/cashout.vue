@@ -18,14 +18,12 @@
                         v-model="cashOutForm.startDate"
                         type="datetime"
                         value-format="yyyy-MM-dd HH:mm:ss"
-                        :picker-options="pickerOptions"
                         placeholder="选择开始时间">
                     </el-date-picker> --
                     <el-date-picker
                         v-model="cashOutForm.endDate"
                         type="datetime"
                         value-format="yyyy-MM-dd HH:mm:ss"
-                        :picker-options="pickerOptions"
                         placeholder="选择结束时间">
                     </el-date-picker>
                 </el-form-item>
@@ -178,11 +176,6 @@ export default {
                 endDate: ""
             },
             tableData: [],
-            pickerOptions: {
-                disabledDate(time) {
-                return time.getTime() > Date.now();
-                },
-            },
             statusMap: {
                 1: "等待汇款",
                 2: "审核通过",

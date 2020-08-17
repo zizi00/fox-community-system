@@ -17,14 +17,12 @@
                         v-model="rechargerForm.startDate"
                         type="datetime"
                         value-format="yyyy-MM-dd HH:mm:ss"
-                        :picker-options="pickerOptions"
                         placeholder="选择开始时间">
                     </el-date-picker>至
                     <el-date-picker
                         v-model="rechargerForm.endDate"
                         type="datetime"
                         value-format="yyyy-MM-dd HH:mm:ss"
-                        :picker-options="pickerOptions"
                         placeholder="选择结束时间">
                     </el-date-picker>
                 </el-form-item>
@@ -85,11 +83,6 @@ export default {
                 payWay: "",
             },
             tableData: [],
-            pickerOptions: {
-                disabledDate(time) {
-                return time.getTime() > Date.now();
-                },
-            },
             total: 0, //分页
             currentPage: 1,
             payWayMap: {

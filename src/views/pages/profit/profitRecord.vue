@@ -27,14 +27,12 @@
                         v-model="recordForm.beginDate"
                         type="datetime"
                         value-format="yyyy-MM-dd HH:mm:ss"
-                        :picker-options="pickerOptions"
                         placeholder="选择开始时间">
                     </el-date-picker> --
                     <el-date-picker
                         v-model="recordForm.endDate"
                         type="datetime"
                         value-format="yyyy-MM-dd HH:mm:ss"
-                        :picker-options="pickerOptions"
                         placeholder="选择结束时间">
                     </el-date-picker>
                 </el-form-item>
@@ -105,11 +103,6 @@ export default {
             isValidMap:{
                 1: "有效",
                 0: "已禁用"
-            },
-            pickerOptions: {
-                disabledDate(time) {
-                return time.getTime() > Date.now();
-                },
             },
         }
     },

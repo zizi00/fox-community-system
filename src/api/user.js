@@ -29,5 +29,9 @@ export function auditUser(params) {
     return axios.post('/fox/admin/userManage/auditUser?' + qs.stringify(params))
 }
 
+// 女用户同步
+export function getSyncGirlsInfo(params) {
+    return axios.get('/fox/admin/userManage/getSyncGirlsInfo?' + qs.stringify(params))
+}
 
  

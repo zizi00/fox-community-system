@@ -39,6 +39,7 @@ export default {
               name: profitData[i].name,
               grade: profitData[i].grade,
               divide: profitData[i].divide,
+              id: profitData[i].id,
               btnType: 0,
               disabled: true
             })
@@ -60,17 +61,20 @@ export default {
       let data = this.profitSet
       for(let i=0;i<data.length;i++) {
         if(i==index) {
-          params.grade = data[i].grade
+          params.id = data[i].id
           params.divide = data[i].divide
         }
       }
     configUpdate(params).then(res=>{
         if(res.code === 1) {
-          this.$message('设置成功');
-          setTimeout(()=>{
-            this.$router.go(0)
-          },500)
+          this.$message({
+          showClose: true,
+          message: '设置成功',
+          type: 'success'
+        });
+          this.initData()
         }else {
+          this.initData()
         }
         let data = this.profitSet
         for(let i=0;i<data.length;i++) {

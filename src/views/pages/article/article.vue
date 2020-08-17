@@ -3,7 +3,7 @@
         <div class="search-wrapper">
             <el-form :inline="true" ref="search_data" :model="articleForm">
                 <el-form-item label="关键词:">
-                    <el-input v-model="articleForm.title" size="small" placeholder="标题/用户昵称搜索"></el-input>
+                    <el-input v-model="articleForm.title" size="small" placeholder="请输入标题"></el-input>
                 </el-form-item>
                 <el-form-item label="状态:">
                     <el-select v-model="articleForm.audit" placeholder="请选择" size="small" clearable>
@@ -18,20 +18,18 @@
                 </el-form-item>
                 <el-form-item>
                     <el-form-item label="时间:">
-                    <!-- <el-date-picker
-                        v-model="articleForm.startDate"
+                    <el-date-picker
+                        v-model="articleForm.beginDate"
                         type="datetime"
                         value-format="yyyy-MM-dd HH:mm:ss"
-                        :picker-options="pickerOptions"
                         placeholder="选择开始时间">
                     </el-date-picker> --
                     <el-date-picker
                         v-model="articleForm.endDate"
                         type="datetime"
                         value-format="yyyy-MM-dd HH:mm:ss"
-                        :picker-options="pickerOptions"
                         placeholder="选择结束时间">
-                    </el-date-picker> -->
+                    </el-date-picker>
                 </el-form-item>
                 <el-button type="primary" size="small" icon="search" @click="onSearch()">搜索</el-button>
                 </el-form-item>
@@ -50,7 +48,7 @@
                 <el-table-column prop="title" label="标题" align="center"></el-table-column>
                 <el-table-column prop="address" label="地址" align="center"></el-table-column>
                 <el-table-column prop="age" label="联系方式" align="center"></el-table-column>
-                <el-table-column prop="price" label="价格" align="center"></el-table-column>
+                <el-table-column prop="price" label="价格(元)" align="center"></el-table-column>
                 <el-table-column prop="age" label="年龄" align="center"></el-table-column>
                 <el-table-column prop="remark" label="备注" align="center"></el-table-column>
                 <el-table-column prop="createTime" label="发布时间" align="center">
@@ -172,9 +170,9 @@ export default {
                 pageSize: 10,
                 audit: "",
                 title: "",
-                city: "深圳市",
-                // beginDate: "",
-                // endDate: ""
+                city: "",
+                beginDate: "",
+                endDate: ""
             },
             tableData: [],
             total: 0, //分页
@@ -187,11 +185,6 @@ export default {
             },
             detailData: [],
             photoList: [],
-            pickerOptions: {
-                disabledDate(time) {
-                return time.getTime() > Date.now();
-                },
-            },
             userData: [],
             failedDialog: false,
             failedMessage: "",
