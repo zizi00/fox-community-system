@@ -7,18 +7,22 @@
                 </el-form-item>
                 <el-form-item label="代理等级:">
                     <el-select v-model="recordForm.agencyGradeId" placeholder="请选择" size="small" clearable>
-                        <!-- <el-option key="1"  label="资料未完成" value="1"></el-option>
-                        <el-option key="2"  label="待认证" value="2"></el-option>
-                        <el-option key="3"  label="认证完成" value="3"></el-option>
-                        <el-option key="4"  label="认证失败" value="4"></el-option>
-                        <el-option key="5"  label="审核中" value="5"></el-option>
-                        <el-option key="10"  label="封号" value="10"></el-option> -->
+                        <el-option
+                            v-for="item in agentConfig"
+                            :key="item.id"
+                            :label="item.name"
+                            :value="item.id">
+                        </el-option>
                     </el-select>
                 </el-form-item>
                 <el-form-item label="分佣级别:">
                     <el-select v-model="recordForm.divideGradeId" placeholder="请选择" size="small" clearable>
-                        <el-option key="1"  label="有效" value="1"></el-option>
-                        <el-option key="0"  label="已禁用" value="0"></el-option>
+                        <el-option
+                            v-for="item in incomeConfig"
+                            :key="item.id"
+                            :label="item.name"
+                            :value="item.id">
+                        </el-option>
                     </el-select>
                 </el-form-item>
                 <el-form-item>
@@ -75,7 +79,7 @@
     </div>
 </template>
 <script>
-import { getAgencyList } from '@/api/profit.js'
+import { getAgencyList, getConfigList } from '@/api/profit.js'
 export default {
     name: "profit-record",
     data () {
@@ -92,18 +96,8 @@ export default {
             tableData: [],
             total: 0, //分页
             currentPage: 1,
-            stateMap: {
-                1: "资料未完成",
-                2: "待认证",
-                3: "认证完成",
-                4: "认证失败",
-                5: "审核中",
-                10: "封号"
-            },
-            isValidMap:{
-                1: "有效",
-                0: "已禁用"
-            },
+            agentConfig: [],
+            incomeConfig: []
         }
     },
     methods: {
@@ -112,6 +106,26 @@ export default {
                 if(res.code === 1) {
                     this.tableData = res.data
                     this.total = res.count
+                }
+            })
+        },
+        agentConfigList() {
+            let params={
+                type: 1 // 代理
+            }
+            getConfigList(params).then(res=>{
+                if(res.code === 1) {
+                    this.agentConfig = res.data
+                }
+            })
+        },
+        incomeConfigList() {
+            let params={
+                type: 2 // 分佣
+            }
+            getConfigList(params).then(res=>{
+                if(res.code === 1) {
+                    this.incomeConfig = res.data
                 }
             })
         },
@@ -128,6 +142,8 @@ export default {
     },
     created () {
         this.initData()
+        this.agentConfigList()
+        this.incomeConfigList()
     }
 }
 </script>

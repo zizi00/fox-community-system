@@ -26,7 +26,13 @@
                 </el-table-column>
                 <el-table-column prop="nickname" label="用户昵称" align="center"></el-table-column>
                 <el-table-column prop="address" label="地址" align="center"></el-table-column>
-                <el-table-column prop="age" label="联系方式" align="center"></el-table-column>
+                <el-table-column prop="contact" label="联系方式" align="center">
+                    <template slot-scope="scope">
+                        <span style="margin-left: 10px;display:block;text-align:left">微信：{{scope.row.contact[0]}}</span>
+                        <span style="margin-left: 10px;display:block;text-align:left">QQ：{{scope.row.contact[1]}}</span>
+                        <span style="margin-left: 10px;display:block;text-align:left">电话：{{scope.row.contact[2]}}</span>
+                    </template>
+                </el-table-column>
                 <el-table-column prop="price" label="价格(元)" align="center"></el-table-column>
                 <el-table-column prop="age" label="年龄" align="center"></el-table-column>
                 <el-table-column prop="remark" label="详情" align="center"></el-table-column>
@@ -35,9 +41,9 @@
                         <span style="margin-left: 10px">{{scope.row.createTime | parseTime}}</span>
                     </template>
                 </el-table-column>
-                <el-table-column prop="state" label="状态" align="center">
+                <el-table-column prop="syncStatus" label="状态" align="center">
                     <template slot-scope="scope">
-                        <span style="margin-left: 10px">{{stateMap[scope.row.state]}}</span>
+                        <span style="margin-left: 10px" :class="[scope.row.syncStatus==1?'green':'red']">{{syncStatusMap[scope.row.syncStatus]}}</span>
                     </template>
                 </el-table-column>
                 <el-table-column prop="operation" align="center" label="操作" fixed="right" width="200">
@@ -46,11 +52,11 @@
                     type="text"
                     size="small"
                     plain
-                    v-if="scope.row.audit==30"
+                    v-if="scope.row.syncStatus == 2"
                     @click="onUp(scope.row.id)"
                     >上架</el-button>
                     <el-button
-                    v-if="scope.row.audit==10"
+                    v-if="scope.row.syncStatus == 1"
                     type="text"
                     size="small"
                     plain
@@ -88,7 +94,7 @@
     </div>
 </template>
 <script>
-import { getSyncGirlsInfo } from '@/api/user.js'
+import { getSyncGirlsInfo, SyncGirls } from '@/api/user.js'
 export default {
     name: "users-update",
     data () {
@@ -103,16 +109,13 @@ export default {
             tableData: [],
             total: 0, //分页
             currentPage: 1,
-            stateMap: {
+            syncStatusMap: {
                 1: "正常",
                 2: "下架"
             },
             detailData: [],
             photoList: [],
             userData: [],
-            failedDialog: false,
-            failedMessage: "",
-            deleteDialog: false,
         }
     },
     methods: {
@@ -122,7 +125,12 @@ export default {
                     let arr = []
                     arr = res.data
                     for(let i=0;i<arr.length;i++) {
+                        let arr2 = []
                         arr[i].address=arr[i].city+arr[i].address
+                        arr2.push(arr[i].wechat)
+                        arr2.push(arr[i].qq)
+                        arr2.push(arr[i].phone)
+                        arr[i].contact = arr2
                     }
                     this.tableData = arr
                     this.total = res.count
@@ -147,21 +155,16 @@ export default {
                 userId: id
             }
         },
-        onDeleteClassify () {
-
-        },
         handleClose () {
-            this.failedDialog = false
-            this.deleteDialog = false
+            this.detailDialog = false
         },
         // 上架
         onUp(id) {
             let params = {
-                id: id,
-                audit : 10,
-                content: ""
+                userId: id,
+                status : 1,
             }
-            updateAudit(params).then(res => {
+            SyncGirls(params).then(res => {
                 if(res.code === 1) {
                     this.initData()
                 }
@@ -170,11 +173,10 @@ export default {
         // 下架
         onDown(id) {
             let params = {
-                id: id,
-                audit : 30,
-                content: ""
+                userId: id,
+                status : 2,
             }
-            updateAudit(params).then(res => {
+            SyncGirls(params).then(res => {
                 if(res.code === 1) {
                     this.initData()
                 }
@@ -215,7 +217,12 @@ export default {
         }
         /deep/.el-table th>.cell {
             color: #000000;
-            
+        }
+        .green {
+            color: #08c4a0;
+        }
+        .red {
+            color: salmon;
         }
         .pagination{
             text-align: right;

@@ -68,7 +68,7 @@
                     size="small"
                     plain
                     v-if="scope.row.audit==0 || scope.row.audit==20"
-                    @click="onDetail(scope.row.id,scope.row.money,scope.row.isValid)"
+                    @click="onDetail(scope.row)"
                     >通过 |</el-button>
                     <el-button
                     type="text"
@@ -123,7 +123,78 @@
             center
             :before-close="handleClose">
             <div class="article-wrapper">
+                <el-form :model="userData" ref="dynamicForm" label-width="100px" :inline="true" class="article-form">
+                    <el-form-item
+                    label="微信"
+                    >
+                    <el-input v-model="userData.wechatId"></el-input>
+                    </el-form-item>
+                    <el-form-item
+                    label="手机"
+                    >
+                    <el-input v-model="userData.phone"></el-input>
+                    </el-form-item>
+                    <el-form-item
+                    label="QQ"
+                    >
+                    <el-input v-model="userData.qq"></el-input>
+                    </el-form-item>
+                    <el-form-item
+                    label="价格"
+                    :rules="{
+                        required: true, message: '价格不能为空', trigger: 'blur'
+                    }"
+                    >
+                    <el-input v-model="userData.price"></el-input>
+                    </el-form-item>
+                    <el-form-item
+                    label="年龄"
+                    :rules="{
+                        required: true, message: '年龄不能为空', trigger: 'blur'
+                    }"
+                    >
+                    <el-input v-model="userData.age"></el-input>
+                    </el-form-item>
+                    <el-form-item
+                    label="地址"
+                    >
+                    <el-cascader
+                        v-model="userData.city"
+                        :options="options"></el-cascader>
+                    </el-form-item>
+                    <el-form-item
+                    label="标题"
+                    :rules="{
+                        required: true, message: '标题不能为空', trigger: 'blur'
+                    }"
+                    >
+                    <el-input v-model="userData.title" style="width: 500px" placeholder="请输入标题"></el-input>
+                    </el-form-item>
+                    <el-form-item
+                    class="content"
+                    label="备注"
+                    >
+                    <el-input type="textarea" :rows="2" placeholder="请输入内容" v-model="userData.content" style="width: 500px;"></el-input>
+                    </el-form-item>
+                    <el-form-item class="upload-item" label="图片">
+                    <!-- <div class="hide-div" @click="recordIndex(index)">
+                        <el-upload
+                        action=""
+                        :http-request="httpRequest"
+                        list-type="picture-card"
+                        :on-remove="handleRemove">
+                        <i class="el-icon-plus"></i>
+                        </el-upload>
+                    </div> -->
+                    </el-form-item>
+                    <el-form-item label="" class="checkbox">
+                    <el-checkbox v-model="userData.syncUser">同步到女用户表</el-checkbox>
+                    </el-form-item>
                 
+                <el-form-item class="submit">
+                    <el-button type="primary" :disabled="btnDisabled" @click="submitForm('dynamicForm')">提交全部</el-button>
+                </el-form-item>
+                </el-form>
             </div>
         </el-dialog>
         <!-- 驳回 -->
@@ -159,7 +230,8 @@
     </div>
 </template>
 <script>
-import { getDynamic, updateAudit } from '@/api/article.js'
+import { getDynamic, updateAudit, updateDynamic } from '@/api/article.js'
+import mapData from '../../../static/json/map.json'
 export default {
     name: "domians",
     data () {
@@ -189,6 +261,8 @@ export default {
             failedDialog: false,
             failedMessage: "",
             deleteDialog: false,
+            options: [],
+            btnDisabled: false
         }
     },
     methods: {
@@ -216,27 +290,10 @@ export default {
 
         },
         // 查看详情
-        onDetail (id,money,isValid) {
-            this.photoList = []
-            // this.detailDialog = true
-            let params = {
-                userId: id
-            }
-        },
-        onDeleteClassify () {
-
-        },
-        // 禁用或启用
-        onChangeValid(userid, num) {
-            let params = {
-                id: userid,
-                isValid : num
-            }
-            forbiddenUser(params).then(res => {
-                if(res.code === 1) {
-                    this.initData()
-                }
-            }) 
+        onDetail (row) {
+            this.userData = row
+            this.articleDialog = true
+            console.log(this.userData)
         },
         addArticle() {
             this.$router.push({name: 'addArticle'})
@@ -244,6 +301,7 @@ export default {
         handleClose () {
             this.failedDialog = false
             this.deleteDialog = false
+            this.articleDialog = false
         },
         // 驳回
         onFailed (row) {
@@ -320,9 +378,18 @@ export default {
                 }
             })
         },
+        // 审核内容
+        submitForm (formName) {
+            updateDynamic(this.userData).then(res=>{
+                console.log(res)
+            })
+        }
     },
     created () {
         this.initData()
+    },
+    mounted() {
+        this.options = mapData
     }
 }
 </script>

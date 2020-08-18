@@ -34,4 +34,9 @@ export function getSyncGirlsInfo(params) {
     return axios.get('/fox/admin/userManage/getSyncGirlsInfo?' + qs.stringify(params))
 }
 
+// 女用户上下架
+export function SyncGirls(params) {
+    return axios.get('/fox/admin/userManage/down?' + qs.stringify(params))
+}
+
  

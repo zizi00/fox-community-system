@@ -19,3 +19,9 @@ export function uploadPhoto (params) {
 export function updateAudit (params) {
   return axios.post('/fox/admin/dynamic/audit?'+ qs.stringify(params))
 }
+
+// 修改动态
+export function updateDynamic (params) {
+  return axios.post('/fox/admin/dynamic/updateDynamic?'+ qs.stringify(params))
+}
+
