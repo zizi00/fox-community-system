@@ -129,7 +129,7 @@ export default {
                 if(this.imgFileList[j].index == i) {
                   var formData = new FormData()
                   formData.append('img', this.imgFileList[j].file);
-                  uploadPhoto(formData).then((res) =>{
+                  uploadPhoto(formData).then(res =>{
                     let imgData = res.data.data
                     if(res.data.code === 1) {
                       arr.push ({
@@ -152,7 +152,7 @@ export default {
               }
               this.dynamicForm.domains[i].county = this.dynamicForm.domains[i].city[2]
               this.dynamicForm.domains[i].city = this.dynamicForm.domains[i].city[1]
-              addDynamic(this.dynamicForm.domains[i]).then((res) =>{
+              addDynamic(this.dynamicForm.domains[i]).then(res =>{
                 if(res.data.code === 1) {
                   this.isSuccess = true
                 }else {

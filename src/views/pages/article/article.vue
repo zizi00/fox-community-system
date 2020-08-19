@@ -47,7 +47,13 @@
                 <el-table-column prop="nickname" label="用户昵称" align="center"></el-table-column>
                 <el-table-column prop="title" label="标题" align="center"></el-table-column>
                 <el-table-column prop="address" label="地址" align="center"></el-table-column>
-                <el-table-column prop="age" label="联系方式" align="center"></el-table-column>
+                <el-table-column prop="wechat" label="联系方式" align="center">
+                    <!-- <template slot-scope="scope">
+                        <span style="margin-left: 10px;display:block;text-align:left">微信：{{scope.row.contact[0]}}</span>
+                        <span style="margin-left: 10px;display:block;text-align:left">QQ：{{scope.row.contact[1]}}</span>
+                        <span style="margin-left: 10px;display:block;text-align:left">电话：{{scope.row.contact[2]}}</span>
+                    </template> -->
+                </el-table-column>
                 <el-table-column prop="price" label="价格(元)" align="center"></el-table-column>
                 <el-table-column prop="age" label="年龄" align="center"></el-table-column>
                 <el-table-column prop="remark" label="备注" align="center"></el-table-column>
@@ -63,6 +69,13 @@
                 </el-table-column>
                 <el-table-column prop="operation" align="center" label="操作" fixed="right" width="200">
                 <template slot-scope="scope">
+                    <el-button
+                    type="text"
+                    size="small"
+                    plain
+                    v-if="scope.row.audit==0 || scope.row.audit==30"
+                    @click="onDetail(scope.row)"
+                    >编辑 |</el-button>
                     <el-button
                     type="text"
                     size="small"
@@ -119,7 +132,7 @@
         <!-- 弹出弹窗 -->
         <el-dialog
             :visible.sync="articleDialog"
-            width="1200px"
+            width="1000px"
             center
             :before-close="handleClose">
             <div class="article-wrapper">
@@ -177,7 +190,6 @@
                     <el-input type="textarea" :rows="2" placeholder="请输入内容" v-model="userData.content" style="width: 500px;"></el-input>
                     </el-form-item>
                     <el-form-item class="upload-item" label="图片">
-                    <!-- <div class="hide-div" @click="recordIndex(index)">
                         <el-upload
                         action=""
                         :http-request="httpRequest"
@@ -185,7 +197,6 @@
                         :on-remove="handleRemove">
                         <i class="el-icon-plus"></i>
                         </el-upload>
-                    </div> -->
                     </el-form-item>
                     <el-form-item label="" class="checkbox">
                     <el-checkbox v-model="userData.syncUser">同步到女用户表</el-checkbox>
@@ -257,7 +268,17 @@ export default {
             },
             detailData: [],
             photoList: [],
-            userData: [],
+            userData: {
+                wechatId: "",
+                qq: "",
+                phone: "",
+                price: "",
+                age: "",
+                city: "",
+                title: "",
+                content: "",
+                syncUser: false
+            },
             failedDialog: false,
             failedMessage: "",
             deleteDialog: false,
@@ -297,9 +318,14 @@ export default {
             this.userData.price = row.price
             this.userData.age = row.age
             this.userData.city = row.city
+            this.userData.county = row.county
             this.userData.title = row.title
             this.userData.content = row.content
-            this.userData.syncUser = row.syncUser
+            if(row.syncUser == 0) {
+                this.userData.syncUser = false
+            }else {
+                this.userData.syncUser = true
+            }
             this.articleDialog = true
             console.log(this.userData)
         },
@@ -388,6 +414,11 @@ export default {
         },
         // 审核内容
         submitForm (formName) {
+            if(this.userData.syncUser) {
+                this.userData.syncUser = 1
+            }else {
+                this.userData.syncUser = 0
+            }
             updateDynamic(this.userData).then(res=>{
                 console.log(res)
             })
@@ -453,5 +484,16 @@ export default {
     /deep/.el-textarea__inner {
         margin-top: 10px;
     }
+    .upload-item {
+        display: block;
+    }
+    .checkbox {
+        display: block;
+        margin-left: 98px;
+      }
+    .submit {
+        margin-left: 98px;
+        margin-top: 20px;
+      }
 }
 </style>

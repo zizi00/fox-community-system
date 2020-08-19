@@ -40,6 +40,7 @@
                         <span style="margin-left: 10px">{{scope.row.createTime | parseTime}}</span>
                     </template>
                 </el-table-column>
+                <el-table-column prop="visitorCount" label="查阅次数" align="center"></el-table-column>
                 <el-table-column prop="syncStatus" label="状态" align="center">
                     <template slot-scope="scope">
                         <span style="margin-left: 10px" :class="[scope.row.syncStatus==1?'green':'red']">{{syncStatusMap[scope.row.syncStatus]}}</span>
