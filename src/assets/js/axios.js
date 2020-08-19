@@ -91,7 +91,7 @@ instance.interceptors.response.use(
         // router.push({ name: '403' })
         break
       case 404:
-        // router.push({ name: '404' })
+        Message({ message: '数据出错了', type: 'error',duration:3000 })
         break
       case 500:
         // router.push({ name: '500' })

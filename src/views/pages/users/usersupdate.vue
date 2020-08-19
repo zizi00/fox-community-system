@@ -33,7 +33,6 @@
                         <span style="margin-left: 10px;display:block;text-align:left">电话：{{scope.row.contact[2]}}</span>
                     </template>
                 </el-table-column>
-                <el-table-column prop="price" label="价格(元)" align="center"></el-table-column>
                 <el-table-column prop="age" label="年龄" align="center"></el-table-column>
                 <el-table-column prop="remark" label="详情" align="center"></el-table-column>
                 <el-table-column prop="createTime" label="同步时间" align="center">

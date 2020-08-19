@@ -291,7 +291,15 @@ export default {
         },
         // 查看详情
         onDetail (row) {
-            this.userData = row
+            this.userData.wechatId = row.wechatId
+            this.userData.qq = row.qq
+            this.userData.phone = row.phone
+            this.userData.price = row.price
+            this.userData.age = row.age
+            this.userData.city = row.city
+            this.userData.title = row.title
+            this.userData.content = row.content
+            this.userData.syncUser = row.syncUser
             this.articleDialog = true
             console.log(this.userData)
         },
