@@ -53,7 +53,11 @@
         </el-form-item>
         <el-form-item
           class="content"
-          label="备注"
+          label="内容"
+          :prop="'domains.' + index + '.content'"
+          :rules="{
+            required: true, message: '内容不能为空', trigger: 'blur'
+          }"
         >
           <el-input type="textarea" :rows="2" placeholder="请输入内容" v-model="domain.content" style="width: 500px;"></el-input>
         </el-form-item>
@@ -121,10 +125,10 @@ export default {
            this.btnDisabled = true
            let domainsData = this.dynamicForm.domains
            for(let j=0;j<domainsData.length;j++) {
-             if(domainsData[j].wechatId && domainsData[j].qq && domainsData[j].phone) {
+             if(!domainsData[j].wechatId && !domainsData[j].qq && !domainsData[j].phone) {
                this.$message({
                   message: '微信，手机号码，QQ需选填一个',
-                  type: 'warning'
+                  type: 'error'
                 });
                 this.btnDisabled = false
                 return false
@@ -132,7 +136,7 @@ export default {
              if(domainsData[j].city.length == 0) {
                this.$message({
                   message: '地区不能为空',
-                  type: 'warning'
+                  type: 'error'
                 });
                 this.btnDisabled = false
                 return false
@@ -168,17 +172,21 @@ export default {
               this.dynamicForm.domains[i].county = this.dynamicForm.domains[i].city[2]
               this.dynamicForm.domains[i].city = this.dynamicForm.domains[i].city[1]
               addDynamic(this.dynamicForm.domains[i]).then(res =>{
-                if(res.data.code === 1) {
+                if(res.code == 1) {
                   this.isSuccess = true
+                  this.btnDisabled = false
                 }else {
                   this.btnDisabled = false
                 }
                   
               })
               // let data = await addDynamic (this.dynamicForm.domains[i])
-            } 
+            }
+            
+            console.log(this.isSuccess)
             if(this.isSuccess) {
               this.btnDisabled = false
+              console.log(this.isSuccess)
               this.$notify({
                 title: '提示',
                 message: '内容添加成功'

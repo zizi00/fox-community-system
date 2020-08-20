@@ -47,16 +47,16 @@
                 <el-table-column prop="nickname" label="用户昵称" align="center"></el-table-column>
                 <el-table-column prop="title" label="标题" align="center"></el-table-column>
                 <el-table-column prop="address" label="地址" align="center"></el-table-column>
-                <el-table-column prop="wechatId" label="联系方式" align="center">
+                <el-table-column prop="contact" label="联系方式" align="center">
                     <template slot-scope="scope">
-                        <span style="margin-left: 10px;display:block;text-align:left">微信：{{scope.row.wechatId}}</span>
-                        <!-- <span style="margin-left: 10px;display:block;text-align:left">QQ：{{scope.row.contact[1]}}</span>
-                        <span style="margin-left: 10px;display:block;text-align:left">电话：{{scope.row.contact[2]}}</span> -->
+                        <span style="margin-left: 10px;display:block;text-align:left">微信：{{scope.row.contact[0]}}</span>
+                        <span style="margin-left: 10px;display:block;text-align:left">QQ：{{scope.row.contact[1]}}</span>
+                        <span style="margin-left: 10px;display:block;text-align:left">电话：{{scope.row.contact[2]}}</span>
                     </template>
                 </el-table-column>
                 <el-table-column prop="price" label="价格(元)" align="center"></el-table-column>
                 <el-table-column prop="age" label="年龄" align="center"></el-table-column>
-                <el-table-column prop="remark" label="备注" align="center"></el-table-column>
+                <el-table-column prop="remark" label="内容" align="center"></el-table-column>
                 <el-table-column prop="createTime" label="发布时间" align="center">
                     <template slot-scope="scope">
                         <span style="margin-left: 10px">{{scope.row.createTime | parseTime}}</span>
@@ -81,7 +81,7 @@
                     size="small"
                     plain
                     v-if="scope.row.audit==0 || scope.row.audit==20"
-                    @click="onDetail(scope.row)"
+                    @click="onSuccess(scope.row)"
                     >通过 |</el-button>
                     <el-button
                     type="text"
@@ -169,11 +169,20 @@
                     <el-input v-model="userData.age"></el-input>
                     </el-form-item>
                     <el-form-item
-                    label="地址"
+                    label="城市"
+                    :rules="{
+                        required: true, message: '城市不能为空', trigger: 'blur'
+                    }"
                     >
-                    <el-cascader
-                        v-model="userData.city"
-                        :options="options"></el-cascader>
+                    <el-input v-model="userData.city"></el-input>
+                    </el-form-item>
+                     <el-form-item
+                    label="地区"
+                    :rules="{
+                        required: true, message: '地区不能为空', trigger: 'blur'
+                    }"
+                    >
+                    <el-input v-model="userData.county"></el-input>
                     </el-form-item>
                     <el-form-item
                     label="标题"
@@ -186,6 +195,9 @@
                     <el-form-item
                     class="content"
                     label="备注"
+                    :rules="{
+                        required: true, message: '内容不能为空', trigger: 'blur'
+                    }"
                     >
                     <el-input type="textarea" :rows="2" placeholder="请输入内容" v-model="userData.content" style="width: 500px;"></el-input>
                     </el-form-item>
@@ -194,6 +206,7 @@
                         action=""
                         :http-request="httpRequest"
                         list-type="picture-card"
+                        :file-list="userData.imageList"
                         :on-remove="handleRemove">
                         <i class="el-icon-plus"></i>
                         </el-upload>
@@ -238,10 +251,22 @@
                 <el-button type="primary" @click="onSubmitDelete(userData.id)">确 定</el-button>
             </span>
         </el-dialog>
+        <!-- 通过 -->
+        <el-dialog
+            title="审核确认"
+            :visible.sync="successDialog"
+            width="450px"
+            :before-close="handleClose">
+            <span>确定通过当前动态内容吗？</span>
+            <span slot="footer" class="dialog-footer">
+                <el-button @click="handleClose">取 消</el-button>
+                <el-button type="primary" @click="onSubmitSuccess(userData.id)">确 定</el-button>
+            </span>
+        </el-dialog>
     </div>
 </template>
 <script>
-import { getDynamic, updateAudit, updateDynamic } from '@/api/article.js'
+import { getDynamic, updateAudit, updateDynamic, uploadPhoto } from '@/api/article.js'
 import mapData from '../../../static/json/map.json'
 export default {
     name: "domians",
@@ -283,7 +308,9 @@ export default {
             failedMessage: "",
             deleteDialog: false,
             options: [],
-            btnDisabled: false
+            btnDisabled: false,
+            successDialog: false,
+            imgFileList: []
         }
     },
     methods: {
@@ -293,7 +320,12 @@ export default {
                     let arr = []
                     arr = res.data
                     for(let i=0;i<arr.length;i++) {
-                        arr[i].address=arr[i].city+arr[i].county
+                        let arr2 = []
+                        arr[i].address=arr[i].city+arr[i].address
+                        arr2.push(arr[i].wechatId)
+                        arr2.push(arr[i].qq)
+                        arr2.push(arr[i].phone)
+                        arr[i].contact = arr2
                     }
                     this.tableData = arr
                     this.total = res.count
@@ -322,6 +354,17 @@ export default {
             this.userData.county = row.county
             this.userData.title = row.title
             this.userData.content = row.content
+            let imageList = []
+            if(row.images.length>0) {
+                for(let i=0;i<row.images.length;i++) {
+                    imageList.push({
+                        name: row.images[i].imgId.toString(),
+                        url: 'http://foxcommunity.oss-cn-beijing.aliyuncs.com/' + row.images[i].imgPath
+                    })
+                }
+            }
+            this.userData.imageList = imageList
+            // this.userData.images = row.images
             if(row.syncUser == 0) {
                 this.userData.syncUser = false
             }else {
@@ -337,6 +380,7 @@ export default {
             this.failedDialog = false
             this.deleteDialog = false
             this.articleDialog = false
+            this.successDialog = false
         },
         // 驳回
         onFailed (row) {
@@ -348,8 +392,13 @@ export default {
             this.userData = row
             this.deleteDialog = true
         },
+        // 通过
+        onSuccess(row) {
+            this.userData = row
+            this.successDialog = true
+        },
          // 确认驳回
-        onSubmitFailed(id,nickname) {
+        onSubmitFailed(id) {
             // 调用接口
             let params = {
                 id: id,
@@ -361,7 +410,7 @@ export default {
                     this.failedDialog = false
                     this.$notify({
                         title: '操作成功',
-                        message: '已驳回'+ nickname +'的动态',
+                        message: '已驳回当前的动态',
                         type: 'warning'
                         });
                     this.initData()
@@ -381,6 +430,24 @@ export default {
                     this.$notify({
                         title: '操作成功',
                         message: '已删除的动态',
+                        type: 'warning'
+                        });
+                    this.initData()
+                }
+            })
+        },
+        onSubmitSuccess(id) {
+            let params = {
+                id: id,
+                audit : 10,
+                content: ""
+            }
+            updateAudit(params).then(res => {
+                if(res.code === 1) {
+                    this.successDialog = false
+                    this.$notify({
+                        title: '操作成功',
+                        message: '已通过当前动态的动态',
                         type: 'warning'
                         });
                     this.initData()
@@ -414,30 +481,65 @@ export default {
             })
         },
         // 审核内容
-        submitForm (formName) {
+        async submitForm (formName) {
             if(this.userData.syncUser) {
                 this.userData.syncUser = 1
             }else {
                 this.userData.syncUser = 0
             }
+            let arr = []
+            let imageList = this.userData.imageList
+            for(let i=0;i<imageList.length;i++) {
+                if(imageList[i].url) {
+                    let url = imageList[i].url.split("//foxcommunity.oss-cn-beijing.aliyuncs.com/")[1]
+                    arr.push({
+                        imgPath: url,
+                        imgId: parseInt(imageList[i].name)
+                    })
+                }
+                if(imageList[i].file) {
+                  var formData = new FormData()
+                  formData.append('img', imageList[i].file);
+                    let data = await uploadPhoto(formData)
+                    if(data.data.code == 1) {
+                      arr.push ({
+                        imgPath: data.data.data.filePath,
+                        imgId: data.data.data.id
+                      })
+                    }
+                }
+            }
+            if(arr[0]) {
+                this.userData.imagesJson = JSON.stringify(arr)
+              }else {
+                this.userData.imagesJson = ""
+              }
             updateDynamic(this.userData).then(res=>{
-                console.log(res)
+                if(res.data.code == 1) {
+                    this.$message({
+                    showClose: true,
+                    message: '提交成功',
+                    type: 'success'
+                    });
+                    this.articleDialog = false
+                    this.initData()
+                }
             })
         },
         httpRequest (file) {
-          this.imgFileList.push({
-            index: this.domainIndex,
+          this.userData.imageList.push({
+            name: file.file.name,
             file: file.file
           })
         },
         handleRemove(file) {
-          let arr = this.imgFileList
-          for(let i=0;i<this.imgFileList.length;i++) {
-            if(this.imgFileList[i].file == file.raw) {
-              arr.splice(i,1);
+            let arr = this.userData.imageList
+            for(let i=0;i<this.userData.imageList.length;i++) {
+                if(this.userData.imageList[i].name == file.name) {
+                arr.splice(i,1);
+                }
             }
-          }
-            this.imgFileList = arr
+            this.userData.imageList = arr
         },
     },
     created () {
