@@ -47,12 +47,12 @@
                 <el-table-column prop="nickname" label="用户昵称" align="center"></el-table-column>
                 <el-table-column prop="title" label="标题" align="center"></el-table-column>
                 <el-table-column prop="address" label="地址" align="center"></el-table-column>
-                <el-table-column prop="wechat" label="联系方式" align="center">
-                    <!-- <template slot-scope="scope">
-                        <span style="margin-left: 10px;display:block;text-align:left">微信：{{scope.row.contact[0]}}</span>
-                        <span style="margin-left: 10px;display:block;text-align:left">QQ：{{scope.row.contact[1]}}</span>
-                        <span style="margin-left: 10px;display:block;text-align:left">电话：{{scope.row.contact[2]}}</span>
-                    </template> -->
+                <el-table-column prop="wechatId" label="联系方式" align="center">
+                    <template slot-scope="scope">
+                        <span style="margin-left: 10px;display:block;text-align:left">微信：{{scope.row.wechatId}}</span>
+                        <!-- <span style="margin-left: 10px;display:block;text-align:left">QQ：{{scope.row.contact[1]}}</span>
+                        <span style="margin-left: 10px;display:block;text-align:left">电话：{{scope.row.contact[2]}}</span> -->
+                    </template>
                 </el-table-column>
                 <el-table-column prop="price" label="价格(元)" align="center"></el-table-column>
                 <el-table-column prop="age" label="年龄" align="center"></el-table-column>
@@ -312,6 +312,7 @@ export default {
         },
         // 查看详情
         onDetail (row) {
+            this.userData.id = row.id
             this.userData.wechatId = row.wechatId
             this.userData.qq = row.qq
             this.userData.phone = row.phone
@@ -422,7 +423,22 @@ export default {
             updateDynamic(this.userData).then(res=>{
                 console.log(res)
             })
-        }
+        },
+        httpRequest (file) {
+          this.imgFileList.push({
+            index: this.domainIndex,
+            file: file.file
+          })
+        },
+        handleRemove(file) {
+          let arr = this.imgFileList
+          for(let i=0;i<this.imgFileList.length;i++) {
+            if(this.imgFileList[i].file == file.raw) {
+              arr.splice(i,1);
+            }
+          }
+            this.imgFileList = arr
+        },
     },
     created () {
         this.initData()

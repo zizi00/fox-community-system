@@ -34,7 +34,17 @@
                     </template>
                 </el-table-column>
                 <el-table-column prop="age" label="年龄" align="center"></el-table-column>
-                <el-table-column prop="remark" label="详情" align="center"></el-table-column>
+                <el-table-column prop="remark" label="详情" align="center">
+                  <template slot-scope="scope">
+                    <el-popover
+                      placement="top-start"
+                      title="标题"
+                      width="200"
+                      trigger="hover"
+                      :content="scope.row.remark">
+                    </el-popover>
+                  </template>
+                </el-table-column>
                 <el-table-column prop="createTime" label="同步时间" align="center">
                     <template slot-scope="scope">
                         <span style="margin-left: 10px">{{scope.row.createTime | parseTime}}</span>

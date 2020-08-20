@@ -22,6 +22,6 @@ export function updateAudit (params) {
 
 // 修改动态
 export function updateDynamic (params) {
-  return axios.post('/fox/admin/dynamic/updateDynamic?'+ qs.stringify(params))
+  return axios.post('/fox/admin/dynamic/updateDynamic',params)
 }
 

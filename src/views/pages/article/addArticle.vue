@@ -9,10 +9,6 @@
         </el-form-item>
         <el-form-item
           label="手机"
-          :prop="'domains.' + index + '.phone'"
-          :rules="{
-            required: true, message: '手机不能为空', trigger: 'blur'
-          }"
         >
           <el-input v-model="domain.phone"></el-input>
         </el-form-item>
@@ -123,6 +119,25 @@ export default {
       this.$refs[formName].validate((valid) =>{
          if (valid) {
            this.btnDisabled = true
+           let domainsData = this.dynamicForm.domains
+           for(let j=0;j<domainsData.length;j++) {
+             if(domainsData[j].wechatId && domainsData[j].qq && domainsData[j].phone) {
+               this.$message({
+                  message: '微信，手机号码，QQ需选填一个',
+                  type: 'warning'
+                });
+                this.btnDisabled = false
+                return false
+             }
+             if(domainsData[j].city.length == 0) {
+               this.$message({
+                  message: '地区不能为空',
+                  type: 'warning'
+                });
+                this.btnDisabled = false
+                return false
+             }
+           }
            for(let i=0;i<this.dynamicForm.domains.length;i++) {
               let arr = []
               for(let j=0;j<this.imgFileList.length;j++) {
