@@ -32,7 +32,6 @@ export default {
       }
       getConfigList(param).then(res =>{
         if(res.code === 1) {
-          // console.log(res.data)
           let profitData = res.data
           for(let i=0;i<profitData.length;i++) {
             this.profitSet.push({

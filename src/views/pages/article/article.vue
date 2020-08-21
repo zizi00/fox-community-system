@@ -509,9 +509,7 @@ export default {
               }else {
                 this.userData.imagesJson = ""
               }
-            console.log(this.userData)
             updateDynamic(this.userData).then(res=>{
-              console.log(res)
                 if(res.code == 1) {
                     this.$message({
                     showClose: true,
