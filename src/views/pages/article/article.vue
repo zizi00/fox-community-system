@@ -56,7 +56,7 @@
                 </el-table-column>
                 <el-table-column prop="price" label="价格(元)" align="center"></el-table-column>
                 <el-table-column prop="age" label="年龄" align="center"></el-table-column>
-                <el-table-column prop="remark" label="内容" align="center"></el-table-column>
+                <el-table-column prop="content" label="内容" align="center"></el-table-column>
                 <el-table-column prop="createTime" label="发布时间" align="center">
                     <template slot-scope="scope">
                         <span style="margin-left: 10px">{{scope.row.createTime | parseTime}}</span>
@@ -321,7 +321,7 @@ export default {
                     arr = res.data
                     for(let i=0;i<arr.length;i++) {
                         let arr2 = []
-                        arr[i].address=arr[i].city+arr[i].address
+                        arr[i].address=arr[i].city+arr[i].county
                         arr2.push(arr[i].wechatId)
                         arr2.push(arr[i].qq)
                         arr2.push(arr[i].phone)
@@ -364,14 +364,12 @@ export default {
                 }
             }
             this.userData.imageList = imageList
-            // this.userData.images = row.images
             if(row.syncUser == 0) {
                 this.userData.syncUser = false
             }else {
                 this.userData.syncUser = true
             }
             this.articleDialog = true
-            console.log(this.userData)
         },
         addArticle() {
             this.$router.push({name: 'addArticle'})
@@ -459,7 +457,7 @@ export default {
             let params = {
                 id: id,
                 audit : 10,
-                content: ""
+                // content: ""
             }
             updateAudit(params).then(res => {
                 if(res.code === 1) {
@@ -491,9 +489,7 @@ export default {
             let imageList = this.userData.imageList
             for(let i=0;i<imageList.length;i++) {
                 if(imageList[i].url) {
-                    let url = imageList[i].url.split("//foxcommunity.oss-cn-beijing.aliyuncs.com/")[1]
                     arr.push({
-                        imgPath: url,
                         imgId: parseInt(imageList[i].name)
                     })
                 }
@@ -503,7 +499,6 @@ export default {
                     let data = await uploadPhoto(formData)
                     if(data.data.code == 1) {
                       arr.push ({
-                        imgPath: data.data.data.filePath,
                         imgId: data.data.data.id
                       })
                     }
@@ -514,8 +509,10 @@ export default {
               }else {
                 this.userData.imagesJson = ""
               }
+            console.log(this.userData)
             updateDynamic(this.userData).then(res=>{
-                if(res.data.code == 1) {
+              console.log(res)
+                if(res.code == 1) {
                     this.$message({
                     showClose: true,
                     message: '提交成功',

@@ -119,84 +119,78 @@ export default {
     }
   },
   methods: {
-    submitForm (formName) {
-      this.$refs[formName].validate((valid) =>{
-         if (valid) {
-           this.btnDisabled = true
-           let domainsData = this.dynamicForm.domains
-           for(let j=0;j<domainsData.length;j++) {
-             if(!domainsData[j].wechatId && !domainsData[j].qq && !domainsData[j].phone) {
-               this.$message({
-                  message: '微信，手机号码，QQ需选填一个',
-                  type: 'error'
-                });
-                this.btnDisabled = false
-                return false
-             }
-             if(domainsData[j].city.length == 0) {
-               this.$message({
-                  message: '地区不能为空',
-                  type: 'error'
-                });
-                this.btnDisabled = false
-                return false
-             }
-           }
-           for(let i=0;i<this.dynamicForm.domains.length;i++) {
-              let arr = []
-              for(let j=0;j<this.imgFileList.length;j++) {
-                if(this.imgFileList[j].index == i) {
-                  var formData = new FormData()
-                  formData.append('img', this.imgFileList[j].file);
-                  uploadPhoto(formData).then(res =>{
-                    let imgData = res.data.data
-                    if(res.data.code === 1) {
-                      arr.push ({
-                        imgPath: imgData.filePath,
-                        imgId: imgData.id
-                      })
-                    }
-                  })
+     submitForm (formName) {
+       let that = this
+      this.$refs[formName].validate(
+        async function(valid) {
+          if (valid) {
+            that.btnDisabled = true
+            let domainsData = that.dynamicForm.domains
+            for(let j=0;j<domainsData.length;j++) {
+              if(!domainsData[j].wechatId && !domainsData[j].qq && !domainsData[j].phone) {
+                that.$message({
+                    message: '微信，手机号码，QQ需选填一个',
+                    type: 'error'
+                  });
+                  that.btnDisabled = false
+                  return false
+              }
+              if(domainsData[j].city.length == 0) {
+                that.$message({
+                    message: '地区不能为空',
+                    type: 'error'
+                  });
+                  that.btnDisabled = false
+                  return false
+              }
+            }
+            for(let i=0;i<that.dynamicForm.domains.length;i++) {
+                let arr = []
+                for(let j=0;j<that.imgFileList.length;j++) {
+                  if(that.imgFileList[j].index == i) {
+                    var formData = new FormData()
+                    formData.append('img', that.imgFileList[j].file);
+                    let data = await uploadPhoto(formData)
+                      if(data.data.code === 1) {
+                        arr.push ({
+                          imgId: data.data.data.id
+                        })
+                      }
+                  }
                 }
-              }
-              if(arr[0]) {
-                this.dynamicForm.domains[i].imagesJson = JSON.stringify(arr)
-              }else {
-                this.dynamicForm.domains[i].imagesJson = ""
-              }
-              if(this.dynamicForm.domains[i].syncUser) {
-                this.dynamicForm.domains[i].syncUser = 1
-              }else {
-                this.dynamicForm.domains[i].syncUser = 0
-              }
-              this.dynamicForm.domains[i].county = this.dynamicForm.domains[i].city[2]
-              this.dynamicForm.domains[i].city = this.dynamicForm.domains[i].city[1]
-              addDynamic(this.dynamicForm.domains[i]).then(res =>{
-                if(res.code == 1) {
-                  this.isSuccess = true
-                  this.btnDisabled = false
+                if(arr[0]) {
+                  that.dynamicForm.domains[i].imagesJson = JSON.stringify(arr)
                 }else {
-                  this.btnDisabled = false
+                  that.dynamicForm.domains[i].imagesJson = ""
                 }
-                  
-              })
-              // let data = await addDynamic (this.dynamicForm.domains[i])
-            }
-            
-            console.log(this.isSuccess)
-            if(this.isSuccess) {
-              this.btnDisabled = false
-              console.log(this.isSuccess)
-              this.$notify({
-                title: '提示',
-                message: '内容添加成功'
-              });
-            }
-         }else {
-           console.log('error submit!!');
-            return false;
-         }
-      })
+                if(that.dynamicForm.domains[i].syncUser) {
+                  that.dynamicForm.domains[i].syncUser = 1
+                }else {
+                  that.dynamicForm.domains[i].syncUser = 0
+                }
+                that.dynamicForm.domains[i].county = that.dynamicForm.domains[i].city[2]
+                that.dynamicForm.domains[i].city = that.dynamicForm.domains[i].city[1]
+
+                let data = await addDynamic (that.dynamicForm.domains[i])
+                  if(data.code == 1) {
+                    that.isSuccess = true
+                  }
+              }
+              if(that.isSuccess) {
+                that.btnDisabled = false
+                that.$notify({
+                  title: '提示',
+                  message: '内容添加成功'
+                });
+                that.$router.push({name: 'article'})
+              }else {
+                that.btnDisabled = false
+              }
+          }else {
+            console.log('error submit!!');
+              return false;
+          }
+        })
       
     },
     addDomain () {

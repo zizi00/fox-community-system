@@ -17,16 +17,23 @@
                     </el-dropdown-menu>
                 </el-dropdown>
             </span>
+            <div class="tags-wrapper">
+                <Tags></Tags>
+            </div>
         </div>
     </div>
 </template>
 <script>
+import Tags from "./tags.vue"
 export default {
     name: "head-nav",
     computed:{
         user(){
             return this.$store.getters.user;
         }
+    },
+    components: {
+        Tags
     },
     methods: {
         setDialogInfo(cmditem) {
@@ -73,9 +80,16 @@ export default {
         flex: 1;
         text-align: right;
         margin-right: 100px;
-        line-height: 80px;
+        // line-height: 80px;
+        position: relative;
         .username {
             color: #409EFF;
+        }
+        .tags-wrapper {
+          position: absolute;
+          left: 0;
+          bottom: -60px;
+          background-color: #ffffff;
         }
     }
 }

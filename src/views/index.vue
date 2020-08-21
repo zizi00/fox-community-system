@@ -7,9 +7,9 @@
             </div>
             <div class="right-container">
                 <!-- 顶部标签卡 -->
-                <div class="tags-wrapper">
+                <!-- <div class="tags-wrapper">
                     <Tags></Tags>
-                </div>
+                </div> -->
                 <router-view></router-view>
             </div>
         </div>
