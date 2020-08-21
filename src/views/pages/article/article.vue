@@ -409,7 +409,7 @@ export default {
                     this.$notify({
                         title: '操作成功',
                         message: '已驳回当前的动态',
-                        type: 'warning'
+                        type: 'success'
                         });
                     this.initData()
                 }
@@ -428,7 +428,7 @@ export default {
                     this.$notify({
                         title: '操作成功',
                         message: '已删除的动态',
-                        type: 'warning'
+                        type: 'success'
                         });
                     this.initData()
                 }
@@ -446,7 +446,7 @@ export default {
                     this.$notify({
                         title: '操作成功',
                         message: '已通过当前动态的动态',
-                        type: 'warning'
+                        type: 'success'
                         });
                     this.initData()
                 }
@@ -457,7 +457,7 @@ export default {
             let params = {
                 id: id,
                 audit : 10,
-                // content: ""
+                content: ""
             }
             updateAudit(params).then(res => {
                 if(res.code === 1) {

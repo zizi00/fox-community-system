@@ -52,7 +52,7 @@ export default {
       let currentCollapse = this.$store.getters.collapse
       if(!currentCollapse) {
         //如果是false， 设置为true
-        this.$store.dispatch('setCollapse', true);
+        this.$store.dispatch('setCollapse', false);
       }else {
         this.$store.dispatch('setCollapse', false);
       }

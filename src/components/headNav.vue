@@ -83,13 +83,16 @@ export default {
         // line-height: 80px;
         position: relative;
         .username {
+            line-height: 80px;
             color: #409EFF;
         }
         .tags-wrapper {
           position: absolute;
           left: 0;
-          bottom: -60px;
+          bottom: -57px;
+          width: 100%;
           background-color: #ffffff;
+          z-index: 9999;
         }
     }
 }
