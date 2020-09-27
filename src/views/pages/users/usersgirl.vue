@@ -110,7 +110,7 @@
                     <div class="avatar">
                         <el-image
                             style="width: 70px; height: 70px; border-radius:50%"
-                            :src="'http://foxcommunity.oss-cn-beijing.aliyuncs.com' + detailData.picPath"
+                            :src="detailData.picPath"
                             fit="cover">
                         </el-image>
                     </div>
@@ -141,7 +141,7 @@
                 <div class="photos-wrapper">
                     <p class="title">她的相册</p>
                     <div class="photos">
-                        <el-image :src="'http://foxcommunity.oss-cn-beijing.aliyuncs.com' + item.files.filePath" v-for="(item,index) in detailData.images" :key = "index" :preview-src-list="photoList"></el-image>
+                        <el-image :src="item.files.filePath" v-for="(item,index) in detailData.images" :key = "index" :preview-src-list="photoList"></el-image>
                     </div>
                 </div>
             </div>
@@ -216,7 +216,7 @@ export default {
                     this.detailData.isValid = isValid
                     if(res.data.images.length>0) {
                         for(let i = 0; i<res.data.images.length; i++) {
-                            this.photoList.push('http://foxcommunity.oss-cn-beijing.aliyuncs.com' +res.data.images[i].files.filePath)
+                            this.photoList.push(res.data.images[i].files.filePath)
                         }
                     }
                 }

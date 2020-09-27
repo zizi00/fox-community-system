@@ -104,7 +104,7 @@ export default {
                 position: fixed;
                 margin-top: 0px;
                 background-color: #ffffff;
-                z-index: 999;
+                z-index: 33;
             }
         }
     }

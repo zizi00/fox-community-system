@@ -92,7 +92,7 @@ export default {
           bottom: -57px;
           width: 100%;
           background-color: #ffffff;
-          z-index: 9999;
+          z-index: 33;
         }
     }
 }

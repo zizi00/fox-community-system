@@ -41,7 +41,7 @@
                 <!-- <el-table-column type="index" label="序号" align="center" width="100"></el-table-column> -->
                 <el-table-column prop="pic" label="头像" align="center">
                   <template slot-scope="scope">
-                    <img style="width:50px;height:50px" :src="'http://foxcommunity.oss-cn-beijing.aliyuncs.com/'+scope.row.pic" alt="图片错误">
+                    <img style="width:50px;height:50px" :src="scope.row.pic" alt="图片错误">
                   </template>
                 </el-table-column>
                 <el-table-column prop="nickname" label="用户昵称" align="center"></el-table-column>
@@ -359,7 +359,7 @@ export default {
                 for(let i=0;i<row.images.length;i++) {
                     imageList.push({
                         name: row.images[i].imgId.toString(),
-                        url: 'http://foxcommunity.oss-cn-beijing.aliyuncs.com/' + row.images[i].imgPath
+                        url:  row.images[i].imgPath
                     })
                 }
             }

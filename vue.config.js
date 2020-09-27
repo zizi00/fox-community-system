@@ -40,7 +40,8 @@ module.exports = {
     devServer: {
         proxy: { // 配置跨域
             '/api': {
-                target: 'http://103.45.120.154/',
+                target: 'http://admin.degzmue.cn/',
+                // target: 'http://103.45.120.154/',
                 ws: true,
                 changOrigin: true,
                 pathRewrite: {

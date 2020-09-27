@@ -97,10 +97,10 @@
                 <el-image 
                     v-if="isImage"
                     style="width: 300px; height: 300px"
-                    :src="'http://foxcommunity.oss-cn-beijing.aliyuncs.com/' + userData.picPath"
+                    :src="userData.picPath"
                     :preview-src-list="srcList">
                 </el-image>
-                <video v-if="isVideo" :src="'http://foxcommunity.oss-cn-beijing.aliyuncs.com/' + userData.picPath"></video>
+                <video v-if="isVideo" :src="userData.picPath"></video>
             </div>
         </el-dialog>
         <!-- 通过 -->
@@ -221,7 +221,7 @@ export default {
                     this.isVideo = true
                 }else {
                     this.isImage = true
-                    this.srcList.push('http://foxcommunity.oss-cn-beijing.aliyuncs.com/'+row.picPath)
+                    this.srcList.push(row.picPath)
                 }
             }
             console.log(this.userData)

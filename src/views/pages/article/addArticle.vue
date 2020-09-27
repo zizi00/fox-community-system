@@ -155,6 +155,8 @@ export default {
                         arr.push ({
                           imgId: data.data.data.id
                         })
+                      }else {
+                        that.btnDisabled = false
                       }
                   }
                 }
