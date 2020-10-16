@@ -32,7 +32,13 @@
             </el-form>
         </div>
         <div class="table_container">
+          <div class="statisticsW">
             <div class="recharger-total">累计充值金额:{{rechargerTotal}}(元)</div>
+            <div class="recharger-total">今日充值金额：{{todayTotals}}(元)</div>
+            <div class="recharger-total">本周充值金额：{{weekTotals}}(元)</div>
+            <div class="recharger-total">本月充值金额：{{monthTotals}}(元)</div>
+          </div>
+            
             <el-table :data="tableData" border style="width: 100%">
                 <el-table-column prop="account" label="账号" align="center"></el-table-column>
                 <el-table-column prop="userNickName" label="昵称" align="center"></el-table-column>
@@ -101,7 +107,10 @@ export default {
                 8: "查看微信"
             },
             rechargerTotal: 0,
-            totals: 0
+            totals: 0,
+            todayTotals: 0,
+            weekTotals: 0,
+            monthTotals: 0,
         }
     },
     methods: {
@@ -111,6 +120,9 @@ export default {
                     this.tableData = res.data.pageInfo.list
                     this.total = res.data.pageInfo.total
                     this.totals = res.data.totals
+                    this.todayTotals = res.data.totalToday
+                    this.weekTotals = res.data.totalWeek
+                    this.monthTotals = res.data.totalMonth
                 }
             })
         },
@@ -169,11 +181,20 @@ export default {
         margin-top: 20px;
         padding: 10px;
         background-color: #ffffff;
-        .recharger-total{
-            color:#409EFF;
-            text-align: left;
-            margin-bottom: 10px;
+        .statisticsW {
+          color:#409EFF;
+          text-align: left;
+          margin-bottom: 10px;
+          .recharger-total{
+            display: inline-block;
+            margin-left: 30px;
+            &.recharger-total:first-child {
+              margin-left: 0px;
+            }
+          }
+          
         }
+        
         /deep/.el-table thead {
             background-color: #f9fafd;
         }

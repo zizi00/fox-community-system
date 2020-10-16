@@ -193,6 +193,14 @@
                     <el-input v-model="userData.title" style="width: 500px" placeholder="请输入标题"></el-input>
                     </el-form-item>
                     <el-form-item
+                    label="昵称"
+                    :rules="{
+                        required: true, message: '昵称不能为空', trigger: 'blur'
+                    }"
+                    >
+                    <el-input v-model="userData.nickname"></el-input>
+                    </el-form-item>
+                    <el-form-item
                     class="content"
                     label="备注"
                     :rules="{
@@ -299,6 +307,7 @@ export default {
                 phone: "",
                 price: "",
                 age: "",
+                nickname: "",
                 city: "",
                 title: "",
                 content: "",
@@ -353,6 +362,7 @@ export default {
             this.userData.city = row.city
             this.userData.county = row.county
             this.userData.title = row.title
+            this.userData.nickname = row.nickname
             this.userData.content = row.content
             let imageList = []
             if(row.images.length>0) {
